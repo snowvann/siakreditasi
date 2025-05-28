@@ -30,6 +30,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/kriteria/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])
+    ->name('kriteria.unduh-pdf');
+
+    Route::post('/kriteria/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
+    ->name('kriteria.subkriteria.simpanIsian');
+
     Route::get('/kriteria/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
     Route::get('/kriteria/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
         ->name('kriteria.subkriteria.show');

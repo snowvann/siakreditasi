@@ -3,144 +3,165 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kriteria;
+use App\Models\SubKriteria;
+use App\Models\Isian;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
 
 class KriteriaController extends Controller
 {
     public function show($id)
     {
-        // Hardcoded data for kriteria
-        $kriteriaData = [
-            'id' => $id,
-            'nama_kriteria' => $this->getKriteriaName($id),
-            'deskripsi' => 'Deskripsi lengkap untuk kriteria ini yang menjelaskan apa yang perlu diisi.',
-            'status' => $this->getKriteriaStatus($id),
-            'progress' => $this->getKriteriaProgress($id),
-            'updated_at' => '12 Mei 2025'
-        ];
+        $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
 
-        // Hardcoded anggota kriteria
+        // Dummy data anggota (bisa diganti dengan dari database jika perlu)
         $anggotaKriteria = [
             ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
             ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
         ];
 
-        // Hardcoded sub-kriteria
-        $subKriteriaList = $this->getSubKriteriaList($id);
-
         return view('kriteria.show', [
-            'kriteriaId' => $id,
-            'kriteriaData' => $kriteriaData,
+            'kriteriaId' => $kriteria->id,
+            'kriteriaData' => $kriteria,
             'anggotaKriteria' => $anggotaKriteria,
-            'subKriteriaList' => $subKriteriaList
+            'subKriteriaList' => $kriteria->subkriteria
         ]);
     }
 
-    private function getKriteriaName($id)
+    public function showSubKriteria($kriteriaId, $subKriteriaId)
     {
-        switch ($id) {
-            case 1: return "Visi, Misi, Tujuan dan Strategi";
-            case 2: return "Tata Pamong, Tata Kelola dan Kerjasama";
-            case 3: return "Mahasiswa";
-            case 4: return "Sumber Daya Manusia";
-            default: return "Kriteria " . $id;
+        $subKriteria = SubKriteria::where('id', $subKriteriaId)
+                            ->where('kriteria_id', $kriteriaId)
+                            ->firstOrFail();
+
+        $akreditasiIsi = Isian::where('subkriteria_id', $subKriteriaId)
+                              ->where('akreditasi_id', 1)
+                              ->value('nilai');
+
+        $validationLogs = $this->getValidationLogs($kriteriaId, $subKriteriaId);
+
+        return view('kriteria.subkriteria.show', compact(
+            'kriteriaId', 'subKriteriaId', 'subKriteria', 'akreditasiIsi', 'validationLogs'
+        ));
+    }
+
+    public function simpanIsian(Request $request, $kriteriaId, $subKriteriaId)
+{
+    $sub = SubKriteria::where('id', $subKriteriaId)
+                ->where('kriteria_id', $kriteriaId)
+                ->first();
+
+    if (!$sub) {
+        return response()->json(['error' => 'Subkriteria tidak valid.'], 400);
+    }
+
+    $akreditasiId = $request->input('akreditasi_id') ?? 1;
+    $action = $request->input('action');
+
+    // Jika AJAX request hanya untuk upload file
+    if ($request->ajax() && $request->hasFile('file')) {
+        $file = $request->file('file');
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (!in_array($extension, $allowedExtensions)) {
+            return response()->json(['error' => 'File tidak didukung.'], 422);
+        }
+
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $extension;
+        $path = $file->storeAs('public/uploads', $filename);
+        $url = asset(Storage::url($path));
+
+        return response()->json(['url' => $url]);
+    }
+
+    // Normal proses simpan atau submit
+    if ($action === 'reset') {
+        Isian::where('subkriteria_id', $subKriteriaId)
+              ->where('akreditasi_id', $akreditasiId)
+              ->delete();
+        return redirect()->back()->with('status', 'Data berhasil di-reset.');
+    }
+
+    $nilai = $request->input('nilai');
+    $uploadedFileUrl = '';
+
+    if ($request->hasFile('file')) {
+        // Upload biasa
+        $file = $request->file('file');
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (in_array($extension, $allowedExtensions)) {
+            $filename = \Illuminate\Support\Str::uuid() . '.' . $extension;
+            $path = $file->storeAs('public/uploads', $filename);
+            $url = asset(Storage::url($path));
+            $uploadedFileUrl = $url . "\n";
         }
     }
 
-    private function getKriteriaStatus($id)
+    $nilaiFinal = $uploadedFileUrl . $nilai;
+
+    Isian::updateOrCreate(
+        ['subkriteria_id' => $subKriteriaId, 'akreditasi_id' => $akreditasiId],
+        ['nilai' => $nilaiFinal]
+    );
+
+    $pesan = $action === 'submit' ? 'Data berhasil disubmit.' : 'Data berhasil disimpan.';
+    return redirect()->back()->with('status', $pesan);
+}
+
+
+
+    private function getValidationLogs($kriteriaId, $subKriteriaId)
     {
-        if ($id <= 2) return "validated";
-        if ($id == 3) return "menunggu_validasi";
-        if ($id == 4) return "revisi";
-        return "draft";
+        // Contoh dummy log, bisa diganti dengan query database
+        if ($kriteriaId <= 2) {
+            return [
+                [
+                    'id' => 1,
+                    'peran_validator' => "KPS",
+                    'status_sebelum' => "menunggu_validasi",
+                    'status_sesudah' => "validated",
+                    'komentar' => "Data sudah lengkap dan sesuai dengan standar akreditasi.",
+                    'created_at' => "14 Mei 2025",
+                ],
+                [
+                    'id' => 2,
+                    'peran_validator' => "Kajur",
+                    'status_sebelum' => "menunggu_validasi",
+                    'status_sesudah' => "validated",
+                    'komentar' => "Disetujui.",
+                    'created_at' => "15 Mei 2025",
+                ],
+            ];
+        }
+        return [];
     }
 
-    private function getKriteriaProgress($id)
-    {
-        if ($id <= 3) return 100;
-        if ($id == 4) return 60;
-        if ($id == 5) return 40;
-        return 0;
-    }
-
-    private function getSubKriteriaList($kriteriaId)
-    {
-        $baseSubKriteria = [
-            ['id' => 1, 'nama_subkriteria' => 'Penetapan', 'urutan' => 1],
-            ['id' => 2, 'nama_subkriteria' => 'Pelaksanaan', 'urutan' => 2],
-            ['id' => 3, 'nama_subkriteria' => 'Evaluasi', 'urutan' => 3],
-            ['id' => 4, 'nama_subkriteria' => 'Pengendalian', 'urutan' => 4],
-            ['id' => 5, 'nama_subkriteria' => 'Peningkatan', 'urutan' => 5],
-        ];
-
-        return array_map(function ($item) use ($kriteriaId) {
-            $item['status'] = $this->getSubKriteriaStatus($kriteriaId, $item['id']);
-            return $item;
-        }, $baseSubKriteria);
-    }
-
-    private function getSubKriteriaStatus($kriteriaId, $subKriteriaId)
-    {
-        if ($kriteriaId <= 2) return "validated";
-        if ($kriteriaId == 3) return "menunggu_validasi";
-        if ($kriteriaId == 4) return "revisi";
-        if ($kriteriaId == 5 && $subKriteriaId == 3) return "draft";
-        return "draft";
-    }
-
-    public function showSubKriteria($kriteriaId, $subKriteriaId)
+    public function unduhPdf($kriteriaId)
 {
-    // Hardcoded data for sub-kriteria
-    $subKriteria = [
-        'id' => $subKriteriaId,
-        'nama_subkriteria' => "Sub-kriteria $subKriteriaId",
-        'urutan' => $subKriteriaId,
-        'status' => $this->getSubKriteriaStatus($kriteriaId, $subKriteriaId),
+    // Ambil kriteria dengan subkriteria dan isian terkait
+    $kriteria = Kriteria::with(['subkriteria' => function($query) {
+        $query->with(['isian' => function($q) {
+            $q->where('akreditasi_id', 1); // contoh filter akreditasi_id 1, bisa disesuaikan
+        }]);
+    }])->findOrFail($kriteriaId);
+
+    // Data untuk view PDF
+    $data = [
+        'kriteria' => $kriteria,
     ];
 
-    // Hardcoded akreditasi data
-    $akreditasi = [
-        'isi' => $this->getAkreditasiContent($kriteriaId, $subKriteriaId),
-        'file_path' => $kriteriaId <= 2 ? "/uploads/dokumen-pendukung.pdf" : "",
-        'komentar' => $kriteriaId === 4 && $subKriteriaId <= 2 ? "Data perlu dilengkapi dengan bukti pendukung yang lebih detail." : "",
-        'updated_at' => "12 Mei 2025",
-    ];
+    // Load view dan render PDF
+    $pdf = Pdf::loadView('pdf.kriteria', $data)->setPaper('a4', 'portrait');
 
-    // Hardcoded validation logs
-    $validasiLogs = $this->getValidationLogs($kriteriaId, $subKriteriaId);
-
-    return view('kriteria.subkriteria.show', compact('kriteriaId', 'subKriteriaId', 'subKriteria', 'akreditasi', 'validasiLogs'));
+    // Download file PDF dengan nama kriteria
+    return $pdf->download('Kriteria_'.$kriteria->id.'.pdf');
 }
 
-private function getAkreditasiContent($kriteriaId, $subKriteriaId)
-{
-    if ($kriteriaId <= 3 || ($kriteriaId === 4 && $subKriteriaId <= 2)) {
-        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-    }
-    return "";
-}
-
-private function getValidationLogs($kriteriaId, $subKriteriaId)
-{
-    if ($kriteriaId <= 2) {
-        return [
-            [
-                'id' => 1,
-                'peran_validator' => "KPS",
-                'status_sebelum' => "menunggu_validasi",
-                'status_sesudah' => "validated",
-                'komentar' => "Data sudah lengkap dan sesuai dengan standar akreditasi.",
-                'created_at' => "14 Mei 2025",
-            ],
-            [
-                'id' => 2,
-                'peran_validator' => "Kajur",
-                'status_sebelum' => "menunggu_validasi",
-                'status_sesudah' => "validated",
-                'komentar' => "Disetujui.",
-                'created_at' => "15 Mei 2025",
-            ],
-        ];
-    }
-    return [];
-}
+    
 }

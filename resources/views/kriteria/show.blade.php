@@ -15,7 +15,7 @@
                 </a>
                 <div class="flex-1">
                     <h1 class="text-2xl font-bold">
-                        Kriteria {{ $kriteriaId }}: {{ $kriteriaData['nama_kriteria'] }}
+                        {{ $kriteriaData['nama_kriteria'] }}
                     </h1>
                     <p class="text-sm text-muted-foreground">{{ $kriteriaData['deskripsi'] }}</p>
                 </div>
@@ -90,16 +90,17 @@
                         </div>
 
                                                     <!-- Tombol PDF -->
-                            <div>
-                                <button class="inline-flex items-center gap-2 rounded-md bg-[#D28D0D] text-white px-4 py-1 text-sm font-semibold shadow-sm hover:opacity-90 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                        <polyline points="7 10 12 15 17 10" />
-                                        <line x1="12" y1="15" x2="12" y2="3" />
-                                    </svg>
-                                    <span>Unduh PDF</span>
-                                </button>
-                            </div>
+                                                    <a href="{{ route('kriteria.unduh-pdf', $kriteriaId) }}" 
+                                                    class="inline-flex items-center gap-2 rounded-md bg-[#D28D0D] text-white px-4 py-1 text-sm font-semibold shadow-sm hover:opacity-90 transition"
+                                                    target="_blank" rel="noopener noreferrer">
+                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                         <polyline points="7 10 12 15 17 10" />
+                                                         <line x1="12" y1="15" x2="12" y2="3" />
+                                                     </svg>
+                                                     <span>Unduh PDF</span>
+                                                 </a>
+                                                 
 
                     </div>
 
@@ -110,12 +111,8 @@
                     <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
                         <div class="flex items-center justify-between p-6">
                             <div class="flex items-center gap-4">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-                                    {{ $subKriteria['urutan'] }}
-                                </div>
                                 <div>
-                                    <h3 class="font-medium">{{ $subKriteria['nama_subkriteria'] }}</h3>
-                                    <p class="text-sm text-muted-foreground">Sub-kriteria {{ $subKriteria['urutan'] }}</p>
+                                    <h2 class="font-medium">{{ $subKriteria['nama_subkriteria'] }}</h2>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
