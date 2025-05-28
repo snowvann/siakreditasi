@@ -5,6 +5,8 @@ use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardUtamaController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,5 +46,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kriteria/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
         ->name('kriteria.subkriteria.show');
 });
+
+Route::get('/dashboardUtama', function () {
+    return view('dashboardUtama');
+})->name('dashboard.utama');
+
+Route::get('/dashboardUtama', [DashboardUtamaController::class, 'index'])->name('dashboardUtama');
 
 require __DIR__.'/auth.php';

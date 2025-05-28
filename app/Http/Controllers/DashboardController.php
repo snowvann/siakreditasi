@@ -41,7 +41,7 @@ class DashboardController extends Controller
             ['name' => 'Menunggu Validasi'],
         ];
 
-        return view('dashboard', compact(
+        return view('Kriteria', compact(
             'totalCriteria',
             'submittedCriteria',
             'relatedCriteria',
