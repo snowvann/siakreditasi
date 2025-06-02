@@ -7,7 +7,7 @@
         </a>
 
         <!-- TENGAH: Navigasi -->
-        <ul class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
+        <ul class="flex items-center gap-6 text-sm font-medium text-gray-700">
             <li>
                 <a href="{{ route('dashboardUtama') }}"
                    class="px-3 py-1 rounded-md transition-all duration-200

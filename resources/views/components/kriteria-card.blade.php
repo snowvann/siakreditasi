@@ -25,7 +25,7 @@
                 </div>
             </div>
             
-            <div class="p-6 pt-0 flex justify-between items-center">
+            <div class="p-3 pt-0 flex justify-between items-center">
                 {{ $slot ?? '5 sub-kriteria' }}
                 <a href="{{ route('kriteria.show', $kriteria['id']) }}" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3">
                     Lihat Detail

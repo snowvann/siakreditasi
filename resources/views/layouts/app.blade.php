@@ -16,10 +16,11 @@
     
         <!-- Alpine JS -->
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-      
-
-                                        
+        
+        <!-- Trix Editor -->
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/trix/2.0.4/trix.min.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/trix/2.0.4/trix.min.js"></script>
+                                            
 
     </head>
     

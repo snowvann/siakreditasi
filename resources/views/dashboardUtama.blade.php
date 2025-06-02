@@ -4,27 +4,35 @@
 <div class="min-h-screen bg-[#EDEDED]">
     @include('components.dashboard-header')
 
-   <!-- Hero Section -->
-    <section class="bg-[#F2F2F2] py-12 border-b border-gray-300 relative">
-     <!-- Bar Welcome To -->
-     <div class="bg-white border-y border-gray-300 w-full py-2 px-4">
-        <p class="text-base md:text-lg font-semibold text-black">Welcome To</p>
-    </div>
+<!-- Hero Section -->
+<section class="bg-[#F2F2F2] pt-0 pb-0 border-b border-gray-300 relative">
 
-    <div class="text-center max-w-6xl mx-auto px-4">
-    <h1 class="text-5xl md:text-7xl font-extrabold text-black tracking-widest mb-4">
-            AKREDITASI
-        </h1>
-
-    <p class="text-xl md:text-xl font-semibold text-black tracking-wide uppercase mb-6">
-            Program Studi D4 Sistem Informasi Bisnis
+    <!-- Bar Welcome To -->
+<!-- Bar Welcome To -->
+<div class="bg-white border-y border-gray-300 w-full py-2 px-4">
+    <p class="text-base md:text-lg font-medium text-black text-left pl-8">
+        Welcome To
     </p>
 </div>
 
-    <!-- Bar Jurusan Teknologi Informasi -->
-    <div class="bg-white border-y border-gray-300 w-full py-1 px-4">
-        <p class="md:text-lg text-center font-semibold text-black">JURUSAN TEKNOLOGI INFORMASI | POLITEKNIK NEGERI MALANG</p>
+    <!-- Konten Tengah -->
+    <div class="text-center max-w-6xl mx-auto px-4 py-8">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-black tracking-widest mb-3">
+            AKREDITASI
+        </h1>
+        
+        <p class="text-lg md:text-xl font-medium text-black tracking-wide uppercase mb-4">
+            Program Studi D4 Sistem Informasi Bisnis
+        </p>
     </div>
+
+    <!-- Bar Jurusan Teknologi Informasi -->
+    <div class="bg-white border-y border-gray-300 w-full py-2 px-4">
+        <p class="text-base md:text-lg text-center font-medium text-black">
+            JURUSAN TEKNOLOGI INFORMASI | POLITEKNIK NEGERI MALANG
+        </p>
+    </div>
+
 </section>
 
 

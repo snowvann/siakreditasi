@@ -37,8 +37,9 @@
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
                             <div class="text-sm">
-                                {{ implode(', ', array_column($anggotaKriteria, 'name')) }}
+                                {{ implode(', ', $anggotaKriteria) }}
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -49,7 +50,7 @@
                         <h3 class="text-sm font-medium">Terakhir Diperbarui</h3>
                     </div>
                     <div class="p-6 pt-0">
-                        <div class="font-medium">{{ $kriteriaData['updated_at'] }}</div>
+                        <div class="font-medium">{{ \Carbon\Carbon::parse($updatedAt)->translatedFormat('d F Y H:i') }}</div>
                     </div>
                 </div>
 
@@ -61,10 +62,8 @@
                     <div class="p-6 pt-0">
                         <div class="space-y-2">
                             <div class="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
-                                <div class="h-full w-full flex-1 bg-primary transition-all" style="width: {{ $kriteriaData['progress'] }}%"></div>
-                            </div>
-                            <div class="text-sm text-muted-foreground">{{ $kriteriaData['progress'] }}% selesai</div>
-                        </div>
+                                <div class="h-full w-full flex-1 bg-primary transition-all" style="width: {{ $progress }}%"></div>
+                                <div class="text-sm text-muted-foreground">{{ $progress }}% selesai</div>                                
                     </div>
                 </div>
             </div>
