@@ -33,4 +33,6 @@ class Kriteria extends Model
     {
         return $this->hasMany(DokumenTemplate::class);
     }
+
+    
 }

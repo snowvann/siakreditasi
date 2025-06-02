@@ -22,4 +22,10 @@ class Subkriteria extends Model
     {
         return $this->belongsTo(Kriteria::class);
     }
+
+        public function isian()
+    {
+        return $this->hasMany(Isian::class, 'subkriteria_id', 'id');
+    }
+
 }

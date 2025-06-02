@@ -3,6 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardUtamaController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -30,9 +36,21 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/kriteria/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])
+    ->name('kriteria.unduh-pdf');
+
+    Route::post('/kriteria/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
+    ->name('kriteria.subkriteria.simpanIsian');
+
     Route::get('/kriteria/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
     Route::get('/kriteria/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
         ->name('kriteria.subkriteria.show');
 });
+
+Route::get('/dashboardUtama', function () {
+    return view('dashboardUtama');
+})->name('dashboard.utama');
+
+Route::get('/dashboardUtama', [DashboardUtamaController::class, 'index'])->name('dashboardUtama');
 
 require __DIR__.'/auth.php';

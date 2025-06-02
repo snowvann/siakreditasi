@@ -15,7 +15,7 @@
                 </a>
                 <div class="flex-1">
                     <h1 class="text-2xl font-bold">
-                        Kriteria {{ $kriteriaId }}: {{ $kriteriaData['nama_kriteria'] }}
+                        {{ $kriteriaData['nama_kriteria'] }}
                     </h1>
                     <p class="text-sm text-muted-foreground">{{ $kriteriaData['deskripsi'] }}</p>
                 </div>
@@ -69,54 +69,74 @@
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <h2 class="text-xl font-semibold">Sub-kriteria</h2>
-                <div class="flex flex-wrap gap-2">
-                    <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        Unggah Bukti
-                    </button>
-                    <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Unduh PDF
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid gap-4">
-                @foreach($subKriteriaList as $subKriteria)
-                <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-                    <div class="flex items-center justify-between p-6">
-                        <div class="flex items-center gap-4">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-                                {{ $subKriteria['urutan'] }}
-                            </div>
-                            <div>
-                                <h3 class="font-medium">{{ $subKriteria['nama_subkriteria'] }}</h3>
-                                <p class="text-sm text-muted-foreground">Sub-kriteria {{ $subKriteria['urutan'] }}</p>
-                            </div>
+            <div x-data="{ tab: 'subkriteria' }" x-cloak class="space-y-4">
+                    <!-- Tab Selector + Tombol PDF -->
+                    <div class="flex flex-wrap items-center justify-between border-b pb-1">
+                        <div class="flex gap-2 bg-muted p-1 rounded-md">
+                            <button @click="tab = 'subkriteria'"
+                                :class="tab === 'subkriteria' 
+                                    ? 'bg-[#66586D] text-white shadow-sm' 
+                                    : 'bg-background text-foreground'"
+                                class="inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-all focus:outline-none focus:ring-0">
+                                Sub-kriteria
+                            </button>
+                            <button @click="tab = 'validasi'"
+                                :class="tab === 'validasi' 
+                                    ? 'bg-[#66586D] text-white shadow-sm' 
+                                    : 'bg-background text-foreground'"
+                                class="inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-all focus:outline-none focus:ring-0">
+                                Validasi
+                            </button>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <x-status-badge :status="$subKriteria['status']" />
-                            <a href="/kriteria/{{ $kriteriaId }}/sub-kriteria/{{ $subKriteria['id'] }}" 
-                               class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                                    <path d="m9 18 6-6-6-6"></path>
-                                </svg>
-                            </a>
+
+                                                    <!-- Tombol PDF -->
+                                                    <a href="{{ route('kriteria.unduh-pdf', $kriteriaId) }}" 
+                                                    class="inline-flex items-center gap-2 rounded-md bg-[#D28D0D] text-white px-4 py-1 text-sm font-semibold shadow-sm hover:opacity-90 transition"
+                                                    target="_blank" rel="noopener noreferrer">
+                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                         <polyline points="7 10 12 15 17 10" />
+                                                         <line x1="12" y1="15" x2="12" y2="3" />
+                                                     </svg>
+                                                     <span>Unduh PDF</span>
+                                                 </a>
+                                                 
+
+                    </div>
+
+
+                <!-- Subkriteria Content -->
+                <div x-show="tab === 'subkriteria'" x-cloak class="grid gap-4">
+                    @foreach($subKriteriaList as $subKriteria)
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div class="flex items-center justify-between p-6">
+                            <div class="flex items-center gap-4">
+                                <div>
+                                    <h2 class="font-medium">{{ $subKriteria['nama_subkriteria'] }}</h2>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <x-status-badge :status="$subKriteria['status']" />
+                                <a href="{{ url('kriteria/'.$kriteriaId.'/sub-kriteria/'.$subKriteria['id']) }}"
+                                class="inline-flex items-center justify-center rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground h-9 w-9">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="m9 18 6-6-6-6"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
+            
+                <!-- Validasi Content -->
+                <div x-show="tab === 'validasi'" x-cloak class="border rounded-md p-4 text-sm text-gray-600">
+                    Konten validasi akan ditampilkan di sini.
+                </div>
             </div>
+            
+
+
         </div>
     </main>
 </div>
