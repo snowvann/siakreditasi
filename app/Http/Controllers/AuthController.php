@@ -4,28 +4,37 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
+
     public function showLoginForm()
-    {
-        return view('auth.login');
-    }
+{
+    return view('auth.login');
+}
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('username', 'password');
-        $role = $request->role;
+   public function login(Request $request)
+{
+    $credentials = $request->only('username', 'password');
+    $user = User::where('username', $credentials['username'])->first();
 
-        // Autentikasi dengan tambahan role
-        if (Auth::attempt(array_merge($credentials, ['role' => $role]))) {
-            $request->session()->regenerate();
+    if ($user && Hash::check($credentials['password'], $user->password)) {
+        Auth::login($user);
 
-            return redirect()->intended('/dashboard');
+        // Redirect berdasarkan role
+        if ($user->role === 'Validator') {
+            return redirect()->route('validator-dashboard');
+        } else if ($user->role === 'Anggota') {
+            return redirect()->route('dashboard');
+        } else {
+            return redirect('/'); // fallback
         }
-
-        return back()->withErrors([
-            'login_error' => 'Username, password, atau role salah.',
-        ])->withInput();
     }
+
+    
+
+    return back()->withErrors(['login_error' => 'Username atau password salah.']);
+}
 }

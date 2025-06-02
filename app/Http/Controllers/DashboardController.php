@@ -8,6 +8,18 @@ use App\Models\Kriteria;
 
 class DashboardController extends Controller
 {
+
+    public function validatorDashboard()
+{
+    $user = auth()->user();
+
+    // Validasi jika bukan validator
+    if ($user->role !== 'Validator') {
+        abort(403, 'Unauthorized');
+    }
+
+    return view('validator.dashboard', compact('user'));
+}
     public function index()
     {
         // Fetch total number of users
