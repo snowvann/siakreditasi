@@ -12,13 +12,6 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Anggota',
-                'username' => 'anggota',
-                'password' => Hash::make('12345678'),
-                'role' => 'Anggota',
-                'is_active' => true
-            ],
-            [
                 'name' => 'KPS',
                 'username' => 'KPS',
                 'password' => Hash::make('12345678'),
@@ -44,6 +37,69 @@ class UserSeeder extends Seeder
                 'username' => 'Direktur',
                 'password' => Hash::make('12345678'),
                 'role' => 'Validator',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 1',
+                'username' => 'anggota1',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 2',
+                'username' => 'anggota2',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 3',
+                'username' => 'anggota3',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 4',
+                'username' => 'anggota4',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 5',
+                'username' => 'anggota5',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 6',
+                'username' => 'anggota6',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 7',
+                'username' => 'anggota7',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 8',
+                'username' => 'anggota8',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Dosen 9',
+                'username' => 'anggota9',
+                'password' => Hash::make('12345678'),
+                'role' => 'Anggota',
                 'is_active' => true
             ],
         ];
