@@ -5,8 +5,8 @@ use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardUtamaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardUtamaController;
 use App\Http\Controllers\ValidatorKriteriaController;
 
 /*
@@ -20,75 +20,48 @@ use App\Http\Controllers\ValidatorKriteriaController;
 |
 */
 
+// Public Routes
 Route::get('/', [LandingController::class, 'index'])->name('landing');
-
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+// Authenticated Routes
+Route::middleware(['auth'])->group(function () {
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/dashboard/validator', function () {
-    // Statistik dashboard
-    $pendingValidation = 10;
-    $needsRevision = 5;
-    $validated = 25;
-    $totalApplications = 40;
-    $rejectedApplications = 0;
-    
-    // UI state variables
-    $activeTab = 'dashboard';
-    $sortBy = 'newest';
-    $filterStatus = 'all';
-    $searchQuery = '';
-    
-    // Data untuk kriteria (ini yang menyebabkan error)
-    $filteredKriteria = [
-        (object)['id' => 1, 'name' => 'Kriteria 1', 'status' => 'pending'],
-        (object)['id' => 2, 'name' => 'Kriteria 2', 'status' => 'approved'],
-        (object)['id' => 3, 'name' => 'Kriteria 3', 'status' => 'revision'],
-    ]; // atau bisa kosong: []
-    
-    // Jika menggunakan database, ganti dengan:
-    // $filteredKriteria = YourModel::where('status', 'active')->get();
-    
-    // Sort options
-    $sortOptions = [
-        'newest' => 'Terbaru',
-        'oldest' => 'Terlama', 
-        'priority-high' => 'Prioritas Tinggi',
-        'priority-low' => 'Prioritas Rendah'
-    ];
-    
-    return view('validator-dashboard', compact(
-        'pendingValidation', 'needsRevision', 'validated',
-        'totalApplications', 'rejectedApplications',
-        'activeTab', 'sortBy', 'filterStatus', 'searchQuery',
-        'filteredKriteria', 'sortOptions'
-    ));
-})->middleware(['auth', 'verified'])->name('validator-dashboard');
-Route::middleware('auth')->group(function () {
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Kriteria Routes
+    Route::prefix('kriteria')->group(function () {
+        Route::get('/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])->name('kriteria.unduh-pdf');
+        Route::get('/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
+        Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
+            ->name('kriteria.subkriteria.simpanIsian');
+        Route::get('/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
+            ->name('kriteria.subkriteria.show');
+    });
+
+    // Dashboard Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/kriteria/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])
-    ->name('kriteria.unduh-pdf');
-
-    Route::post('/kriteria/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
-    ->name('kriteria.subkriteria.simpanIsian');
-
-    Route::get('/kriteria/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
-    Route::get('/kriteria/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
-        ->name('kriteria.subkriteria.show');
+// Validator Routes
+Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(function () {
+    Route::get('/dashboard-validator', [ValidatorKriteriaController::class, 'index'])->name('validator.dashboard');
+    Route::get('/kriteria', [ValidatorKriteriaController::class, 'list'])->name('validator.kriteria');
+    Route::get('/kriteria/{id}', [ValidatorKriteriaController::class, 'show'])->name('validator.kriteria.show');
+    Route::post('/kriteria/{id}/validate', [ValidatorKriteriaController::class, 'validatekriteria'])
+        ->name('validator.kriteria.validate');
 });
 
+// Member Routes (if needed)
+Route::middleware(['auth', 'role:anggota'])->group(function () {
+    Route::get('/member/dashboard', [DashboardController::class, 'memberDashboard'])->name('member.dashboard');
+});
 Route::get('/dashboardUtama', function () {
     return view('dashboardUtama');
 })->name('dashboard.utama');

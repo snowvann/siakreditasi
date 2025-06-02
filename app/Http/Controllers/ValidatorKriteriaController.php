@@ -13,24 +13,21 @@ class ValidatorKriteriaController extends Controller
         $this->middleware(['auth', 'role:validator']);
     }
 
-    /**
-     * Tampilkan dashboard validator dengan kriteria yang difilter dan diurutkan.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search', '');
         $activeTab = $request->input('tab', 'validation');
         $sortBy = $request->input('sort', 'newest');
 
-        // Ambil semua kriteria
         $query = Kriteria::query();
 
-        // Terapkan filter pencarian
         if ($search) {
-            $query->where('nama_kriteria', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->where('nama_kriteria', 'like', '%'.$search.'%')
+                  ->orWhere('deskripsi', 'like', '%'.$search.'%');
+            });
         }
 
-        // Terapkan filter tab
         switch ($activeTab) {
             case 'validation':
                 $query->where('status', 'pending');
@@ -41,16 +38,14 @@ class ValidatorKriteriaController extends Controller
             case 'validated':
                 $query->where('status', 'validated');
                 break;
-            // Tab 'all' menampilkan semua kriteria, tidak perlu filter tambahan
         }
 
-        // Terapkan pengurutan
         switch ($sortBy) {
             case 'newest':
-                $query->orderBy('created_at', 'desc');
+                $query->latest();
                 break;
             case 'oldest':
-                $query->orderBy('created_at', 'asc');
+                $query->oldest();
                 break;
             case 'priority-high':
                 $query->orderBy('priority', 'desc');
@@ -61,14 +56,13 @@ class ValidatorKriteriaController extends Controller
         }
 
         $allKriteria = Kriteria::all();
-        $filteredKriteria = $query->get();
+        $filteredKriteria = $query->paginate(10);
 
-        // Hitung statistik
         $pendingValidation = Kriteria::where('status', 'pending')->count();
         $needsRevision = Kriteria::where('status', 'needs_revision')->count();
         $validated = Kriteria::where('status', 'validated')->count();
 
-        return view('validator-dashboard', compact(
+        return view('validator.dashboard', compact(
             'filteredKriteria',
             'allKriteria',
             'pendingValidation',
@@ -77,53 +71,53 @@ class ValidatorKriteriaController extends Controller
             'activeTab',
             'sortBy',
             'search'
-            
         ));
     }
 
-    /**
-     * Tampilkan halaman validasi kriteria.
-     */
+    public function list()
+    {
+        $kriteria = Kriteria::paginate(10);
+        return view('validator.kriteria.index', compact('kriteria'));
+    }
+
     public function show($id)
     {
         $kriteria = Kriteria::findOrFail($id);
-
-        return view('criteria-validation-view', compact('kriteria'));
+        return view('validator.kriteria-validation', compact('kriteria'));
     }
 
-    /**
-     * Tangani aksi validasi untuk kriteria.
-     */
-    public function validateKriteria(Request $request, $id)
+    public function validatekriteria(Request $request, $id)
     {
         $request->validate([
-            'validationAction' => 'required|in:approve,reject,revise',
-            'comment' => 'nullable|string|max:1000'
+            'action' => 'required|in:approve,reject,revise',
+            'comment' => 'required_if:action,reject,revise|max:1000'
         ]);
 
         $kriteria = Kriteria::findOrFail($id);
+        $user = Auth::user();
 
-        // Perbarui status kriteria berdasarkan aksi validasi
-        switch ($request->validationAction) {
+        switch ($request->action) {
             case 'approve':
                 $kriteria->status = 'validated';
+                $message = 'Kriteria berhasil disetujui.';
                 break;
             case 'reject':
                 $kriteria->status = 'rejected';
+                $message = 'Kriteria berhasil ditolak.';
                 break;
             case 'revise':
                 $kriteria->status = 'needs_revision';
+                $message = 'Permintaan revisi berhasil dikirim.';
                 break;
         }
 
-        // Simpan komentar
+        $kriteria->validator_id = $user->id;
         $kriteria->validation_comment = $request->comment;
-        $kriteria->last_updated_by = Auth::user()->name;
-        $kriteria->last_updated = now();
-
+        $kriteria->validated_at = now();
         $kriteria->save();
 
-        return redirect()->route('validator.dashboard')
-            ->with('success', 'Validasi kriteria berhasil disimpan.');
+        return redirect()
+            ->route('validator.dashboard')
+            ->with('success', $message);
     }
 }

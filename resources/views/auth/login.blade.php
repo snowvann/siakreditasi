@@ -115,10 +115,7 @@
           <select class="form-select" id="role" name="role" required>
             <option selected disabled>Pilih Role</option>
             <option value="anggota">Anggota</option>
-            <option value="kps">KPS</option>
-            <option value="kajur">Kajur</option>
-            <option value="kjm">KJM</option>
-            <option value="direktur">Direktur</option>
+            <option value="validator">Validator</option>
           </select>
         </div>
         <div class="mb-4 text-start">
