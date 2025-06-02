@@ -97,7 +97,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Dosen 9',
-                'username' => 'anggota9',
+                'username' => 'anggota',
                 'password' => Hash::make('12345678'),
                 'role' => 'Anggota',
                 'is_active' => true
