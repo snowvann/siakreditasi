@@ -149,7 +149,7 @@
 
             <!-- Main Content - PDF Viewer -->
             <div class="lg:col-span-3">
-                @include('components.pdf-viewer', ['kriteria' => $kriteria])
+                @include('components.pdf-viewer', ['kriteria' => $kriteria, 'pdfUrl' => $pdfUrl ?? null])
             </div>
         </div>
     </main>
