@@ -5,9 +5,8 @@
     @include('components.dashboard-header')
 
 <!-- Hero Section -->
-<section class="bg-[#F2F2F2] pt-0 pb-0 border-b border-gray-300 relative">
+    <section class="bg-[#F2F2F2] pt-0 pb-0 border-b border-gray-300 relative">
 
-    <!-- Bar Welcome To -->
 <!-- Bar Welcome To -->
 <div class="bg-white border-y border-gray-300 w-full py-2 px-4">
     <p class="text-base md:text-lg font-medium text-black text-left pl-8">
@@ -16,8 +15,8 @@
 </div>
 
     <!-- Konten Tengah -->
-    <div class="text-center max-w-6xl mx-auto px-4 py-8">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-black tracking-widest mb-3">
+   <div class="text-center max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-5xl md:text-6xl font-extrabold text-black tracking-widest mb-3">
             AKREDITASI
         </h1>
         
@@ -34,7 +33,6 @@
     </div>
 
 </section>
-
 
 {{-- Carousel Gedung TI --}}
 <div x-data="{ activeSlide: 0, slides: ['sipil.jpg', 'ti.jpg'] }" class="relative w-full overflow-hidden rounded shadow-lg">

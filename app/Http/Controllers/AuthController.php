@@ -27,6 +27,7 @@ class AuthController extends Controller
                     ->where('role', ucfirst($credentials['role']))
                     ->first();
 
+            return redirect()->intended('/dashboardUtama');
         info($user);
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
