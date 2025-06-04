@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ValidatorKriteriaController extends Controller
 {
@@ -21,6 +25,7 @@ class ValidatorKriteriaController extends Controller
 
         $query = Kriteria::query();
 
+        // Search functionality
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('nama_kriteria', 'like', '%'.$search.'%')
@@ -28,24 +33,30 @@ class ValidatorKriteriaController extends Controller
             });
         }
 
+        // Filter by tab
         switch ($activeTab) {
             case 'validation':
-                $query->where('status', 'pending');
+                $query->whereIn('status', ['pending', 'menunggu_validasi']);
                 break;
             case 'revision':
-                $query->where('status', 'needs_revision');
+                $query->whereIn('status', ['needs_revision', 'revisi']);
                 break;
             case 'validated':
                 $query->where('status', 'validated');
                 break;
+            case 'all':
+            default:
+                // Show all
+                break;
         }
 
+        // Sorting
         switch ($sortBy) {
             case 'newest':
-                $query->latest();
+                $query->latest('created_at');
                 break;
             case 'oldest':
-                $query->oldest();
+                $query->oldest('created_at');
                 break;
             case 'priority-high':
                 $query->orderBy('priority', 'desc');
@@ -55,11 +66,15 @@ class ValidatorKriteriaController extends Controller
                 break;
         }
 
+        // Get all kriteria for stats
         $allKriteria = Kriteria::all();
-        $filteredKriteria = $query->paginate(10);
+        
+        // Get filtered results - use get() instead of paginate() for now
+        $filteredKriteria = $query->get();
 
-        $pendingValidation = Kriteria::where('status', 'pending')->count();
-        $needsRevision = Kriteria::where('status', 'needs_revision')->count();
+        // Calculate stats
+        $pendingValidation = Kriteria::whereIn('status', ['pending', 'menunggu_validasi'])->count();
+        $needsRevision = Kriteria::whereIn('status', ['needs_revision', 'revisi'])->count();
         $validated = Kriteria::where('status', 'validated')->count();
 
         return view('validator.dashboard', compact(
@@ -106,7 +121,7 @@ class ValidatorKriteriaController extends Controller
                 $message = 'Kriteria berhasil ditolak.';
                 break;
             case 'revise':
-                $kriteria->status = 'needs_revision';
+                $kriteria->status = 'revisi'; // Changed to match view expectations
                 $message = 'Permintaan revisi berhasil dikirim.';
                 break;
         }
@@ -119,5 +134,88 @@ class ValidatorKriteriaController extends Controller
         return redirect()
             ->route('validator.dashboard')
             ->with('success', $message);
+    }
+
+    public function previewPdf($id)
+    {
+        try {
+            // Load kriteria with the same eager loading as KriteriaController
+            $kriteria = Kriteria::with(['subkriteria' => function ($query) {
+                $query->with(['isian' => function ($q) {
+                    $q->where('akreditasi_id', 1);
+                }]);
+            }])->findOrFail($id);
+
+            $data = ['kriteria' => $kriteria];
+
+            // Render HTML and convert images to base64
+            $html = view('pdf.kriteria', $data)->render();
+            $html = $this->convertImagesToBase64($html);
+
+            // Create PDF with same options as KriteriaController
+            $pdf = Pdf::loadHTML($html)
+                ->setPaper('a4', 'portrait')
+                ->setOptions([
+                    'dpi' => 150,
+                    'defaultFont' => 'Arial',
+                    'isRemoteEnabled' => true,
+                    'isHtml5ParserEnabled' => true,
+                ]);
+
+            return $pdf->stream("kriteria_preview_$id.pdf");
+
+        } catch (\Exception $e) {
+            Log::error('Error generating PDF preview: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menggenerate preview PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Convert image URLs in HTML to base64 for PDF generation
+     * (Copied from KriteriaController)
+     */
+    private function convertImagesToBase64($html)
+    {
+        return preg_replace_callback('/<img[^>]+src="([^">]+)"/i', function ($matches) {
+            $src = $matches[1];
+
+            // Skip if already base64
+            if (str_starts_with($src, 'data:image')) {
+                return $matches[0];
+            }
+
+            $fullPath = null;
+
+            // Handle different URL formats
+            if (str_contains($src, '/storage/uploads/')) {
+                $filename = basename($src);
+                $fullPath = storage_path('app/public/uploads/' . $filename);
+            } elseif (str_starts_with($src, '/storage/')) {
+                $relativePath = str_replace('/storage/', '', $src);
+                $fullPath = storage_path('app/public/' . $relativePath);
+            } elseif (str_starts_with($src, asset('storage'))) {
+                $parsedUrl = parse_url($src);
+                $path = $parsedUrl['path'] ?? $src;
+                $relativePath = str_replace('/storage', 'public', $path);
+                $fullPath = storage_path('app/' . $relativePath);
+            }
+
+            // Convert to base64 if file exists
+            if ($fullPath && File::exists($fullPath)) {
+                try {
+                    $mime = File::mimeType($fullPath);
+                    $data = base64_encode(file_get_contents($fullPath));
+                    $base64 = "data:$mime;base64,$data";
+
+                    return str_replace($src, $base64, $matches[0]);
+                } catch (\Exception $e) {
+                    Log::warning("Error converting image to base64: $fullPath - " . $e->getMessage());
+                }
+            } else {
+                Log::warning("Image file not found for PDF preview: " . ($fullPath ?? $src));
+            }
+
+            return $matches[0];
+        }, $html);
     }
 }

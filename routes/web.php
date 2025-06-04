@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Validator Routes
 Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(function () {
+    Route::get('/validator/kriteria/{id}/preview-pdf', [ValidatorKriteriaController::class, 'previewPdf'])->name('validator.kriteria.preview');
     Route::get('/dashboard-validator', [ValidatorKriteriaController::class, 'index'])->name('validator.dashboard');
     Route::get('/kriteria', [ValidatorKriteriaController::class, 'list'])->name('validator.kriteria');
     Route::get('/kriteria/{id}', [ValidatorKriteriaController::class, 'show'])->name('validator.kriteria.show');

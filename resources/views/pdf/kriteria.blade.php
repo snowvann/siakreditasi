@@ -165,7 +165,7 @@
             
             <div class="subkriteria">
                 <div class="subkriteria-header">
-                    <h3>{{ $subkriteria->kode_subkriteria ?? $subkriteria->id }}. {{ $subkriteria->nama_subkriteria }}</h3>
+                    <h3>{{ $index + 1 }}. {{ $subkriteria->nama_subkriteria }}</h3>
                 </div>
                 
                 <div class="subkriteria-content">
