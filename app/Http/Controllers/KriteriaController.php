@@ -152,6 +152,12 @@ class KriteriaController extends Controller
             Log::error('Error generating PDF: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal menggenerate PDF: ' . $e->getMessage());
         }
+         // Simpan PDF ke penyimpanan
+            Storage::put($path, $pdf->output());
+
+            // Simpan jalur di database
+            $kriteria->pdf_path = Storage::url($path);
+            $kriteria->save();
     }
 
     private function convertImagesToBase64($html)

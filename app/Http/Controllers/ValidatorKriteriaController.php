@@ -96,10 +96,12 @@ class ValidatorKriteriaController extends Controller
     }
 
     public function show($id)
-    {
-        $kriteria = Kriteria::findOrFail($id);
-        return view('validator.kriteria-validation', compact('kriteria'));
-    }
+{
+    $kriteria = Kriteria::findOrFail($id);
+    $pdfUrl = $kriteria->pdf_path ? asset($kriteria->pdf_path) : null;
+
+    return view('validator.kriteria-validation', compact('kriteria', 'pdfUrl'));
+}
 
     public function validatekriteria(Request $request, $id)
     {
@@ -135,6 +137,7 @@ class ValidatorKriteriaController extends Controller
             ->route('validator.dashboard')
             ->with('success', $message);
     }
+    
 
     public function previewPdf($id)
     {

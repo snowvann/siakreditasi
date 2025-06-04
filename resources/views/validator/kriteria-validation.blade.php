@@ -122,7 +122,7 @@
 
                     <!-- PDF Viewer Content -->
                     <div class="pdf-viewer-wrapper">
-                        @include('components.pdf-viewer', ['kriteria' => $kriteria])
+                        @include('components.pdf-viewer', ['kriteria' => $kriteria, 'pdfUrl' => $pdfUrl ?? null])
                     </div>
                 </div>
             </div>
