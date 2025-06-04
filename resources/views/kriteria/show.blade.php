@@ -129,10 +129,107 @@
                     @endforeach
                 </div>
             
-                <!-- Validasi Content -->
-                <div x-show="tab === 'validasi'" x-cloak class="border rounded-md p-4 text-sm text-gray-600">
-                    Konten validasi akan ditampilkan di sini.
-                </div>
+<!-- Validasi Content -->
+<div x-show="tab === 'validasi'" x-cloak class="space-y-4">
+    <div class="flex items-center justify-between">
+        <h3 class="text-lg font-medium">Riwayat Validasi</h3>
+    </div>
+    
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="text-left p-4 font-medium text-sm text-gray-700">Validator</th>
+                        <th class="text-left p-4 font-medium text-sm text-gray-700">Tanggal</th>
+                        <th class="text-left p-4 font-medium text-sm text-gray-700">Status</th>
+                        <th class="text-left p-4 font-medium text-sm text-gray-700">Komentar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <!-- Example validation records - replace with dynamic data -->
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <div>
+                                    <div class="font-medium text-sm">KPS / Kajur</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            15 Jan 2024, 10:30
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                                Tervalidasi
+                            </span>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            Isi kriteria ini sudah sesuai dengan ketentuan yang ada dalam instrument akreditasi. Gunakan pendukung kriteria ini sudah lengkap dan relevan.
+                        </td>
+                    </tr>
+                    
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                </div>
+                                <div>
+                                    <div class="font-medium text-sm">KJM</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            12 Jan 2024, 14:15
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                                <div class="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
+                                Revisi
+                            </span>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            Isi kriteria ini sudah sesuai dengan ketentuan yang ada dalam instrument akreditasi. Gunakan pendukung kriteria ini sudah lengkap dan relevan.
+                        </td>
+                    </tr>
+                    
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <div>
+                                    <div class="font-medium text-sm">Direktur</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            10 Jan 2024, 09:20
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                                Ditolak
+                            </span>
+                        </td>
+                        <td class="p-4 text-sm text-gray-600">
+                            Isi kriteria ini sudah sesuai dengan ketentuan yang ada dalam instrument akreditasi. Gunakan pendukung kriteria ini sudah lengkap dan relevan.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Empty state - show when no validation records exist -->
+        <!-- Uncomment this section and comment out the table above if there are no validation records
+        <div class="p-8 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada riwayat validasi</h3>
+            <p class="mt-1 text-sm text-gray-500">Kriteria ini belum pernah divalidasi oleh validator.</p>
+        </div>
+        -->
+    </div>
+</div>
             </div>
             
 
