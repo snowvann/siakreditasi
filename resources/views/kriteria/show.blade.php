@@ -38,7 +38,9 @@
                             </svg>
                             <div class="text-sm">
                                 {{ implode(', ', array_column($anggotaKriteria, 'name')) }}
+
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -49,8 +51,7 @@
                         <h3 class="text-sm font-medium">Terakhir Diperbarui</h3>
                     </div>
                     <div class="p-6 pt-0">
-                        <div class="font-medium">{{ $kriteriaData['updated_at'] }}</div>
-                    </div>
+                        <div class="font-medium">{{ $kriteriaData['updated_at'] }}</div>                    </div>
                 </div>
 
                 <!-- Progress Card -->
@@ -61,10 +62,10 @@
                     <div class="p-6 pt-0">
                         <div class="space-y-2">
                             <div class="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
-                                <div class="h-full w-full flex-1 bg-primary transition-all" style="width: {{ $kriteriaData['progress'] }}%"></div>
+                                <div class="h-full w-full flex-1 bg-primary transition-all" style="width: {{ $kriteriaData['progress'] }}%"></div>Add commentMore actions
                             </div>
                             <div class="text-sm text-muted-foreground">{{ $kriteriaData['progress'] }}% selesai</div>
-                        </div>
+                        </div>                            
                     </div>
                 </div>
             </div>
@@ -89,18 +90,17 @@
                             </button>
                         </div>
 
-                                                    <!-- Tombol PDF -->
-                                                    <a href="{{ route('kriteria.unduh-pdf', $kriteriaId) }}" 
-                                                    class="inline-flex items-center gap-2 rounded-md bg-[#D28D0D] text-white px-4 py-1 text-sm font-semibold shadow-sm hover:opacity-90 transition"
-                                                    target="_blank" rel="noopener noreferrer">
-                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                         <polyline points="7 10 12 15 17 10" />
-                                                         <line x1="12" y1="15" x2="12" y2="3" />
-                                                     </svg>
-                                                     <span>Unduh PDF</span>
-                                                 </a>
-                                                 
+                     <!-- Tombol PDF -->
+                     <a href="{{ route('kriteria.unduh-pdf', $kriteriaId) }}" 
+                        class="inline-flex items-center gap-2 rounded-md bg-[#D28D0D] text-white px-4 py-1 text-sm font-semibold shadow-sm hover:opacity-90 transition"
+                        target="_blank" rel="noopener noreferrer">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                             <polyline points="7 10 12 15 17 10" />
+                                             <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg>
+                                        <span>Unduh PDF</span>
+                                         </a>         
 
                     </div>
 

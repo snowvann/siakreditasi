@@ -34,5 +34,8 @@ class Kriteria extends Model
         return $this->hasMany(DokumenTemplate::class);
     }
 
-    
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class); // Ganti dengan nama model yang sesuai
+    }
 }

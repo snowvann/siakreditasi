@@ -24,6 +24,7 @@ return new class extends Migration {
         Schema::create('kriteria', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kriteria');
+            $table->enum('status', ['pending', 'needs_revision', 'validated'])->default('pending');
             $table->text('deskripsi')->nullable();
             $table->timestamps();
         });

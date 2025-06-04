@@ -42,12 +42,13 @@
         <div
             x-show="activeSlide === index"
             class="w-full h-[650px] bg-cover bg-center transition-all duration-700 ease-in-out"
-            :style="`background-image: url('/images/${slide}')`"
+:style="`background-image: url('{{ asset('images') }}/${slide}')`"
         >
            <div class="absolute inset-0 bg-black bg-opacity-30 flex items-end p-6">
-            <h2 class="text-white text-4xl font-bold leading-tight">
+            <h2 class="text-white text-2xl md:text-3xl font-semibold leading-snug">
                 GEDUNG JURUSAN<br>TEKNOLOGI INFORMASI
             </h2>
+            
         </div>
         </div>
     </template>
@@ -100,8 +101,12 @@
     </div>
 
     {{-- Title --}}
-    <h2 class="md:text-3xl font-bold leading-tight text-purple-800 mb-6">INFORMASI AKREDITASI</h2>
-
+    <h2 class="text-2xl md:text-3xl font-bold leading-snug text-purple-800 mb-4">
+        INFORMASI AKREDITASI
+    </h2>
+    
+    <p class="text-sm text-gray-600">Dari 9 kriteria</p>
+    
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     {{-- Card 1 --}}
     <div class="bg-gradient-to-b from-[#EFDDFF] to-[#C1C1C2] p-6 rounded-lg shadow">
@@ -165,9 +170,10 @@
 
 <div class="bg-purple-100 p-6 rounded-lg mt-10">
     {{-- Judul Utama --}}
-    <h2 class="text-2xl md:text-3xl font-bold leading-tight text-purple-800 mb-6">
+    <h2 class="text-xl md:text-2xl font-bold text-purple-800 mb-4">
         INFORMASI UMUM POLITEKNIK NEGERI MALANG
     </h2>
+    
 
     <div class="grid md:grid-cols-2 gap-6 items-center">
         {{-- Teks --}}
@@ -175,7 +181,7 @@
             <h3 class="inline-block px-4 py-1 bg-purple-300 text-purple-900 text-2xl font-bold leading-tight rounded-md mb-4">
                 PROFIL KAMPUS
             </h3>
-            <p class="text-justify text-gray-800 leading-relaxed text-lg md:text-xl">
+            <p class="text-justify text-gray-800 leading-relaxed text-base md:text-lg">
                 Polinema adalah institusi pendidikan tinggi vokasi yang terletak di kota Malang. Malang 
                 adalah kota terbesar kedua di Jawa Timur, Indonesia. Malang merupakan tempat yang nyaman 
                 untuk belajar karena udaranya yang sejuk dan populasi yang tidak begitu padat (sekitar 
@@ -200,8 +206,8 @@
 <div class="shadow-md p-6 rounded-lg mt-10 space-y-10">
     {{-- Judul Utama --}}
             <div>
-                <h2 class="text-3xl md:text-4xl font-bold text-blue-900 mb-4">
-            PROFILE PROGRAM STUDI
+                <h2 class="text-2xl md:text-3xl font-bold text-blue-900 mb-4">
+                    PROFILE PROGRAM STUDI
         </h2>
         <span class="inline-block bg-blue-800 text-white text-xl font-semibold px-4 py-2 rounded-md mb-6">
             Sistem Informasi Bisnis

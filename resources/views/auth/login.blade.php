@@ -98,7 +98,7 @@
   <div class="right">
     <div class="login-box">
       <img src="{{ asset('images/logoPolinema.png') }}" alt="Logo Polinema">
-      <h5>SIGN UP</h5>
+      <h5>SIGN IN</h5>
       @if ($errors->has('login_error'))
     <div class="alert alert-danger">
         {{ $errors->first('login_error') }}
@@ -115,20 +115,14 @@
           <select class="form-select" id="role" name="role" required>
             <option selected disabled>Pilih Role</option>
             <option value="anggota">Anggota</option>
-            <option value="kps">KPS</option>
-            <option value="kajur">Kajur</option>
-            <option value="kjm">KJM</option>
-            <option value="direktur">Direktur</option>
+            <option value="validator">Validator</option>
           </select>
         </div>
         <div class="mb-4 text-start">
           <label for="password" class="form-label">Password :</label>
           <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <button type="submit" class="btn btn-login w-100">Sign Up</button>
-        <div class="mt-3 link-login">
-          Already have account? <a href="#" class="text-primary">Sign In</a>
-        </div>
+        <button type="submit" class="btn btn-login w-100">Sign In</button>
       </form>
     </div>
   </div>
