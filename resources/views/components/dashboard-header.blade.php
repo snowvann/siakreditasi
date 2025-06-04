@@ -38,18 +38,20 @@
     <!-- Dropdown Profil -->
     <div x-data="{ open: false }" class="relative">
 
-        <!-- Button Avatar + Arrow -->
-    <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
-        <!-- Avatar -->
-        <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-gray-300">
-            @if(auth()->user()->avatar_path)
-                <img src="{{ asset(auth()->user()->avatar_path) }}" alt="User" class="object-cover w-full h-full">
-            @else
-                <div class="h-full w-full flex items-center justify-center bg-gray-700 text-white font-medium">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                </div>
-            @endif
-        </div>
+       <!-- Button Avatar + Arrow -->
+<button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
+    <!-- Avatar -->
+    <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-gray-300">
+        @if(auth()->user()->photo)
+            <img src="{{ asset('storage/photos/' . auth()->user()->photo) }}" 
+                 alt="User Photo" 
+                 class="object-cover w-full h-full">
+        @else
+            <div class="h-full w-full flex items-center justify-center bg-gray-700 text-white font-medium">
+                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+            </div>
+        @endif
+    </div>
 
         <!-- Panah ke bawah -->
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-black" viewBox="0 0 20 20" fill="currentColor">
@@ -70,19 +72,11 @@
         <!-- Menu Items -->
         <ul class="text-sm text-gray-700">
             <li>
-                <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 hover:bg-gray-200 transition rounded-md">
+                <a href="{{ route('profile') }}" class="flex items-center px-4 py-2 hover:bg-gray-200 transition rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Profil
-                </a>
-            </li>
-            <li>
-                <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-200 transition rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.25 4.5l.625 1.875M4.5 11.25l1.875.625m13.125 0l-1.875.625m-6.25 6.25l.625 1.875M8.25 8.25l7.5 7.5m0-7.5l-7.5 7.5" />
-                    </svg>
-                    Pengaturan
                 </a>
             </li>
         </ul>

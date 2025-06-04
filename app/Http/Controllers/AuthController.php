@@ -21,7 +21,7 @@ class AuthController extends Controller
         if (Auth::attempt(array_merge($credentials, ['role' => $role]))) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboardUtama');
         }
 
         return back()->withErrors([
