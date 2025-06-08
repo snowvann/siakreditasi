@@ -7,7 +7,9 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardUtamaController;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ValidatorKriteriaController;
+use App\Http\Controllers\NotifikasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +32,13 @@ Route::middleware(['auth'])->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Profile Routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Profile
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('index');     // Halaman view profil
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');     // Halaman edit profil
+        Route::put('/update', [ProfileController::class, 'update'])->name('update'); // Simpan perubahan
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    });
 
     // Kriteria Routes
     Route::prefix('kriteria')->group(function () {
@@ -49,8 +54,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+// Notifikasi
+Route::get('/api/notifikasi', [NotifikasiController::class, 'index']);
+Route::post('/api/notifikasi/{id}/baca', [NotifikasiController::class, 'tandaiDibaca']);
+Route::post('/api/notifikasi/baca-semua', [NotifikasiController::class, 'tandaiSemuaDibaca']);
+Route::delete('/api/notifikasi/{id}', [NotifikasiController::class, 'hapus']);
+
 // Validator Routes
 Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(function () {
+    Route::post('/validator/kriteria/{id}/validasi', [ValidatorKriteriaController::class, 'validasiStore'])->name('validator.validasi.store');
     Route::get('/validator/kriteria/{id}/preview-pdf', [ValidatorKriteriaController::class, 'previewPdf'])->name('validator.kriteria.preview');
     Route::get('/dashboard-validator', [ValidatorKriteriaController::class, 'index'])->name('validator.dashboard');
     Route::get('/kriteria', [ValidatorKriteriaController::class, 'list'])->name('validator.kriteria');
@@ -59,14 +71,34 @@ Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(functi
         ->name('validator.kriteria.validate');
 });
 
+// SuperAdmin Routes
+Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(function () {
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+    Route::get('/superadmin/kriteria', [SuperAdminController::class, 'getCriteria'])->name('superadmin.criteria');
+    Route::get('/kriteria/{id}', [SuperAdminController::class, 'show'])->name('superadmin.kriteria.show');
+    Route::post('/kriteria/{id}/validasi', [SuperAdminController::class, 'validasiStore'])->name('superadmin.validasi.store');
+    Route::get('/kriteria/{id}/preview-pdf', [SuperAdminController::class, 'previewPdf'])->name('superadmin.kriteria.preview');
+    Route::post('/kriteria/{id}/validate', [SuperAdminController::class, 'validateKriteria'])->name('superadmin.kriteria.validate');
+
+    // User Management Routes
+    Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
+    Route::get('/manage/user/{id}', [SuperAdminController::class, 'manageUser'])->name('superadmin.manage.user');
+    Route::put('/manage/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
+    Route::delete('/manage/user/{id}', [SuperAdminController::class, 'deleteUser'])->name('superadmin.delete.user');
+
+    // Kriteria Management Routes
+    Route::get('/manage/kriteria', [SuperAdminController::class, 'manageKriteria'])->name('superadmin.manage.kriteria');
+    Route::get('/manage/kriteria/{id}', [SuperAdminController::class, 'manageKriteriaDetail'])->name('superadmin.manage.kriteria.detail');
+    Route::put('/manage/kriteria/{id}', [SuperAdminController::class, 'updateKriteria'])->name('superadmin.update.kriteria');
+
+    // Access Management Routes
+    Route::get('/manage/access', [SuperAdminController::class, 'manageAccess'])->name('superadmin.manage.access');
+});
+
 // Member Routes (if needed)
 Route::middleware(['auth', 'role:anggota'])->group(function () {
     Route::get('/member/dashboard', [DashboardController::class, 'memberDashboard'])->name('member.dashboard');
 });
-Route::get('/dashboardUtama', function () {
-    return view('dashboardUtama');
-})->name('dashboard.utama');
-
 Route::get('/dashboardUtama', [DashboardUtamaController::class, 'index'])->name('dashboardUtama');
 
 require __DIR__.'/auth.php';

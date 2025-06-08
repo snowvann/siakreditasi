@@ -11,25 +11,57 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Models\ValidasiKriteria;
+use App\Models\User;
+use App\Models\ValidasiLog;
+
 
 class KriteriaController extends Controller
 {
     public function show($id)
-    {
-        $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
+{
+    $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
 
-        $anggotaKriteria = [
-            ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
-            ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
+    $anggotaKriteria = [
+        ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
+        ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
+    ];
+
+    // Ambil semua user yang punya level validator
+    $validatorList = User::whereNotNull('level_validator')
+        ->orderBy('level_validator')
+        ->get();
+
+    // Ambil validasi terakhir tiap user untuk kriteria ini
+    $logs = ValidasiLog::where('kriteria_id', $id)
+        ->with('user')
+        ->orderByDesc('created_at')
+        ->get()
+        ->groupBy('user_id');
+
+    $allValidasiDisplay = [];
+
+    foreach ($validatorList as $validator) {
+        $userId = $validator->id;
+        $latestLog = $logs->has($userId) ? $logs[$userId]->first() : null;
+
+        $allValidasiDisplay[] = [
+            'user' => $validator,
+            'status' => $latestLog->status ?? 'belum validasi',
+            'komentar' => $latestLog->komentar ?? '-',
+            'waktu' => $latestLog->created_at ?? null,
         ];
-
-        return view('kriteria.show', [
-            'kriteriaId' => $kriteria->id,
-            'kriteriaData' => $kriteria,
-            'anggotaKriteria' => $anggotaKriteria,
-            'subKriteriaList' => $kriteria->subkriteria
-        ]);
     }
+
+    return view('kriteria.show', [
+        'kriteriaId' => $kriteria->id,
+        'kriteriaData' => $kriteria,
+        'anggotaKriteria' => $anggotaKriteria,
+        'subKriteriaList' => $kriteria->subkriteria,
+        'validasis' => $allValidasiDisplay
+    ]);
+}
+
 
     public function showSubKriteria($kriteriaId, $subKriteriaId)
     {

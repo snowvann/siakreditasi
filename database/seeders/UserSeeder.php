@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
                 'username' => 'KPS',
                 'password' => Hash::make('12345678'),
                 'role' => 'Validator',
+                'level_validator' => 1,
                 'is_active' => true
             ],
             [
@@ -23,6 +24,7 @@ class UserSeeder extends Seeder
                 'username' => 'Kajur',
                 'password' => Hash::make('12345678'),
                 'role' => 'Validator',
+                'level_validator' => 1,
                 'is_active' => true
             ],
             [
@@ -30,6 +32,7 @@ class UserSeeder extends Seeder
                 'username' => 'KJM',
                 'password' => Hash::make('12345678'),
                 'role' => 'Validator',
+                'level_validator' => 2,
                 'is_active' => true
             ],
             [
@@ -37,6 +40,7 @@ class UserSeeder extends Seeder
                 'username' => 'Direktur',
                 'password' => Hash::make('12345678'),
                 'role' => 'Validator',
+                'level_validator' => 2,
                 'is_active' => true
             ],
             [
@@ -100,6 +104,13 @@ class UserSeeder extends Seeder
                 'username' => 'anggota',
                 'password' => Hash::make('12345678'),
                 'role' => 'Anggota',
+                'is_active' => true
+            ],
+            [
+                'name' => 'Super Admin',
+                'username' => 'superAdmin',
+                'password' => Hash::make('12345678'),
+                'role' => 'SuperAdmin',
                 'is_active' => true
             ],
         ];

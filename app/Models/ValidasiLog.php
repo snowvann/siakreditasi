@@ -9,21 +9,34 @@ class ValidasiLog extends Model
 {
     use HasFactory;
 
+    protected $table = 'validasi_log';
+
     protected $fillable = [
+        'kriteria_id',
         'validasi_kriteria_id',
         'user_id',
-        'catatan'
+        'level_validator',
+        'status',
+        'komentar',
     ];
 
-    // Relasi dengan validasi kriteria
     public function validasiKriteria()
     {
         return $this->belongsTo(ValidasiKriteria::class);
     }
 
-    // Relasi dengan user
+    public function kriteria()
+    {
+        return $this->belongsTo(Kriteria::class, 'kriteria_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function komentarValidasi()
+    {
+        return $this->hasMany(KomentarValidasi::class);
     }
 }

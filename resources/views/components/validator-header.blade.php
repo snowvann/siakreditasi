@@ -7,35 +7,8 @@
             <img src="{{ asset('logo/logojti.png') }}" alt="Logo JTI" class="h-10 w-auto">
         </a>
 
-        <!-- TENGAH: Navigasi -->
-        <ul class="flex items-center gap-6 text-sm font-medium text-gray-700">
-            <li>
-                <a href="{{ route('validator.dashboard') }}"
-                   class="px-3 py-1 rounded-md transition-all duration-200
-                   {{ request()->routeIs('validator.kriteria') ? 'bg-[#191D6A] text-white' : 'hover:bg-gray-100' }}">
-                    Dashboard
-                </a>
-            </li>
-            <li><span class="text-gray-400">||</span></li>
-            <li>
-                <a href="{{ route('validator.dashboard') }}"
-                   class="px-3 py-1 rounded-md transition-all duration-200
-                   {{ request()->routeIs('validator.dashboard') ? 'bg-[#191D6A] text-white' : 'hover:bg-gray-100' }}">
-                    Validasi Kriteria
-                </a>
-            </li>
-        </ul>
-
         <!-- KANAN: Notifikasi + Avatar -->
         <div class="flex items-center gap-4">
-            <!-- Notifikasi -->
-            <button class="inline-flex h-10 w-10 items-center justify-center rounded-md border hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                </svg>
-            </button>
-
             <!-- Dropdown Profil -->
             <div x-data="{ open: false }" class="relative">
                 <!-- Button Avatar + Arrow -->
@@ -70,7 +43,7 @@
                     <!-- Menu Items -->
                     <ul class="text-sm text-gray-700">
                         <li>
-                            <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 hover:bg-gray-200 transition rounded-md">
+                            <a href="{{ route('edit') }}" class="flex items-center px-4 py-2 hover:bg-gray-200 transition rounded-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>

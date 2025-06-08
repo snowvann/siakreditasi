@@ -9,6 +9,8 @@ class KomentarValidasi extends Model
 {
     use HasFactory;
 
+    protected $table = 'komentar_validasi'; // override nama tabel
+
     protected $fillable = [
         'validasi_kriteria_id',
         'user_id',

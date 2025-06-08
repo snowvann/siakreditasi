@@ -20,14 +20,15 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
-            'role' => 'required|in:anggota,validator'
+            'role' => 'required|in:anggota,validator,SuperAdmin'
         ]);
 
         $user = User::where('username', $credentials['username'])
-                    ->where('role', ucfirst($credentials['role']))
-                    ->first();
+            ->where('role', ucfirst($credentials['role']))
+            ->first();
 
-        info($user);
+        Log::info('Pengguna ditemukan: ', ['user' => $user]);
+        Log::info('Pemeriksaan kata sandi: ', ['input' => $credentials['password'], 'hashed' => $user->password, 'result' => Hash::check($credentials['password'], $user->password)]);
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return back()->withErrors([
@@ -37,8 +38,10 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        if ($user->role === 'Validator') {
+        if (ucfirst($user->role) === 'Validator') {
             return redirect()->route('validator.dashboard');
+        } elseif (ucfirst($user->role) === 'SuperAdmin') {
+            return redirect()->route('superadmin.dashboard'); // Perbaiki ke lowercase
         }
 
         return redirect()->route('dashboard');

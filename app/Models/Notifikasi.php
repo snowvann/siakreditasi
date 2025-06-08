@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Notifikasi extends Model
 {
     use HasFactory;
+    protected $table = 'notifikasi';
 
     protected $fillable = [
         'user_id',
@@ -20,5 +21,10 @@ class Notifikasi extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function kriteria()
+    {
+        return $this->belongsTo(Kriteria::class);
     }
 }

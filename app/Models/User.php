@@ -15,6 +15,7 @@ class User extends Authenticatable
         'username',
         'password',
         'role',
+        'level_validator',
         'is_active',
         'last_login_at'
     ];
@@ -52,4 +53,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(AuditLog::class);
     }
+
+
+/**
+ * Ambil semua kriteria_id untuk user ini
+ */
+public function getKriteriaIdsAttribute()
+{
+    return $this->kriteria()->pluck('kriteria.id')->toArray();
+}
+
+/**
+ * Cek apakah user memiliki akses ke kriteria tertentu
+ */
+public function hasAccessToKriteria($kriteriaId)
+{
+    return $this->kriteria()->where('kriteria.id', $kriteriaId)->exists();
+}
 }

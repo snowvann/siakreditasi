@@ -20,6 +20,18 @@ class DashboardController extends Controller
         return view('validator.dashboard', compact('user'));
     }
 
+    public function superAdminDashboard()
+    {
+        $user = auth()->user();
+
+        // Validasi jika bukan SuperAdmin
+        if ($user->role !== 'SuperAdmin') {
+            abort(403, 'Unauthorized');
+        }
+
+        return view('superAdmin.dashboard', compact('user'));
+    }
+
     public function index()
     {
         // Total pengguna

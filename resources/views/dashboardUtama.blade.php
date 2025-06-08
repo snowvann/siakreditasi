@@ -8,7 +8,6 @@
 <section class="bg-[#F2F2F2] pt-0 pb-0 border-b border-gray-300 relative">
 
     <!-- Bar Welcome To -->
-<!-- Bar Welcome To -->
 <div class="bg-white border-y border-gray-300 w-full py-2 px-4">
     <p class="text-base md:text-lg font-medium text-black text-left pl-8">
         Welcome To
@@ -16,20 +15,26 @@
 </div>
 
     <!-- Konten Tengah -->
-    <div class="text-center max-w-6xl mx-auto px-4 py-8">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-black tracking-widest mb-3">
-            AKREDITASI
-        </h1>
+    <div class="relative bg-cover bg-center bg-no-repeat min-h-[250px] flex items-center justify-center" 
+         style="background-image: url('{{ asset('images/bg1.png') }}');">
         
-        <p class="text-lg md:text-xl font-medium text-black tracking-wide uppercase mb-4">
-            Program Studi D4 Sistem Informasi Bisnis
-        </p>
+        <!-- Background overlay untuk memastikan text terlihat jelas -->
+        
+        <div class="relative z-10 text-center max-w-6xl mx-auto px-4 py-8">
+            <h1 class="text-4xl md:text-5xl lg:text-8xl font-extrabold text-white tracking-[0.3em] mb-4 drop-shadow-2xl">
+                AKREDITASI
+            </h1>
+            
+            <p class="text-lg md:text-xl lg:text-3xl font-medium text-white tracking-wider uppercase mb-6 drop-shadow-lg">
+                Program Studi D4 Sistem Informasi Bisnis
+            </p>
+        </div>
     </div>
 
     <!-- Bar Jurusan Teknologi Informasi -->
     <div class="bg-white border-y border-gray-300 w-full py-2 px-4">
         <p class="text-base md:text-lg text-center font-medium text-black">
-            JURUSAN TEKNOLOGI INFORMASI | POLITEKNIK NEGERI MALANG
+            <strong>JURUSAN TEKNOLOGI INFORMASI | POLITEKNIK NEGERI MALANG</strong>
         </p>
     </div>
 
@@ -102,73 +107,6 @@
         </div>
     </div>
 
-    {{-- Title --}}
-    <h2 class="text-2xl md:text-3xl font-bold leading-snug text-purple-800 mb-4">
-        INFORMASI AKREDITASI
-    </h2>
-    
-    <p class="text-sm text-gray-600">Dari 9 kriteria</p>
-    
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    {{-- Card 1 --}}
-    <div class="bg-gradient-to-b from-[#EFDDFF] to-[#C1C1C2] p-6 rounded-lg shadow">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-base font-semibold text-gray-800">Total Kriteria</p>
-                <h3 class="text-2xl font-bold text-black">9</h3>
-                <p class="text-sm text-gray-600">9 kriteria harus diisi</p>
-            </div>
-            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h10m-7 4h7M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
-            </svg>
-        </div>
-    </div>
-
-    {{-- Card 2 --}}
-    <div class="bg-gradient-to-b from-[#EFDDFF] to-[#C1C1C2] p-6 rounded-lg shadow">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-base font-semibold text-gray-800">Kriteria Terisi</p>
-                <h3 class="text-2xl font-bold text-black">4</h3>
-                <p class="text-sm text-gray-600">Dari 9 kriteria</p>
-            </div>
-            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h10m-7 4h7M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
-            </svg>
-        </div>
-    </div>
-
-    {{-- Card 3 --}}
-    <div class="bg-gradient-to-b from-[#EFDDFF] to-[#C1C1C2] p-6 rounded-lg shadow">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-base font-semibold text-gray-800">Kriteria Tervalidasi</p>
-                <h3 class="text-2xl font-bold text-black">3</h3>
-                <p class="text-sm text-gray-600">Dari 9 kriteria</p>
-            </div>
-            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4" />
-                <circle cx="12" cy="12" r="10" />
-            </svg>
-        </div>
-    </div>
-
-    {{-- Card 4 --}}
-    <div class="bg-gradient-to-b from-[#EFDDFF] to-[#C1C1C2] p-6 rounded-lg shadow">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-base font-semibold text-gray-800">Total Anggota</p>
-                <h3 class="text-2xl font-bold text-black">7</h3>
-                <p class="text-sm text-gray-600">9 kriteria harus diisi</p>
-            </div>
-            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1m-6 6H4v-2a4 4 0 014-4h1m5-4a4 4 0 11-8 0 4 4 0 018 0zm6 0a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-        </div>
-    </div>
-</div>
-
-
 
 <div class="bg-purple-100 p-6 rounded-lg mt-10">
     {{-- Judul Utama --}}
@@ -177,13 +115,20 @@
     </h2>
     
 
-    <div class="grid md:grid-cols-2 gap-6 items-center">
+    <div class="grid md:grid-cols-2 gap-8 items-start">
+        {{-- Gambar --}}
+        <div class="order-1 md:order-1">
+            <img src="{{ asset('images/as.jpg') }}"
+                alt="Gedung Polinema"
+                class="rounded-2xl shadow-lg w-full object-cover">
+        </div>
+
         {{-- Teks --}}
-        <div>
+        <div class="order-2 md:order-2">
             <h3 class="inline-block px-4 py-1 bg-purple-300 text-purple-900 text-2xl font-bold leading-tight rounded-md mb-4">
                 PROFIL KAMPUS
             </h3>
-            <p class="text-justify text-gray-800 leading-relaxed text-base md:text-lg">
+            <p class="text-gray-800 leading-relaxed text-base md:text-lg text-justify">
                 Polinema adalah institusi pendidikan tinggi vokasi yang terletak di kota Malang. Malang 
                 adalah kota terbesar kedua di Jawa Timur, Indonesia. Malang merupakan tempat yang nyaman 
                 untuk belajar karena udaranya yang sejuk dan populasi yang tidak begitu padat (sekitar 
@@ -192,18 +137,27 @@
                 Kota ini dapat ditempuh dalam waktu 1 jam dari bandara internasional Juanda, Surabaya. Fasilitas 
                 transportasi umum dalam kota yang bisa digunakan untuk menuju ke Polinema juga sangat memadai.
             </p>
-
-        </div>
-
-        {{-- Gambar --}}
-        <div>
-            <img src="{{asset('images/as.jpg') }}"
-                alt="Gedung Polinema"
-                class="rounded-2xl shadow-lg w-full object-cover"
-            >
+            <p class="text-gray-800 leading-relaxed text-base md:text-lg text-justify mt-4">
+                Polinema terus berkembang untuk menjadi institusi pendidikan vokasi yang superior dan siap 
+                bersaing di dunia global. Polinema memiliki sistem pendidikan yang inovatif dan ketrampilan 
+                kompetitif yang secara global dibutuhkan oleh industri, badan pemerintahan dan masyarakat. 
+                Polinema mendukung penelitian terapan dan pengabdian masyarakat dalam bidang ilmu pengetahuan 
+                dan pengembangan teknologi serta kesejahteraan masyarakat. Polinema juga berkomitmen untuk 
+                melaksanakan sistem manajemen pendidikan dengan prinsip pemerintahan yang baik. Polinema juga 
+                yakin bahwa atmosfer akademik yang kondusif sangat penting untuk memperbaiki kualitas sumber 
+                daya manusia dan pengajaran yang mendukung belajar sepanjang hayat dan pertumbuhan jiwa wirausaha.
+            </p>
         </div>
     </div>
 </div>
+
+<!-- sekat -->
+    <div class="bg-[#413260] border-y border-gray-300 w-full py-2 px-4">
+    <p class="text-base md:text-lg text-center font-medium text-[#413260]">
+        <strong>.</strong>
+    </p>
+</div>
+
 
 <div class="shadow-md p-6 rounded-lg mt-10 space-y-10">
     {{-- Judul Utama --}}
@@ -214,53 +168,159 @@
         <span class="inline-block bg-blue-800 text-white text-xl font-semibold px-4 py-2 rounded-md mb-6">
             Sistem Informasi Bisnis
         </span>
-        <div class="text-gray-800 text-lg md:text-xl leading-relaxed space-y-4 text-justify">
-            <p>
-                Program Studi Manajemen Informatika berdiri 24 Juni 2005 berdasarkan SK Mendiknas Nomor: 2001/D/T/2005 di bawah Jurusan Teknik Elektro Politeknik Negeri Malang. Dalam surat keputusan tersebut Politeknik Negeri Malang diberikan ijin untuk menyelenggarakan pendidikan Program Studi Manajemen Informatika untuk jenjang program Diploma (DIII) Politeknik. Program Studi Manajemen Informatika melakukan perubahan pada sebagian kurikulumnya menyesuaikan perkembangan teknologi informasi dan kebutuhan dunia kerja saat ini. Mulai tahun akademik 2006/2007, kurikulum Program Studi Manajemen Informatika menggunakan kurikulum 5-1 (lima semester di kampus dan satu semester di industri) yang ditawarkan dengan jumlah total 120 SKS. Pada tahun 2022, Program Studi Manajemen Informatika mengikuti program upgrading prodi yang dilaksanakan oleh Kemendikbudristek.
-            </p>
-            <p>
-                Program Upgrading merupakan peningkatan program studi dari Diploma Tiga menjadi Diploma Empat atau Sarjana Terapan. Berdasarkan pada Surat Keputusan Mendikbudristek Nomor 33/D/OT/2022, izin pembukaan Program Studi Sarjana Terapan Sistem Informasi Bisnis secara resmi disetujui. Selanjutnya pada Semester Ganjil Tahun Ajaran 2022/2023, Prodi Sarjana Terapan Sistem Informasi Bisnis Jurusan Teknologi Informasi Politeknik Negeri Malang menerima mahasiswa baru.
-            </p>
-            <p>
-                Program Studi Manajemen Informatika berdiri 24 Juni 2005 berdasarkan SK Mendiknas Nomor: 2001/D/T/2005 di bawah Jurusan Teknik Elektro Politeknik Negeri Malang. Dalam surat keputusan tersebut Politeknik Negeri Malang diberikan ijin untuk menyelenggarakan pendidikan Program Studi Manajemen Informatika untuk jenjang program Diploma (DIII) Politeknik.
-            </p>
-        </div>
+        <!-- Grid Konten Utama -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            <!-- Kolom Gambar -->
+           <div class="flex justify-center items-center h-full mt-6 md:mt-0">
+    <img src="{{ asset('images/atasan.jpg') }}" alt="Foto Prodi" class="rounded-md shadow-lg w-full max-w-2xl">
+</div>
 
+            <!-- Kolom Teks -->
+            <div class="text-gray-800 text-lg md:text-xl leading-relaxed space-y-6 text-justify pr-2">
+                <p>
+                    Program Studi Manajemen Informatika berdiri 24 Juni 2005 berdasarkan SK Mendiknas Nomor: 2001/D/T/2005 di bawah Jurusan Teknik Elektro Politeknik Negeri Malang. Dalam surat keputusan tersebut Politeknik Negeri Malang diberikan ijin untuk menyelenggarakan pendidikan Program Studi Manajemen Informatika untuk jenjang program Diploma (DIII) Politeknik. Program Studi Manajemen Informatika melakukan perubahan pada sebagian kurikulumnya menyesuaikan perkembangan teknologi informasi dan kebutuhan dunia kerja saat ini. Mulai tahun akademik 2006/2007, kurikulum Program Studi Manajemen Informatika menggunakan kurikulum 5-1 (lima semester di kampus dan satu semester di industri) yang ditawarkan dengan jumlah total 120 SKS. Pada tahun 2022, Program Studi Manajemen Informatika mengikuti program upgrading prodi yang dilaksanakan oleh Kemendikbudristek.
+                </p>
+                <p>
+                    Program Upgrading merupakan peningkatan program studi dari Diploma Tiga menjadi Diploma Empat atau Sarjana Terapan. Berdasarkan pada Surat Keputusan Mendikbudristek Nomor 33/D/OT/2022, izin pembukaan Program Studi Sarjana Terapan Sistem Informasi Bisnis secara resmi disetujui. Selanjutnya pada Semester Ganjil Tahun Ajaran 2022/2023, Prodi Sarjana Terapan Sistem Informasi Bisnis Jurusan Teknologi Informasi Politeknik Negeri Malang menerima mahasiswa baru.
+                </p>
+                
+            </div>
+        </div>
     </div>
+</div>
 
     {{-- Visi dan Misi --}}
     <div>
-        <h2 class="bg-blue-900 text-white px-4 py-2 rounded-md text-xl font-semibold inline-block mb-4">
+        <div class="bg-[#EDE9F7] py-10 px-6">
+            <h2 class="bg-blue-900 text-white px-4 py-2 rounded-md text-xl font-semibold inline-block mb-4">
             Visi dan Misi
         </h2>
-        <div class="text-gray-800 text-lg md:text-xl space-y-4 text-justify">
-            <p><strong>VISI :</strong><br>
-            Menjadi Program Studi Unggul dalam Bidang Sistem Informasi Bisnis di Tingkat Nasional dan Internasional.
-        </p>
-        <p><strong>MISI :</strong></p>
-        <ul class="list-disc list-inside space-y-2">
-            <li>Melaksanakan pendidikan vokasi yang inovatif berdasarkan pada sistem pendidikan terapan dengan memanfaatkan kemajuan teknologi, sehingga mampu menghasilkan lulusan yang memiliki kompetensi di bidang sistem informasi bisnis dan siap bersaing di tingkat nasional dan global.</li>
-            <li>Melaksanakan penelitian terapan berbasis produk dan jasa bidang Sistem Informasi Bisnis.</li>
-            <li>Melaksanakan pengabdian masyarakat dengan menggunakan kemajuan Sistem Informasi Bisnis untuk meningkatkan kesejahteraan.</li>
-            <li>Mewujudkan kerja sama yang saling menguntungkan dengan berbagai pihak baik di dalam maupun di luar negeri pada bidang Sistem Informasi Bisnis.</li>
-        </ul>
+    <div class="max-w-6xl mx-auto text-center space-y-6">
+        
+        <!-- VISI -->
+<div>
+    <p class="bg-[#3C2464] text-white font-bold py-2 px-6 inline-block rounded-full mb-3">VISI</p>
+    <p class="text-gray-800 text-lg md:text-xl font-medium">
+        Menjadi Program Studi Unggul dalam Bidang Sistem Informasi Bisnis di Tingkat Nasional dan Internasional.
+    </p>
+</div>
+
+<!-- MISI -->
+<p class="bg-[#3C2464] text-white font-bold py-2 px-6 inline-block rounded-full mb-6">MISI</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start text-left">
+        <!-- Gambar -->
+<div class="flex justify-center h-full">
+    <img src="{{ asset('images/jti.jpeg') }}"
+         alt="Foto JTI"
+         class="rounded-lg shadow-lg w-full h-[500px] object-cover object-center">
+</div>
+
+        <!-- List Misi -->
+        <div class="space-y-6 text-gray-800 text-lg md:text-xl">
+            <!-- Misi 1 -->
+            <div class="flex items-start gap-4">
+                <div class="bg-[#3C2464] p-2 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+                <p>
+                    Melaksanakan pendidikan vokasi yang inovatif berdasarkan pada sistem pendidikan terapan dengan memanfaatkan kemajuan teknologi, sehingga mampu menghasilkan lulusan yang memiliki kompetensi di bidang sistem informasi bisnis dan siap bersaing di tingkat nasional dan global.
+                </p>
+            </div>
+
+            <!-- Misi 2 -->
+            <div class="flex items-start gap-4">
+                <div class="bg-[#3C2464] p-2 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </div>
+                <p>
+                    Melaksanakan penelitian terapan berbasis produk dan jasa bidang Sistem Informasi Bisnis.
+                </p>
+            </div>
+
+            <!-- Misi 3 -->
+            <div class="flex items-start gap-4">
+                <div class="bg-[#3C2464] p-2 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 10h8l3-10h4" />
+                    </svg>
+                </div>
+                <p>
+                    Melaksanakan pengabdian masyarakat dengan menggunakan kemajuan Sistem Informasi Bisnis untuk meningkatkan kesejahteraan.
+                </p>
+            </div>
+
+            <!-- Misi 4 -->
+            <div class="flex items-start gap-4">
+                <div class="bg-[#3C2464] p-2 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.1 0 2 .9 2 2s-.9 2-2 2m0 0c-1.1 0-2-.9-2-2s.9-2 2-2zm0 0v6" />
+                    </svg>
+                </div>
+                <p>
+                    Mewujudkan kerja sama yang saling menguntungkan dengan berbagai pihak baik di dalam maupun di luar negeri pada bidang Sistem Informasi Bisnis.
+                </p>
+            </div>
         </div>
     </div>
+</div>
 
-    {{-- Tujuan Program Studi --}}
-    <div>
-        <h2 class="bg-blue-900 text-white px-4 py-2 rounded-md text-xl font-semibold inline-block mb-4">
-            Tujuan Program Studi
-        </h2>
-        <div class="text-gray-800 text-lg md:text-xl space-y-4 text-justify">
-        <p><strong>Tujuan Program Studi Sistem Informasi Bisnis sebagai berikut:</strong></p>
-        <ul class="list-disc list-inside space-y-2">
-            <li>Menghasilkan lulusan bidang Sistem Informasi Bisnis yang berketuhanan, beretika dan bermoral baik, berpengetahuan dan berketerampilan tinggi, siap bekerja dan/atau berwirausaha yang mampu bersaing dalam skala nasional maupun internasional.</li>
-            <li>Menghasilkan penelitian terapan bidang Sistem Informasi Bisnis yang berskala nasional dan internasional, meningkatkan efektivitas, efisiensi, dan produktivitas dalam dunia usaha dan industri, serta mengarah pada pencapaian Hak atas Kekayaan Intelektual (HaKI), perolehan paten, dan kesejahteraan masyarakat.</li>
-            <li>Menghasilkan pengabdian kepada masyarakat yang dilaksanakan melalui penerapan dan penyebarluasan ilmu pengetahuan dan teknologi serta pemberian layanan jasa secara profesional dalam bidang Sistem Informasi Bisnis sehingga bermanfaat secara langsung dalam meningkatkan kesejahteraan masyarakat.</li>
-            <li>Terwujudnya kerja sama yang saling menguntungkan dengan berbagai pihak baik di dalam maupun di luar negeri pada bidang Sistem Informasi Bisnis untuk meningkatkan daya saing.</li>
-        </ul>
     </div>
-    </div>
+</div>
+
+   <div class="bg-[#E6DDF8] py-10 px-4">
+  <h2 class="text-white bg-[#3C2464] inline-block px-4 py-2 rounded-md font-bold mb-10 text-lg">Tujuan Program Studi</h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+           <!-- CARD 1 -->
+        <div class="relative bg-white rounded-2xl shadow-md p-5 pt-10 flex flex-col text-center">
+            <div class="absolute -top-4 left-4 bg-[#3C2464] text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold z-10">1</div>
+            <p class="text-base md:text-lg text-gray-800 mb-4 leading-relaxed">
+            Menghasilkan lulusan bidang Sistem Informasi Bisnis yang berketuhanan, beretika dan bermoral baik, berpengetahuan dan berketerampilan tinggi, siap bekerja dan/atau berwirausaha yang mampu bersaing dalam skala nasional maupun internasional.
+            </p>
+            <div class="w-full h-[130px] overflow-hidden rounded-xl">
+            <img src="images/1.jpg" alt="Tujuan 1" class="w-full h-full object-cover object-center">
+            </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="relative bg-white rounded-2xl shadow-md p-5 pt-10 flex flex-col text-center">
+            <div class="absolute -top-4 left-4 bg-[#3C2464] text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold z-10">2</div>
+            <p class="text-base md:text-lg text-gray-800 mb-4 leading-relaxed">
+            Menghasilkan penelitian terapan bidang Sistem Informasi Bisnis yang berskala nasional dan internasional, meningkatkan efektivitas, efisiensi, dan produktivitas dalam dunia usaha dan industri, serta mengarah pada pencapaian Hak atas Kekayaan Intelektual (HaKI), perolehan paten, dan kesejahteraan masyarakat.
+            </p>
+            <div class="w-full h-[130px] overflow-hidden rounded-xl">
+            <img src="images/2.jpg" alt="Tujuan 2" class="w-full h-full object-cover object-center">
+            </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="relative bg-white rounded-2xl shadow-md p-5 pt-10 flex flex-col text-center">
+            <div class="absolute -top-4 left-4 bg-[#3C2464] text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold z-10">3</div>
+            <p class="text-base md:text-lg text-gray-800 mb-4 leading-relaxed">
+            Menghasilkan pengabdian kepada masyarakat yang dilaksanakan melalui penerapan dan penyebarluasan ilmu pengetahuan dan teknologi serta pemberian layanan jasa secara profesional dalam bidang Sistem Informasi Bisnis sehingga bermanfaat secara langsung dalam meningkatkan kesejahteraan masyarakat.
+            </p>
+            <div class="w-full h-[130px] overflow-hidden rounded-xl">
+            <img src="images/3.jpg" alt="Tujuan 3" class="w-full h-full object-cover object-center">
+            </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="relative bg-white rounded-2xl shadow-md p-5 pt-10 flex flex-col text-center">
+            <div class="absolute -top-4 left-4 bg-[#3C2464] text-white w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold z-10">4</div>
+            <p class="text-base md:text-lg text-gray-800 mb-4 leading-relaxed">
+            Terwujudnya kerjasama yang saling menguntungkan dengan berbagai pihak baik di dalam maupun di luar negeri pada bidang Sistem Informasi Bisnis untuk meningkatkan daya saing.
+            </p>
+            <div class="w-full h-[130px] overflow-hidden rounded-xl">
+            <img src="images/4.jpg" alt="Tujuan 4" class="w-full h-full object-cover object-center">
+            </div>
+        </div>
+
+</div>
+</div>
+
 </div>
 @endsection

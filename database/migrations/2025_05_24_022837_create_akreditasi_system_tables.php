@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
-            $table->enum('role', ['Validator', 'Anggota'])->default('Anggota');
+            $table->enum('role', ['Validator', 'Anggota', 'SuperAdmin'])->default('Anggota');
             $table->boolean('is_active')->default(true);
             $table->timestamp('last_login_at')->nullable();
             $table->rememberToken();

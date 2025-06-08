@@ -9,6 +9,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use App\Models\ValidasiKriteria; 
+use App\Models\KomentarValidasi;
+use App\Models\ValidasiLog;
+use App\Models\Notifikasi;
+
+
 
 class ValidatorKriteriaController extends Controller
 {
@@ -95,13 +101,7 @@ class ValidatorKriteriaController extends Controller
         return view('validator.kriteria.index', compact('kriteria'));
     }
 
-    public function show($id)
-{
-    $kriteria = Kriteria::findOrFail($id);
-    $pdfUrl = $kriteria->pdf_path ? asset($kriteria->pdf_path) : null;
 
-    return view('validator.kriteria-validation', compact('kriteria', 'pdfUrl'));
-}
 
     public function validatekriteria(Request $request, $id)
     {
@@ -221,4 +221,167 @@ class ValidatorKriteriaController extends Controller
             return $matches[0];
         }, $html);
     }
+
+    
+        // Method untuk menampilkan halaman kriteria validator
+        public function show($id)
+        {
+            $user = auth()->user();
+            $kriteria = Kriteria::findOrFail($id);
+    
+            // Cek jika user bukan level 1, maka harus pastikan level sebelumnya sudah "valid"
+            if ($user->level_validator > 1) {
+                $previousLevel = $user->level_validator - 1;
+    
+                // Ambil log validasi dari level sebelumnya
+                $previousLog = ValidasiLog::where('kriteria_id', $id)
+                    ->where('level_validator', $previousLevel)
+                    ->latest('created_at')
+                    ->first();
+    
+                // Kalau belum ada validasi sebelumnya atau statusnya bukan "valid", blokir akses
+                if (!$previousLog || $previousLog->status !== 'valid') {
+                    return view('validator.blokir', [
+                        'kriteria' => $kriteria,
+                        'previousLevel' => $previousLevel,
+                        'currentLevel' => $user->level_validator
+                    ]);
+                }
+            }
+    
+            // Jika lolos pengecekan, tampilkan halaman validasi normal
+            $pdfUrl = $kriteria->file_path ?? null;
+            
+            return view('validator\kriteria-validation', [
+                'kriteria' => $kriteria,
+                'pdfUrl' => $pdfUrl
+            ]);
+        }
+        // Method validasiStore yang sudah diupdate untuk many-to-many
+        public function validasiStore(Request $request, $id)
+        {
+            $user = auth()->user();
+
+            // Validasi input dari form
+            $request->validate([
+                'aksi' => 'required|in:valid,revisi',
+                'komentar' => 'nullable|string|max:1000',
+            ]);
+
+            // Cek jika user bukan level 1, maka harus pastikan level sebelumnya sudah "valid"
+            if ($user->level_validator > 1) {
+                $previousLevel = $user->level_validator - 1;
+
+                // Ambil log validasi dari level sebelumnya
+                $previousLog = ValidasiLog::where('kriteria_id', $id)
+                    ->where('level_validator', $previousLevel)
+                    ->latest('created_at')
+                    ->first();
+
+                // Kalau belum ada validasi sebelumnya atau statusnya bukan "valid", blokir akses
+                if (!$previousLog || $previousLog->status !== 'valid') {
+                    return view('validator.blokir', [
+                        'kriteria' => Kriteria::findOrFail($id),
+                        'previousLevel' => $previousLevel,
+                        'currentLevel' => $user->level_validator
+                    ]);
+                }
+            }
+
+            $kriteria = Kriteria::with('users')->findOrFail($id);
+
+            // Simpan log validasi baru
+            $validasiLog = ValidasiLog::create([
+                'kriteria_id' => $id,
+                'user_id' => $user->id,
+                'level_validator' => $user->level_validator,
+                'status' => $request->aksi === 'valid' ? 'valid' : 'tidak valid',
+                'komentar' => $request->komentar,
+            ]);
+
+            // Ambil status terakhir dan simpan ke tabel validasi_kriteria
+            $lastStatus = ValidasiLog::where('kriteria_id', $id)
+                ->latest('created_at')
+                ->value('status');
+
+            $validasiKriteria = ValidasiKriteria::where('kriteria_id', $id)->firstOrFail();
+            $validasiKriteria->status = $lastStatus;
+            $validasiKriteria->save();
+
+            // Simpan komentar (jika ada)
+            if ($request->komentar) {
+                KomentarValidasi::create([
+                    'validasi_kriteria_id' => $validasiKriteria->id,
+                    'user_id' => $user->id,
+                    'komentar' => $request->komentar,
+                ]);
+            }
+
+            // OPSI 1: Kirim notifikasi ke semua user yang terkait dengan kriteria
+            $this->sendNotificationToAllUsers($kriteria, $user, $validasiLog, $request->aksi);
+
+            // OPSI 2: Kirim notifikasi hanya ke user pertama (jika ingin tunggal)
+            // $this->sendNotificationToFirstUser($kriteria, $user, $validasiLog, $request->aksi);
+
+            return redirect()->back()->with('success', 'Validasi berhasil disimpan.');
+        }
+
+        /**
+         * Kirim notifikasi ke semua user yang terkait dengan kriteria
+         */
+        private function sendNotificationToAllUsers($kriteria, $validator, $validasiLog, $aksi)
+        {
+            if ($kriteria->users->isEmpty()) {
+                Log::warning("Tidak ada user yang terkait dengan kriteria ID: {$kriteria->id}");
+                return;
+            }
+
+            $judul = $aksi === 'valid' ? 'Kriteria telah divalidasi' : 'Kriteria perlu direvisi';
+            $pesan = "Kriteria '{$kriteria->nama}' divalidasi oleh {$validator->name} dengan status: {$validasiLog->status}";
+
+            foreach ($kriteria->users as $user) {
+                try {
+                    Notifikasi::create([
+                        'user_id' => $user->id,
+                        'judul' => $judul,
+                        'pesan' => $pesan,
+                        'dibaca' => false,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("Error creating notification for user {$user->id}: " . $e->getMessage());
+                }
+            }
+
+            Log::info("Notifikasi berhasil dikirim ke " . $kriteria->users->count() . " user untuk kriteria: {$kriteria->nama}");
+        }
+
+        /**
+         * Kirim notifikasi hanya ke user pertama yang terkait dengan kriteria
+         */
+        private function sendNotificationToFirstUser($kriteria, $validator, $validasiLog, $aksi)
+        {
+            $firstUser = $kriteria->users->first();
+            
+            if (!$firstUser) {
+                Log::warning("Tidak ada user yang terkait dengan kriteria ID: {$kriteria->id}");
+                return;
+            }
+
+            $judul = $aksi === 'valid' ? 'Kriteria telah divalidasi' : 'Kriteria perlu direvisi';
+            $pesan = "Kriteria '{$kriteria->nama}' divalidasi oleh {$validator->name} dengan status: {$validasiLog->status}";
+
+            try {
+                Notifikasi::create([
+                    'user_id' => $firstUser->id,
+                    'judul' => $judul,
+                    'pesan' => $pesan,
+                    'dibaca' => false,
+                ]);
+
+                Log::info("Notifikasi berhasil dikirim ke user {$firstUser->name} untuk kriteria: {$kriteria->nama}");
+            } catch (\Exception $e) {
+                Log::error("Error creating notification for user {$firstUser->id}: " . $e->getMessage());
+            }
+        }
+            
 }
