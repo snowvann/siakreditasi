@@ -1,1849 +1,157 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistem Akreditasi D4 SIB - Polinema</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
-    
-    <!-- AOS Animation -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-    
-      <style>
-        :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --secondary: #ec4899;
-      --accent: #06b6d4;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --dark: #0f172a;
-      --light: #f8fafc;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-  }
-
-  * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-  }
-
-  body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
-      color: var(--gray-800);
-      overflow-x: hidden;
-      background: var(--light);
-  }
-
-  /* Utility Classes */
-  .gradient-bg {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 8s ease infinite;
-  }
-
-  @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-  }
-
-  /* Navigation Styles */
-  .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 1rem 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.9);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .navbar.scrolled {
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-container {
-      max-width: 1260px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-  }
-
-  .logo-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-  }
-
-  .logo-section img {
-      height: 45px;
-      width: auto;
-      transition: all 0.3s ease;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-  }
-
-  .logo-section img:hover {
-      transform: scale(1.1);
-  }
-
-  .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-      list-style: none;
-  }
-
-  .nav-links a {
-      color: var(--gray-700);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      font-size: 0.95rem;
-  }
-
-  .nav-links a:hover {
-      background: var(--gray-100);
-      transform: translateY(-2px);
-      color: var(--primary);
-  }
-
-  .nav-links a.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-  }
-
-  .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-  }
-
-  .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
-  }
-
-  .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--gray-700);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-  }
-
-  .mobile-menu-btn:hover {
-      background: var(--gray-100);
-  }
-
-  /* Hero Section */
-  .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 12s ease infinite;
-  }
-
-  .floating-shapes {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-  }
-
-  .shape {
-      position: absolute;
-      opacity: 0.1;
-      animation: float 6s ease-in-out infinite;
-  }
-
-  .shape:nth-child(1) {
-      top: 20%;
-      left: 10%;
-      width: 80px;
-      height: 80px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation-delay: 0s;
-  }
-
-  .shape:nth-child(2) {
-      top: 60%;
-      right: 10%;
-      width: 120px;
-      height: 120px;
-      background: var(--secondary);
-      border-radius: 20px;
-      animation-delay: 2s;
-  }
-
-  .shape:nth-child(3) {
-      bottom: 20%;
-      left: 20%;
-      width: 60px;
-      height: 60px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation-delay: 4s;
-  }
-
-  @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-  }
-
-  .hero-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 3rem;
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-  }
-
-  .hero-content h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800;
-      color: white;
-      margin-top: 2 rem;
-      margin-bottom: 1.5rem;
-      line-height: 1.1;
-      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .hero-content p {
-      font-size: 1.25rem;
-      color: rgba(255, 255, 255, 0.9);
-      margin-bottom: 2rem;
-      line-height: 1.6;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-  }
-
-  .btn-hero {
-      padding: 1rem 2rem;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-shadow: none;
-  }
-
-  .btn-hero.primary {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
-  }
-
-  .btn-hero.primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 48px rgba(255, 255, 255, 0.4);
-  }
-
-  .btn-hero.secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-  }
-
-  .btn-hero.secondary:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-3px);
-  }
-
-  .hero-visual {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  }
-
-  .hero-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 24px;
-      padding: 2rem;
-      text-align: center;
-      color: white;
-      transform: rotate(5deg);
-      transition: all 0.3s ease;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  }
-
-  .hero-card:hover {
-      transform: rotate(0deg) scale(1.05);
-  }
-
-  .hero-card .icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--warning);
-  }
-
-  /* Profile Section */
-  .profile-section {
-      padding: 6rem 0;
-      background: var(--light);
-      position: relative;
-  }
-
-  .profile-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 2rem;
-  }
-
-  .profile-card {
-      background: white;
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-      margin-bottom: 4rem;
-      border: 1px solid var(--gray-100);
-  }
-
-  .profile-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--gray-900);
-      text-align: center;
-      margin-bottom: 3rem;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-  }
-
-  .profile-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-  }
-
-  .profile-image {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  }
-
-  .main-image {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      transition: all 0.3s ease;
-  }
-
-  .main-image:hover {
-      transform: scale(1.05);
-  }
-
-  .profile-text {
-      padding: 1rem 0;
-  }
-
-  .profile-subtitle {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      position: relative;
-  }
-
-  .profile-subtitle::after {
-      content: '';
-      position: absolute;
-      bottom: -0.5rem;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 2px;
-  }
-
-  .profile-text p {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: var(--gray-600);
-      margin-bottom: 1.5rem;
-  }
-
-  /* Program Profile */
-  .program-profile {
-      background: white;
-      padding: 4rem 0;
-      border-top: 1px solid var(--gray-100);
-  }
-
-  .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      text-align: center;
-      color: var(--gray-900);
-      margin-bottom: 1rem;
-  }
-
-  .program-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 0.75rem 2rem;
-      border-radius: 25px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin: 0 auto 3rem;
-      display: block;
-      text-align: center;
-      width: fit-content;
-      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-  }
-
-  .program-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-      margin-top: 3rem;
-  }
-
-  .program-image {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  }
-
-  .program-img {
-      width: 100%;
-      height: 350px;
-      object-fit: cover;
-      transition: all 0.3s ease;
-  }
-
-  .program-img:hover {
-      transform: scale(1.05);
-  }
-
-  .program-text p {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: var(--gray-600);
-      margin-bottom: 1.5rem;
-  }
-
-  /* Vision Mission */
-  .vision-mission {
-      background: var(--gray-50);
-      padding: 4rem 0;
-  }
-
-  .vm-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      text-align: center;
-      color: var(--gray-900);
-      margin-bottom: 3rem;
-  }
-
-  .vision-section {
-      background: white;
-      border-radius: 20px;
-      padding: 3rem;
-      margin-bottom: 3rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--gray-100);
-  }
-
-  .vm-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 0.5rem 1.5rem;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.5px;
-  }
-
-  .vision-text {
-      font-size: 1.3rem;
-      line-height: 1.8;
-      color: var(--gray-700);
-      font-weight: 500;
-  }
-
-  .mission-section {
-      background: white;
-      border-radius: 20px;
-      padding: 3rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--gray-100);
-  }
-
-  .mission-content {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 3rem;
-      align-items: start;
-      margin-top: 2rem;
-  }
-
-  .mission-image {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
-  }
-
-  .jti-image {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      transition: all 0.3s ease;
-  }
-
-  .jti-image:hover {
-      transform: scale(1.05);
-  }
-
-  .mission-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-  }
-
-  .mission-item {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-      padding: 1.5rem;
-      background: var(--gray-50);
-      border-radius: 16px;
-      border-left: 4px solid var(--primary);
-      transition: all 0.3s ease;
-  }
-
-  .mission-item:hover {
-      background: white;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      transform: translateX(8px);
-  }
-
-  .mission-icon {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-  }
-
-  .mission-item p {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--gray-600);
-      margin: 0;
-  }
-
-  /* Goals Section */
-  .goals-section {
-      background: white;
-      padding: 2rem 0;
-  }
-
-  .goals-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      text-align: center;
-      color: var(--gray-900);
-      margin-bottom: 3rem;
-  }
-
-  .goals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-  }
-
-  .goal-card {
-      background: white;
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--gray-100);
-      position: relative;
-      transition: all 0.3s ease;
-      overflow: hidden;
-  }
-
-  .goal-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
-  }
-
-  .goal-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-  }
-
-  .goal-number {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-  }
-
-  .goal-text {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--gray-600);
-      margin-bottom: 1.5rem;
-  }
-
-  .goal-image {
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 1rem;
-  }
-
-  .goal-image img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      transition: all 0.3s ease;
-  }
-
-  .goal-image img:hover {
-      transform: scale(1.05);
-  }
-
-  /* Modal Styles */
-  .modal {
-      display: none;
-      position: fixed;
-      z-index: 10000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-  }
-
-  .modal-content {
-      background: white;
-      margin: 5% auto;
-      padding: 0;
-      border-radius: 24px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-      animation: modalSlideIn 0.3s ease;
-  }
-
-  @keyframes modalSlideIn {
-      from {
-          opacity: 0;
-          transform: translateY(-50px) scale(0.9);
-      }
-      to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-      }
-  }
-
-  .modal-header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 2rem;
-      position: relative;
-  }
-
-  .modal-header h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 0;
-  }
-
-  .close-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1.2rem;
-  }
-
-  .close-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(90deg);
-  }
-
-  .modal-body {
-      padding: 2rem;
-  }
-
-  .floor-btn {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      background: var(--gray-50);
-      border-radius: 16px;
-      text-decoration: none;
-      color: var(--gray-700);
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-  }
-
-  .floor-btn:hover {
-      background: var(--primary);
-      color: white;
-      transform: translateX(8px);
-      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-  }
-
-  .floor-btn i {
-      font-size: 2rem;
-      color: var(--primary);
-      transition: all 0.3s ease;
-  }
-
-  .floor-btn:hover i {
-      color: white;
-  }
-
-  .floor-btn div strong {
-      display: block;
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-  }
-
-  .floor-btn div small {
-      color: var(--gray-500);
-      font-size: 0.9rem;
-  }
-
-  .floor-btn:hover div small {
-      color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Footer Styles */
-  .footer {
-      background: var(--gray-900);
-      color: white;
-      padding: 4rem 0 2rem;
-      position: relative;
-  }
-
-  .footer::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-  }
-
-  .footer-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 2rem;
-  }
-
-  .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 3rem;
-      margin-bottom: 3rem;
-  }
-
-  .footer-section h4 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: white;
-  }
-
-  .footer-logos {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-  }
-
-  .footer-logos img {
-    height: 50px;
-    width: auto;
-    transition: all 0.3s ease;
-}
-
-.footer-logos img:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
-}
-
-
-  .footer-desc {
-      color: var(--gray-300);
-      line-height: 1.6;
-      margin-bottom: 2rem;
-  }
-
-  .social-links {
-      display: flex;
-      gap: 1rem;
-  }
-
-  .social-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      font-size: 1.2rem;
-  }
-
-  .social-link.facebook {
-      background: #1877f2;
-      color: white;
-  }
-
-  .social-link.instagram {
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      color: white;
-  }
-
-  .social-link.youtube {
-      background: #f21d1d;
-      color: white;
-  }
-
-  .social-link:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  }
-
-  .contact-info {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-  }
-
-  .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      color: var(--gray-300);
-      transition: all 0.3s ease;
-  }
-
-  .contact-item:hover {
-      color: white;
-      transform: translateX(8px);
-  }
-
-  .contact-item i {
-      color: var(--primary);
-      font-size: 1.2rem;
-      width: 20px;
-      text-align: center;
-  }
-
-  .map-container {
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  }
-
-  .footer-bottom {
-      border-top: 1px solid var(--gray-700);
-      padding-top: 2rem;
-      text-align: center;
-      color: var(--gray-400);
-  }
-
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-      .hero-container {
-          grid-template-columns: 1fr;
-          gap: 3rem;
-          text-align: center;
-      }
+@extends('layouts.app')
+
+@section('content')
+<div class="min-h-screen bg-white">
+<!-- Navigation yang lebih kompak -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 backdrop-blur-xl bg-white/95 border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+          <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+          <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+      </div>
       
-      .profile-content,
-      .program-content {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-      }
+      <ul id="navLinks" class="hidden lg:flex gap-4 items-center py-2">
+        <li>
+            <a href="#beranda" 
+               data-target="beranda"
+               class="nav-link text-gray-700 font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:text-blue-900 text-sm">
+                Beranda
+            </a>
+        </li>
+   
+
+        <li>
+            <a href="#profile" 
+               data-target="profile"
+               class="nav-link text-gray-700 font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:text-blue-900 text-sm">
+                About
+            </a>
+        </li>
+        <li>
+            <a href="#faq" 
+               data-target="faq"
+               class="nav-link text-gray-700 font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:text-blue-900 text-sm">
+                FAQ
+            </a>
+        </li>
+        <li>
+            <a href="#denah" 
+               data-target="denah"
+               onclick="openModal()" 
+               class="text-gray-700 font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:text-blue-900 text-sm">
+                Denah
+            </a>
+        </li>
+        <li>
+            <a href="https://www.polinema.ac.id/" 
+               target="_blank" 
+               class="text-gray-700 font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5 hover:text-blue-900 text-sm">
+                Website Polinema
+            </a>
+        </li>
+        <li>
+          <a href="{{ route('login') }}" 
+          class="text-white px-4 py-2 rounded-lg font-semibold text-sm inline-flex items-center gap-1 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+          style="background-color: #4B5CAD;">
+           Login
+       </a>
+        </li>
+    </ul>
       
-      .mission-content {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-      }
+      <button class="lg:hidden p-2 rounded-lg transition-all duration-300 hover:bg-gray-100" onclick="toggleMobileMenu()">
+          <i class="bi bi-list text-2xl text-gray-700"></i>
+      </button>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="beranda" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 md:pt-24 lg:pt-24 animated-bg">
+  <!-- Floating Shapes dengan Animasi Custom -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <!-- Shape 1 - Floating Circle -->
+      <div class="absolute top-1/5 left-1/10 w-20 h-20 bg-purple-400/30 rounded-full float-animation"></div>
       
-      .goals-grid {
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      }
-  }
-
-  @media (max-width: 768px) {
-      .nav-links {
-          display: none;
-      }
+      <!-- Shape 2 - Bouncing Rectangle -->
+      <div class="absolute top-3/5 right-1/10 w-32 h-32 bg-blue-300/25 rounded-2xl float-reverse"></div>
       
-      .mobile-menu-btn {
-          display: block;
-      }
+      <!-- Shape 3 - Pulsing Circle -->
+      <div class="absolute bottom-1/5 left-1/5 w-16 h-16 bg-purple-300/35 rounded-full animate-pulse"></div>
       
-      .hero-content h1 {
-          font-size: 2.5rem;
-      }
+      <!-- Shape 4 - Sliding Shape -->
+      <div class="absolute top-1/2 left-1/3 w-24 h-24 bg-indigo-400/20 rounded-full slide-animation"></div>
       
-      .profile-title,
-      .section-title,
-      .vm-title,
-      .goals-title {
-          font-size: 2rem;
-      }
+      <!-- Shape 5 - Spinning Square -->
+      <div class="absolute bottom-1/3 right-1/4 w-12 h-12 bg-cyan-300/30 rounded-lg animate-spin" style="animation-duration: 12s;"></div>
       
-      .profile-card,
-      .vision-section,
-      .mission-section {
-          padding: 2rem;
-      }
-      
-      .modal-content {
-          width: 95%;
-          margin: 10% auto;
-      }
-      
-      .footer-content {
-          grid-template-columns: 1fr;
-          gap: 2rem;
-      }
-  }
+      <!-- Shape 6 - Floating Triangle -->
+      <div class="absolute top-1/4 right-1/3 w-0 h-0 float-animation" 
+           style="border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid rgba(139, 92, 246, 0.2);"></div>
+  </div>
 
-  /* Bagian yang terpotong di akhir file main.css */
-  @media (max-width: 480px) {
-      .nav-container {
-          padding: 0 1rem;
-      }
-      
-      .hero-container {
-          padding: 1rem;
-      }
-      
-      .profile-container {
-          padding: 0 1rem;
-      }
-      
-      .hero-content h1 {
-          font-size: 2rem;
-      }
-      
-      .hero-content p {
-          font-size: 1.1rem;
-      }
-      
-      .hero-buttons {
-          flex-direction: column;
-          width: 100%;
-      }
-      
-      .btn-hero {
-          justify-content: center;
-          width: 100%;
-      }
-      
-      .profile-card,
-      .vision-section,
-      .mission-section {
-          padding: 1.5rem;
-      }
-      
-      .profile-title,
-      .section-title,
-      .vm-title,
-      .goals-title {
-          font-size: 1.8rem;
-      }
-      
-      .goal-card {
-          padding: 1.5rem;
-      }
-      
-      .mission-item {
-          padding: 1rem;
-          flex-direction: column;
-          text-align: center;
-      }
-      
-      .mission-icon {
-          align-self: center;
-      }
-      
-      .modal-content {
-          width: 98%;
-          margin: 5% auto;
-      }
-      
-      .modal-header,
-      .modal-body {
-          padding: 1.5rem;
-      }
-      
-      .floor-btn {
-          padding: 1rem;
-      }
-  }
-
-  /* Mobile Navigation Menu */
-  .mobile-nav-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      z-index: 9999;
-      display: none;
-      opacity: 0;
-      transition: all 0.3s ease;
-  }
-
-  .mobile-nav-overlay.active {
-      display: block;
-      opacity: 1;
-  }
-
-  .mobile-nav-menu {
-      position: absolute;
-      top: 0;
-      right: -100%;
-      width: 300px;
-      height: 100%;
-      background: white;
-      padding: 2rem;
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-y: auto;
-  }
-
-  .mobile-nav-menu.active {
-      right: 0;
-  }
-
-  .mobile-nav-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--gray-200);
-  }
-
-  .mobile-nav-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--gray-700);
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-  }
-
-  .mobile-nav-close:hover {
-      background: var(--gray-100);
-  }
-
-  .mobile-nav-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-  }
-
-  .mobile-nav-links a {
-      display: block;
-      padding: 1rem;
-      color: var(--gray-700);
-      text-decoration: none;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-      font-weight: 500;
-  }
-
-  .mobile-nav-links a:hover {
-      background: var(--gray-100);
-      color: var(--primary);
-      transform: translateX(8px);
-  }
-
-  .mobile-nav-links a.active {
-      background: var(--primary);
-      color: white;
-  }
-
-  /* Smooth Scrolling */
-  html {
-      scroll-behavior: smooth;
-  }
-
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-      width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-      background: var(--gray-100);
-  }
-
-  ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
-  }
-
-  /* Loading Animation */
-  .loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      transition: opacity 0.5s ease;
-  }
-
-  .loading.hide {
-      opacity: 0;
-      pointer-events: none;
-  }
-
-  .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid var(--gray-200);
-      border-top: 4px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-  }
-
-  /* Accessibility */
-  .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-  }
-
-  /* Focus Styles */
-  *:focus {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-  }
-
-  /* Print Styles */
-  @media print {
-      .navbar,
-      .footer,
-      .hero-buttons,
-      .social-links,
-      .mobile-menu-btn {
-          display: none !important;
-      }
-      
-      .hero {
-          min-height: auto;
-          padding: 2rem 0;
-      }
-      
-      .hero-content h1 {
-          color: var(--gray-900) !important;
-      }
-      
-      .hero-content p {
-          color: var(--gray-700) !important;
-      }
-      
-      body {
-          background: white !important;
-          color: var(--gray-900) !important;
-      }
-  }
-
-  /* Utility Classes */
-  .text-center { text-align: center; }
-  .text-left { text-align: left; }
-  .text-right { text-align: right; }
-
-  .d-none { display: none; }
-  .d-block { display: block; }
-  .d-flex { display: flex; }
-  .d-grid { display: grid; }
-
-  .position-relative { position: relative; }
-  .position-absolute { position: absolute; }
-  .position-fixed { position: fixed; }
-
-  .w-100 { width: 100%; }
-  .h-100 { height: 100%; }
-
-  .m-0 { margin: 0; }
-  .m-1 { margin: 0.25rem; }
-  .m-2 { margin: 0.5rem; }
-  .m-3 { margin: 1rem; }
-  .m-4 { margin: 1.5rem; }
-  .m-5 { margin: 3rem; }
-
-  .p-0 { padding: 0; }
-  .p-1 { padding: 0.25rem; }
-  .p-2 { padding: 0.5rem; }
-  .p-3 { padding: 1rem; }
-  .p-4 { padding: 1.5rem; }
-  .p-5 { padding: 3rem; }
-
-  .mt-0 { margin-top: 0; }
-  .mt-1 { margin-top: 0.25rem; }
-  .mt-2 { margin-top: 0.5rem; }
-  .mt-3 { margin-top: 1rem; }
-  .mt-4 { margin-top: 1.5rem; }
-  .mt-5 { margin-top: 3rem; }
-
-  .mb-0 { margin-bottom: 0; }
-  .mb-1 { margin-bottom: 0.25rem; }
-  .mb-2 { margin-bottom: 0.5rem; }
-  .mb-3 { margin-bottom: 1rem; }
-  .mb-4 { margin-bottom: 1.5rem; }
-  .mb-5 { margin-bottom: 3rem; }
-
-  .pt-0 { padding-top: 0; }
-  .pt-1 { padding-top: 0.25rem; }
-  .pt-2 { padding-top: 0.5rem; }
-  .pt-3 { padding-top: 1rem; }
-  .pt-4 { padding-top: 1.5rem; }
-  .pt-5 { padding-top: 3rem; }
-
-  .pb-0 { padding-bottom: 0; }
-  .pb-1 { padding-bottom: 0.25rem; }
-  .pb-2 { padding-bottom: 0.5rem; }
-  .pb-3 { padding-bottom: 1rem; }
-  .pb-4 { padding-bottom: 1.5rem; }
-  .pb-5 { padding-bottom: 3rem; }
-
-  /* Animation Classes */
-  .fade-in {
-      opacity: 0;
-      animation: fadeIn 0.6s ease forwards;
-  }
-
-  @keyframes fadeIn {
-      to {
-          opacity: 1;
-      }
-  }
-
-  .slide-up {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: slideUp 0.6s ease forwards;
-  }
-
-  @keyframes slideUp {
-      to {
-          opacity: 1;
-          transform: translateY(0);
-      }
-  }
-
-  .slide-in-left {
-      opacity: 0;
-      transform: translateX(-30px);
-      animation: slideInLeft 0.6s ease forwards;
-  }
-
-  @keyframes slideInLeft {
-      to {
-          opacity: 1;
-          transform: translateX(0);
-      }
-  }
-
-  .slide-in-right {
-      opacity: 0;
-      transform: translateX(30px);
-      animation: slideInRight 0.6s ease forwards;
-  }
-
-  @keyframes slideInRight {
-      to {
-          opacity: 1;
-          transform: translateX(0);
-      }
-  }
-
-  .bounce-in {
-      opacity: 0;
-      transform: scale(0.3);
-      animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  }
-
-  @keyframes bounceIn {
-      to {
-          opacity: 1;
-          transform: scale(1);
-      }
-  }
-
-  /* Hover Effects */
-  .hover-lift {
-      transition: all 0.3s ease;
-  }
-
-  .hover-lift:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  }
-
-  .hover-glow {
-      transition: all 0.3s ease;
-  }
-
-  .hover-glow:hover {
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-  }
-
-  /* Error States */
-  .error {
-      color: var(--danger);
-      border-color: var(--danger);
-  }
-
-  .success {
-      color: var(--success);
-      border-color: var(--success);
-  }
-
-  .warning {
-      color: var(--warning);
-      border-color: var(--warning);
-  }
-
-  /* Dark Mode Support */
-  @media (prefers-color-scheme: dark) {
-      :root {
-          --light: #1f2937;
-          --gray-50: #374151;
-          --gray-100: #4b5563;
-          --gray-200: #6b7280;
-          --gray-300: #9ca3af;
-          --gray-400: #d1d5db;
-          --gray-500: #e5e7eb;
-          --gray-600: #f3f4f6;
-          --gray-700: #f9fafb;
-          --gray-800: #ffffff;
-          --gray-900: #ffffff;
-      }
-      
-      body {
-          background: var(--gray-900);
-          color: var(--gray-100);
-      }
-      
-      .navbar {
-          background: rgba(31, 41, 55, 0.9);
-      }
-      
-      .profile-card,
-      .vision-section,
-      .mission-section,
-      .goal-card {
-          background: var(--gray-800);
-          border-color: var(--gray-700);
-      }
-  }
-        </style>
-
-            <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          // Initialize AOS
-          AOS.init({
-              duration: 1000,
-              once: true,
-              offset: 100,
-              easing: 'ease-out-cubic'
-          });
-
-          // Navbar scroll effect
-          const navbar = document.getElementById('navbar');
-          window.addEventListener('scroll', function() {
-              if (window.scrollY > 50) {
-                  navbar.classList.add('scrolled');
-              } else {
-                  navbar.classList.remove('scrolled');
-              }
-          });
-
-          // Smooth scrolling for navigation links
-          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-              anchor.addEventListener('click', function (e) {
-                  e.preventDefault();
-                  const target = document.querySelector(this.getAttribute('href'));
-                  if (target) {
-                      target.scrollIntoView({
-                          behavior: 'smooth',
-                          block: 'start'
-                      });
-                  }
-              });
-          });
-
-          // Active navigation highlighting
-          const sections = document.querySelectorAll('section[id]');
-          const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-          
-          window.addEventListener('scroll', () => {
-              let current = '';
-              sections.forEach(section => {
-                  const sectionTop = section.offsetTop;
-                  const sectionHeight = section.clientHeight;
-                  if (scrollY >= sectionTop - 200) {
-                      current = section.getAttribute('id');
-                  }
-              });
-
-              navLinks.forEach(link => {
-                  link.classList.remove('active');
-                  if (link.getAttribute('href') === `#${current}`) {
-                      link.classList.add('active');
-                  }
-              });
-          });
-      });
-
-      // Mobile menu functions
-      function toggleMobileMenu() {
-          const overlay = document.getElementById('mobileNavOverlay');
-          const menu = document.getElementById('mobileNavMenu');
-          
-          if (!overlay) {
-              createMobileMenu();
-              return;
-          }
-          
-          overlay.classList.toggle('active');
-          menu.classList.toggle('active');
-          document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
-      }
-
-      function createMobileMenu() {
-          const overlay = document.createElement('div');
-          overlay.id = 'mobileNavOverlay';
-          overlay.className = 'mobile-nav-overlay';
-          
-          const menu = document.createElement('div');
-          menu.id = 'mobileNavMenu';
-          menu.className = 'mobile-nav-menu';
-          
-          menu.innerHTML = `
-              <div class="mobile-nav-header">
-                  <h3>Menu</h3>
-                  <button class="mobile-nav-close" onclick="toggleMobileMenu()">
-                      <i class="bi bi-x"></i>
-                  </button>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10 w-full">
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center justify-items-center py-8 lg:py-12">
+          <div class="text-white text-center lg:text-left" data-aos="fade-right" data-aos-duration="1000">
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-6 leading-tight drop-shadow-lg">
+                  Sistem Akreditasi<br class="hidden sm:block"> D4 Sistem<br class="hidden sm:block"> Informasi Bisnis
+              </h1>
+              <p class="text-lg sm:text-xl mb-6 lg:mb-8 leading-relaxed text-white/90 drop-shadow-sm max-w-lg mx-auto lg:mx-0">
+                  Revolusi pengelolaan akreditasi D4 Sistem Informasi Bisnis dengan teknologi terdepan. 
+                  Pengalaman yang seamless, modern, dan efisien untuk institusi pendidikan.
+              </p>
+              <div class="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
+                  <a href="{{ route('login') }}" class="bg-white text-purple-700 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-purple-500/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/40 hover:bg-purple-100">
+                      Mulai Sekarang <i class="bi bi-rocket-takeoff"></i>
+                  </a>
+                  <a href="#profile" 
+                  class="nav-link bg-white/20 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:-translate-y-1"
+                  data-target="profile">
+                   Lihat Profile <i class="bi bi-arrow-down"></i>
+               </a>
               </div>
-              <ul class="mobile-nav-links">
-                  <li><a href="#beranda" onclick="toggleMobileMenu()">Beranda</a></li>
-                  <li><a href="https://www.polinema.ac.id/" target="_blank">Website Polinema</a></li>
-                  <li><a href="#profile" onclick="toggleMobileMenu()">About Us</a></li>
-                  <li><a href="#" onclick="toggleMobileMenu(); openModal();">Denah Gedung</a></li>
-                  <li><a href="#" class="btn-primary">Login <i class="bi bi-box-arrow-in-right"></i></a></li>
-              </ul>
-          `;
-          
-          overlay.appendChild(menu);
-          document.body.appendChild(overlay);
-          
-          // Close on overlay click
-          overlay.addEventListener('click', function(e) {
-              if (e.target === overlay) {
-                  toggleMobileMenu();
-              }
-          });
-          
-          // Show menu
-          setTimeout(() => {
-              overlay.classList.add('active');
-              menu.classList.add('active');
-              document.body.style.overflow = 'hidden';
-          }, 10);
-      }
+          </div>
 
-      // Modal functions
-      function openModal() {
-          const modal = document.getElementById('denahModal');
-          modal.style.display = 'block';
-          document.body.style.overflow = 'hidden';
-          
-          // Close on outside click
-          modal.addEventListener('click', function(e) {
-              if (e.target === modal) {
-                  closeModal();
-              }
-          });
-      }
+          <div class="flex items-center justify-center w-full" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+              <div class="bg-white/15 backdrop-blur-xl border border-white/20 rounded-3xl p-8 text-center text-white transform rotate-6 transition-all duration-300 shadow-2xl hover:rotate-0 hover:scale-105 max-w-sm w-full">
+                <div class="text-5xl mb-4" style="color: #FFBF47;">
 
-      function closeModal() {
-          const modal = document.getElementById('denahModal');
-          modal.style.display = 'none';
-          document.body.style.overflow = '';
-      }
-
-      // Keyboard navigation
-      document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') {
-              closeModal();
-              const overlay = document.getElementById('mobileNavOverlay');
-              if (overlay && overlay.classList.contains('active')) {
-                  toggleMobileMenu();
-              }
-          }
-      });
-
-      // Loading screen
-      window.addEventListener('load', function() {
-          const loading = document.querySelector('.loading');
-          if (loading) {
-              loading.classList.add('hide');
-              setTimeout(() => {
-                  loading.remove();
-              }, 500);
-          }
-      });
-
-      // Image lazy loading
-      function lazyLoadImages() {
-          const images = document.querySelectorAll('img[data-src]');
-          const imageObserver = new IntersectionObserver((entries, observer) => {
-              entries.forEach(entry => {
-                  if (entry.isIntersecting) {
-                      const img = entry.target;
-                      img.src = img.dataset.src;
-                      img.classList.add('fade-in');
-                      imageObserver.unobserve(img);
-                  }
-              });
-          });
-
-          images.forEach(img => imageObserver.observe(img));
-      }
-
-      // Initialize lazy loading if needed
-      if ('IntersectionObserver' in window) {
-          lazyLoadImages();
-      }
-
-      // Parallax effect for hero shapes
-      window.addEventListener('scroll', function() {
-          const scrolled = window.pageYOffset;
-          const shapes = document.querySelectorAll('.shape');
-          
-          shapes.forEach((shape, index) => {
-              const rate = scrolled * -0.5 * (index + 1);
-              shape.style.transform = `translateY(${rate}px)`;
-          });
-      });
-
-      // Form validation (if you add forms later)
-      function validateForm(form) {
-          const inputs = form.querySelectorAll('input[required], textarea[required]');
-          let isValid = true;
-          
-          inputs.forEach(input => {
-              if (!input.value.trim()) {
-                  input.classList.add('error');
-                  isValid = false;
-              } else {
-                  input.classList.remove('error');
-              }
-          });
-          
-          return isValid;
-      }
-
-      // Utility functions
-      function debounce(func, wait) {
-          let timeout;
-          return function executedFunction(...args) {
-              const later = () => {
-                  clearTimeout(timeout);
-                  func(...args);
-              };
-              clearTimeout(timeout);
-              timeout = setTimeout(later, wait);
-          };
-      }
-
-      function throttle(func, limit) {
-          let inThrottle;
-          return function() {
-              const args = arguments;
-              const context = this;
-              if (!inThrottle) {
-                  func.apply(context, args);
-                  inThrottle = true;
-                  setTimeout(() => inThrottle = false, limit);
-              }
-          }
-      }
-
-      // Optimized scroll handler
-      const optimizedScrollHandler = throttle(function() {
-          // Your scroll handling code here
-      }, 16); // ~60fps
-
-      window.addEventListener('scroll', optimizedScrollHandler);
-
-      // Print functionality
-      function printPage() {
-          window.print();
-      }
-
-      // Dark mode toggle (if needed)
-      function toggleDarkMode() {
-          document.body.classList.toggle('dark-mode');
-          localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-      }
-
-      // Check for saved dark mode preference
-      if (localStorage.getItem('darkMode') === 'true') {
-          document.body.classList.add('dark-mode');
-      }
-
-      // Performance monitoring
-      function measurePerformance() {
-          if ('performance' in window) {
-              window.addEventListener('load', function() {
-                  setTimeout(function() {
-                      const perfData = performance.getEntriesByType('navigation')[0];
-                      console.log('Page Load Time:', perfData.loadEventEnd - perfData.fetchStart + 'ms');
-                  }, 0);
-              });
-          }
-      }
-
-      measurePerformance();
-            </script>
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="logo-section">
-                <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema">
-                <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI">
-            </div>
-            
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#beranda" class="active">Beranda</a></li>
-                <li><a href="https://www.polinema.ac.id/" target="_blank">Website Polinema</a></li>
-                <li><a href="#profile">About Us</a></li>
-                <li><a href="#" onclick="openModal()">Denah Gedung</a></li>
-                <li><a href="{{ route('login') }}" class="btn-primary">Login <i class="bi bi-box-arrow-in-right"></i></a></li>
-            </ul>
-            
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="bi bi-list"></i>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="beranda">
-        <div class="floating-shapes">
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-        </div>
-        
-        <div class="hero-container">
-            <div class="hero-content" data-aos="fade-right" data-aos-duration="1000">
-                <h1>Sistem Akreditasi D4 Sistem Informasi Bisnis</h1>
-                <p>
-                    Revolusi pengelolaan akreditasi D4 Sistem Informasi Bisnis dengan teknologi terdepan. 
-                    Pengalaman yang seamless, modern, dan efisien untuk institusi pendidikan.
-                </p>
-                <div class="hero-buttons">
-                    <a href="{{ route('login') }}" class="btn-hero primary">
-                        Mulai Sekarang <i class="bi bi-rocket-takeoff"></i>
-                    </a>
-                    <a href="#profile" class="btn-hero secondary">
-                        Lihat Profile <i class="bi bi-arrow-down"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="hero-visual" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-                <div class="hero-card">
-                    <div class="icon">
-                        <i class="bi bi-award-fill"></i>
-                    </div>
-                    <h3>SIAKREDITASI</h3>
-                    <p>Platform terintegrasi untuk pengelolaan akreditasi yang efisien dan modern</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
+                      <i class="bi bi-award-fill"></i>
+                  </div>
+                  <h3 class="text-2xl font-bold mb-2">SIAKREDITASI</h3>
+                  <p class="text-white/90">Platform terintegrasi untuk pengelolaan akreditasi yang efisien dan modern</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
     <!-- Profile Section -->
-    <section class="profile-section" id="profile">
+    <section id="profile" class="py-24 bg-gray-50 relative">
         <!-- Polinema Profile -->
-        <div class="profile-container">
-            <div class="profile-card">
-                <h2 class="profile-title">INFORMASI UMUM POLITEKNIK NEGERI MALANG</h2>
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="bg-white rounded-3xl p-12 shadow-2xl shadow-blue-900/8 mb-16 border border-gray-100">
+                <h2 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent">
+                  INFORMASI UMUM POLITEKNIK NEGERI MALANG
+              </h2>
+            
                 
-                <div class="profile-content">
-                    <div class="profile-image">
-                        <img src="images/as.jpg" alt="Gedung Polinema" class="main-image">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl shadow-blue-900/15">
+                        <img src="images/as.jpg" alt="Gedung Polinema" class="w-full h-96 object-cover transition-all duration-300 hover:scale-105">
                     </div>
                     
-                    <div class="profile-text">
-                        <h3 class="profile-subtitle">PROFIL KAMPUS</h3>
-                        <p>
+                    <div class="py-4">
+                        <h3 class="text-2xl font-bold mb-6 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent relative">
+                          PROFIL KAMPUS
+                          <div class="absolute -bottom-2 left-0 w-15 h-1 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] rounded-full"></div>
+                      </h3>
+                    
+                        <p class="text-lg leading-relaxed text-gray-600 mb-6">
                             Polinema adalah institusi pendidikan tinggi vokasi yang terletak di kota Malang. Malang 
                             adalah kota terbesar kedua di Jawa Timur, Indonesia. Malang merupakan tempat yang nyaman 
                             untuk belajar karena udaranya yang sejuk dan populasi yang tidak begitu padat (sekitar 
                             800 ribu penduduk). Di Malang terdapat banyak sekolah, universitas dan institusi pendidikan 
                             lainnya dengan kualitas yang bagus.
                         </p>
-                        <p>
+                        <p class="text-lg leading-relaxed text-gray-600">
                             Polinema terus berkembang untuk menjadi institusi pendidikan vokasi yang superior dan siap 
                             bersaing di dunia global. Polinema memiliki sistem pendidikan yang inovatif dan ketrampilan 
                             kompetitif yang secara global dibutuhkan oleh industri, badan pemerintahan dan masyarakat.
@@ -1854,23 +162,27 @@
         </div>
 
         <!-- Program Studi Profile -->
-        <div class="program-profile">
-            <div class="profile-container">
-                <h2 class="section-title">PROFILE PROGRAM STUDI</h2>
-                <span class="program-badge">Sistem Informasi Bisnis</span>
+        <div class="bg-white py-16 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-8">
+              <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent">
+                PROFILE PROGRAM STUDI
+            </h2>
+                <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white px-8 py-3 rounded-3xl font-semibold text-lg mx-auto w-fit mb-12 shadow-lg shadow-blue-900/30">
+                    Sistem Informasi Bisnis
+                </div>
                 
-                <div class="program-content">
-                    <div class="program-image">
-                        <img src="images/atasan.jpg" alt="Foto Prodi" class="program-img">
+                <div class="grid lg:grid-cols-2 gap-12 items-center mt-12">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl shadow-blue-900/15">
+                        <img src="images/atasan.jpg" alt="Foto Prodi" class="w-full h-80 object-cover transition-all duration-300 hover:scale-105">
                     </div>
                     
-                    <div class="program-text">
-                        <p>
+                    <div>
+                        <p class="text-lg leading-relaxed text-gray-600 mb-6">
                             Program Studi Manajemen Informatika berdiri 24 Juni 2005 berdasarkan SK Mendiknas Nomor: 2001/D/T/2005 
                             di bawah Jurusan Teknik Elektro Politeknik Negeri Malang. Mulai tahun akademik 2006/2007, kurikulum 
                             Program Studi Manajemen Informatika menggunakan kurikulum 5-1 (lima semester di kampus dan satu semester di industri).
                         </p>
-                        <p>
+                        <p class="text-lg leading-relaxed text-gray-600">
                             Program Upgrading merupakan peningkatan program studi dari Diploma Tiga menjadi Diploma Empat atau Sarjana Terapan. 
                             Berdasarkan pada Surat Keputusan Mendikbudristek Nomor 33/D/OT/2022, izin pembukaan Program Studi Sarjana Terapan 
                             Sistem Informasi Bisnis secara resmi disetujui.
@@ -1881,63 +193,68 @@
         </div>
 
         <!-- Visi Misi Section -->
-        <div class="vision-mission">
-            <div class="profile-container">
-                <h2 class="vm-title">Visi dan Misi</h2>
+        <div class="bg-gray-50 py-16">
+            <div class="max-w-7xl mx-auto px-8">
+              <h2 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent">
+                VISI dan Misi
+            </h2>
+          
                 
                 <!-- Visi -->
-                <div class="vision-section">
-                    <div class="vm-badge">VISI</div>
-                    <p class="vision-text">
+                <div class="bg-white rounded-2xl p-12 mb-12 shadow-xl shadow-blue-900/8 border border-gray-100">
+                    <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white px-6 py-2 rounded-2xl font-bold text-sm w-fit mb-6 tracking-wider">
+                        VISI
+                    </div>
+                    <p class="text-xl leading-relaxed text-gray-700 font-medium">
                         Menjadi Program Studi Unggul dalam Bidang Sistem Informasi Bisnis di Tingkat Nasional dan Internasional.
                     </p>
                 </div>
 
                 <!-- Misi -->
-                <div class="mission-section">
-                    <div class="vm-badge">MISI</div>
+                <div class="bg-white rounded-2xl p-12 shadow-xl shadow-blue-900/8 border border-gray-100">
+                    <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white px-6 py-2 rounded-2xl font-bold text-sm w-fit mb-8 tracking-wider">
+                        MISI
+                    </div>
                     
+                    <div class="flex flex-col gap-8">
+                        <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border-l-4 border-blue-900 transition-all duration-300 hover:bg-white hover:shadow-lg hover:shadow-blue-900/8 hover:translate-x-2">
+                            <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg shadow-blue-900/30">
+                                <i class="bi bi-mortarboard"></i>
+                            </div>
+                            <p class="text-base leading-relaxed text-gray-600">
+                                Melaksanakan pendidikan vokasi yang inovatif berdasarkan pada sistem pendidikan terapan dengan 
+                                memanfaatkan kemajuan teknologi, sehingga mampu menghasilkan lulusan yang berkompeten di bidang 
+                                sistem informasi bisnis.
+                            </p>
+                        </div>
                         
-                        <div class="mission-list">
-                            <div class="mission-item">
-                                <div class="mission-icon">
-                                    <i class="bi bi-mortarboard"></i>
-                                </div>
-                                <p>
-                                    Melaksanakan pendidikan vokasi yang inovatif berdasarkan pada sistem pendidikan terapan dengan 
-                                    memanfaatkan kemajuan teknologi, sehingga mampu menghasilkan lulusan yang berkompeten di bidang 
-                                    sistem informasi bisnis.
-                                </p>
+                        <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border-l-4 border-blue-900 transition-all duration-300 hover:bg-white hover:shadow-lg hover:shadow-blue-900/8 hover:translate-x-2">
+                            <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg shadow-blue-900/30">
+                                <i class="bi bi-search"></i>
                             </div>
-                            
-                            <div class="mission-item">
-                                <div class="mission-icon">
-                                    <i class="bi bi-search"></i>
-                                </div>
-                                <p>
-                                    Melaksanakan penelitian terapan berbasis produk dan jasa bidang Sistem Informasi Bisnis.
-                                </p>
+                            <p class="text-base leading-relaxed text-gray-600">
+                                Melaksanakan penelitian terapan berbasis produk dan jasa bidang Sistem Informasi Bisnis.
+                            </p>
+                        </div>
+                        
+                        <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border-l-4 border-blue-900 transition-all duration-300 hover:bg-white hover:shadow-lg hover:shadow-blue-900/8 hover:translate-x-2">
+                            <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg shadow-blue-900/30">
+                                <i class="bi bi-people"></i>
                             </div>
-                            
-                            <div class="mission-item">
-                                <div class="mission-icon">
-                                    <i class="bi bi-people"></i>
-                                </div>
-                                <p>
-                                    Melaksanakan pengabdian masyarakat dengan menggunakan kemajuan Sistem Informasi Bisnis 
-                                    untuk meningkatkan kesejahteraan.
-                                </p>
+                            <p class="text-base leading-relaxed text-gray-600">
+                                Melaksanakan pengabdian masyarakat dengan menggunakan kemajuan Sistem Informasi Bisnis 
+                                untuk meningkatkan kesejahteraan.
+                            </p>
+                        </div>
+                        
+                        <div class="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border-l-4 border-blue-900 transition-all duration-300 hover:bg-white hover:shadow-lg hover:shadow-blue-900/8 hover:translate-x-2">
+                            <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-lg shadow-blue-900/30">
+                                <i class="bi bi-globe"></i>
                             </div>
-                            
-                            <div class="mission-item">
-                                <div class="mission-icon">
-                                    <i class="bi bi-globe"></i>
-                                </div>
-                                <p>
-                                    Mewujudkan kerja sama yang saling menguntungkan dengan berbagai pihak baik di dalam 
-                                    maupun di luar negeri pada bidang Sistem Informasi Bisnis.
-                                </p>
-                            </div>
+                            <p class="text-base leading-relaxed text-gray-600">
+                                Mewujudkan kerja sama yang saling menguntungkan dengan berbagai pihak baik di dalam 
+                                maupun di luar negeri pada bidang Sistem Informasi Bisnis.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1945,173 +262,629 @@
         </div>
 
         <!-- Tujuan Program Studi -->
-        <div class="goals-section">
-            <div class="profile-container">
-                <h2 class="goals-title">Tujuan Program Studi</h2>
+        <div class="py-6">
+            <div class="max-w-7xl mx-auto px-8">
+              <h2 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent">
+                Tujuan Program Studi
+            </h2>
                 
-                <div class="goals-grid">
-                    <div class="goal-card">
-                        <div class="goal-number">1</div>
-                        <p class="goal-text">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            1
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
                             Menghasilkan lulusan bidang Sistem Informasi Bisnis yang berketuhanan, beretika dan bermoral baik, 
                             berpengetahuan dan berketerampilan tinggi, siap bekerja dan/atau berwirausaha yang mampu bersaing 
                             dalam skala nasional maupun internasional.
                         </p>
-                 
                     </div>
                     
-                    <div class="goal-card">
-                        <div class="goal-number">2</div>
-                        <p class="goal-text">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            2
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
                             Menghasilkan penelitian terapan bidang Sistem Informasi Bisnis yang berskala nasional dan internasional, 
                             meningkatkan efektivitas, efisiensi, dan produktivitas dalam dunia usaha dan industri.
                         </p>
-            
                     </div>
                     
-                    <div class="goal-card">
-                        <div class="goal-number">3</div>
-                        <p class="goal-text">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            3
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
                             Menghasilkan pengabdian kepada masyarakat yang dilaksanakan melalui penerapan dan penyebarluasan 
                             ilmu pengetahuan dan teknologi serta pemberian layanan jasa secara profesional.
                         </p>
-      
                     </div>
                     
-                    <div class="goal-card">
-                        <div class="goal-number">4</div>
-                        <p class="goal-text">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            4
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
                             Terwujudnya kerjasama yang saling menguntungkan dengan berbagai pihak baik di dalam maupun 
                             di luar negeri pada bidang Sistem Informasi Bisnis untuk meningkatkan daya saing.
                         </p>
-
                     </div>
 
-                    <div class="goal-card">
-                      <div class="goal-number">5</div>
-                      <p class="goal-text">
-                        Menghasilkan sistem manajemen pendidikan bidang sistem informasi bisnis yang memenuhi prinsip-prinsip tata kelola yang baik
-                      </p>
-
-                  </div>
-                  <div class="goal-card">
-                    <div class="goal-number">6</div>
-                    <p class="goal-text">
-                      Meningkatkan efektivitas, efisiensi, dan produktivitas dalam dunia usaha dan industri, serta mengarah pada pencapaian Hak atas Kekayaan Intelektual (HaKI), perolehan paten, dan kesejahteraan masyarakat;        </p>
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            5
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
+                            Menghasilkan sistem manajemen pendidikan bidang sistem informasi bisnis yang memenuhi prinsip-prinsip tata kelola yang baik
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-8 shadow-xl shadow-blue-900/8 border border-gray-100 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 hover:-translate-y-2">
+                        <div class="bg-gradient-to-r from-[#5282BA] to-[#7E28B1] text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-6">
+                            6
+                        </div>
+                        <p class="text-base leading-relaxed text-gray-600">
+                            Meningkatkan efektivitas, efisiensi, dan produktivitas dalam dunia usaha dan industri, serta mengarah pada pencapaian Hak atas Kekayaan Intelektual (HaKI), perolehan paten, dan kesejahteraan masyarakat;
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Modal Denah Gedung -->
-    <div id="denahModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Pilih Denah Gedung</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="bi bi-x"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <a href="https://my.matterport.com/show/?m=xufa7UrDLJe" target="_blank" class="floor-btn">
-                    <i class="bi bi-building"></i>
-                    <div>
-                        <strong>Denah Lantai 5</strong>
-                        <small>Virtual Tour 360°</small>
-                    </div>
-                </a>
-                <a href="https://my.matterport.com/show/?m=Fj8fbnjLjQq" target="_blank" class="floor-btn">
-                    <i class="bi bi-building"></i>
-                    <div>
-                        <strong>Denah Lantai 6</strong>
-                        <small>Virtual Tour 360°</small>
-                    </div>
-                </a>
-                <a href="https://my.matterport.com/show/?m=fAgiViGeZaB" target="_blank" class="floor-btn">
-                    <i class="bi bi-building"></i>
-                    <div>
-                        <strong>Denah Lantai 7</strong>
-                        <small>Virtual Tour 360°</small>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- FAQ Section -->
+<section id="faq" class="bg-gradient-to-br from-gray-50 to-blue-50 py-12">
+  <div class="container mx-auto px-4 max-w-6xl">
+      <div class="text-center mb-8">
+          <h2 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] bg-clip-text text-transparent">
+            Frequently Asked Questions
+        </h2>
+          <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+              Temukan jawaban atas pertanyaan yang sering ditanyakan seputar akreditasi program studi
+          </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+
+          <!-- FAQ Accordion -->
+          <div class="space-y-4" id="faqAccordion">
+              <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100">
+                  <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-all duration-300 group" 
+                          onclick="toggleFAQ(this)">
+                      <span class="font-semibold text-gray-800 text-lg pr-4">1. Apa itu akreditasi program studi?</span>
+                      <svg class="w-6 h-6 text-blue-500 transform transition-transform duration-300 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </button>
+                  <div class="hidden px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-gray-50">
+                      <div class="pt-4">
+                          Akreditasi program studi adalah proses evaluasi dan penilaian terhadap kualitas program studi yang dilakukan oleh lembaga akreditasi yang berwenang untuk memastikan bahwa program studi tersebut memenuhi standar kualitas yang telah ditetapkan.
+                      </div>
+                  </div>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100">
+                  <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-all duration-300 group" 
+                          onclick="toggleFAQ(this)">
+                      <span class="font-semibold text-gray-800 text-lg pr-4">2. Siapa yang melakukan akreditasi program studi di Indonesia?</span>
+                      <svg class="w-6 h-6 text-blue-500 transform transition-transform duration-300 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </button>
+                  <div class="hidden px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-gray-50">
+                      <div class="pt-4">
+                          Akreditasi dilakukan oleh Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) untuk program studi di perguruan tinggi umum, dan oleh lembaga akreditasi mandiri (LAM) untuk program studi tertentu seperti teknik, kesehatan, dan lainnya.
+                      </div>
+                  </div>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100">
+                  <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-all duration-300 group" 
+                          onclick="toggleFAQ(this)">
+                      <span class="font-semibold text-gray-800 text-lg pr-4">3. Apa tujuan dari akreditasi program studi?</span>
+                      <svg class="w-6 h-6 text-blue-500 transform transition-transform duration-300 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </button>
+                  <div class="hidden px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-gray-50">
+                      <div class="pt-4">
+                          Tujuan utama akreditasi adalah untuk menjamin kualitas pendidikan, meningkatkan daya saing lulusan, memberikan perlindungan kepada masyarakat, dan mendorong peningkatan kualitas program studi secara berkelanjutan.
+                      </div>
+                  </div>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100">
+                  <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-all duration-300 group" 
+                          onclick="toggleFAQ(this)">
+                      <span class="font-semibold text-gray-800 text-lg pr-4">4. Apa manfaat akreditasi bagi mahasiswa?</span>
+                      <svg class="w-6 h-6 text-blue-500 transform transition-transform duration-300 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </button>
+                  <div class="hidden px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-gray-50">
+                      <div class="pt-4">
+                          Mahasiswa dari program studi terakreditasi mendapatkan jaminan kualitas pendidikan, pengakuan ijazah di pasar kerja, kemudahan dalam melanjutkan studi ke jenjang yang lebih tinggi, dan kepercayaan dari dunia industri.
+                      </div>
+                  </div>
+              </div>
+
+              <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-gray-100">
+                  <button class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-all duration-300 group" 
+                          onclick="toggleFAQ(this)">
+                      <span class="font-semibold text-gray-800 text-lg pr-4">5. Berapa lama masa berlaku akreditasi program studi?</span>
+                      <svg class="w-6 h-6 text-blue-500 transform transition-transform duration-300 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </button>
+                  <div class="hidden px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 bg-gray-50">
+                      <div class="pt-4">
+                          Masa berlaku akreditasi program studi adalah 5 tahun. Setelah masa berlaku habis, program studi harus mengajukan re-akreditasi untuk mempertahankan status akreditasinya.
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+   <!-- Modal Denah Gedung -->
+<div id="denahModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+  <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full">
+          <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gradient-to-r from-[#5282BA] to-[#7E28B1] rounded-t-3xl">
+              <h3 class="text-xl font-bold text-white">Pilih Denah Gedung</h3>
+              <button onclick="closeModal()" class="p-2 hover:bg-white/20 rounded-xl transition-colors">
+                  <i class="bi bi-x text-2xl text-white"></i>
+              </button>
+          </div>
+          <div class="p-6 space-y-4">
+              <a href="https://my.matterport.com/show/?m=xufa7UrDLJe" target="_blank" class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-[#A26CD5] hover:bg-[#A26CD5]/10 transition-all duration-300 group">
+                  <i class="bi bi-building text-2xl text-[#A26CD5] group-hover:text-[#8B5AC6]"></i>
+                  <div>
+                      <div class="font-semibold text-gray-900">Denah Lantai 5</div>
+                      <div class="text-sm text-gray-500">Virtual Tour 360°</div>
+                  </div>
+              </a>
+              <a href="https://my.matterport.com/show/?m=Fj8fbnjLjQq" target="_blank" class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-[#A26CD5] hover:bg-[#A26CD5]/10 transition-all duration-300 group">
+                  <i class="bi bi-building text-2xl text-[#A26CD5] group-hover:text-[#8B5AC6]"></i>
+                  <div>
+                      <div class="font-semibold text-gray-900">Denah Lantai 6</div>
+                      <div class="text-sm text-gray-500">Virtual Tour 360°</div>
+                  </div>
+              </a>
+              <a href="https://my.matterport.com/show/?m=fAgiViGeZaB" target="_blank" class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-[#A26CD5] hover:bg-[#A26CD5]/10 transition-all duration-300 group">
+                  <i class="bi bi-building text-2xl text-[#A26CD5] group-hover:text-[#8B5AC6]"></i>
+                  <div>
+                      <div class="font-semibold text-gray-900">Denah Lantai 7</div>
+                      <div class="text-sm text-gray-500">Virtual Tour 360°</div>
+                  </div>
+              </a>
+          </div>
+      </div>
+  </div>
+</div>
+
+
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section" data-aos="fade-up" data-aos-delay="100">
-                    <div class="footer-logos">
-                        <img src="{{ asset('images/logo_polinema.png')}}" alt="Logo Polinema">
-                        <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI">
-                    </div>
-                    <h4>SIAKREDITASI</h4>
-                    <p class="footer-desc">
-                        Revolusi digital dalam pengelolaan akreditasi D4 Sistem Informasi Bisnis. 
-                        Bergabunglah dengan masa depan pendidikan tinggi.
-                    </p>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/polinema/?locale=id_ID" class="social-link facebook">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="https://www.instagram.com/polinema_campus/" class="social-link instagram">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-                        <a href="http://www.youtube.com/@PoliteknikNegeriMalangOfficial" class="social-link youtube">
-                            <i class="bi bi-youtube"></i>
-                        </a>
-                    </div>
-                </div>
+<footer class="bg-[#14031F] text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Brand Section -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+              <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+          </div>
+              <h3 class="text-2xl font-bold text-white">SIAKREDITASI</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">
+                  Revolusi digital dalam pengelolaan akreditasi D4 Sistem Informasi Bisnis. 
+                  Bergabunglah dengan masa depan pendidikan tinggi.
+              </p>
+          </div>
+
+          <!-- Kontak Kami Section -->
+          <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-white">Kontak Kami</h4>
+              <div class="space-y-3">
+                  <div class="flex items-start space-x-3">
+                      <svg class="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-gray-300 text-sm">Jl. Soekarno Hatta No.9, Malang</span>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                      </svg>
+                      <span class="text-gray-300 text-sm">(0341) 404424</span>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                      </svg>
+                      <a href="mailto:humas@polinema.ac.id" class="text-gray-300 text-sm hover:text-white transition-colors">
+                          humas@polinema.ac.id
+                      </a>
+                  </div>
+                  <div class="flex items-center space-x-3">
+                      <svg class="w-5 h-5 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd"></path>
+                      </svg>
+                      <a href="https://www.polinema.ac.id" target="_blank" class="text-gray-300 text-sm hover:text-white transition-colors">
+                          www.polinema.ac.id
+                      </a>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Lokasi Kampus Section -->
+          <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-white">Lokasi Kampus</h4>
+              <div class="bg-gray-800 rounded-lg overflow-hidden">
+                  <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.5026830854117!2d112.6161209!3d-7.946891200000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78827687d272e7%3A0x789ce9a636cd3aa2!2sPoliteknik%20Negeri%20Malang!5e0!3m2!1sid!2sid!4v1749398256498!5m2!1sid!2sid"
+                  width="100%" 
+                      height="200" 
+                      style="border:0;" 
+                      allowfullscreen="" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer-when-downgrade"
+                      class="w-full">
+                  </iframe>
+              </div>
+          </div>
+      </div>
+
+      <!-- Copyright Section -->
+      <div class="border-t border-gray-700 mt-8 pt-6">
+          <p class="text-center text-gray-400 text-sm">
+              © 2025 Jurusan Teknologi Informasi - Politeknik Negeri Malang. All rights reserved.
+          </p>
+      </div>
+  </div>
+</footer>
+</div>
+
+
+<style>
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.bg-gradient-to-br {
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+}
+
+@keyframes gradientMove {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+        
+        @keyframes floatReverse {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(20px) rotate(-180deg);
+            }
+        }
+        
+        @keyframes slideInOut {
+            0%, 100% {
+                transform: translateX(-100px) scale(0.8);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(100px) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        .animated-bg {
+            background: linear-gradient(135deg, #AFCAED 0%, #587CAA 25%, #77419C 50%, #4B5CAD 75%, #AFCAED 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 8s ease infinite;
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .float-reverse {
+            animation: floatReverse 8s ease-in-out infinite;
+        }
+        
+        .slide-animation {
+            animation: slideInOut 10s ease-in-out infinite;
+        }
+</style>
+<script>
+// Tunggu sampai DOM siap
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Kelas untuk navigation aktif
+    const activeClasses = ['bg-purple-600', 'text-white', 'shadow-lg', 'shadow-purple-600/30'];
+    const inactiveClasses = ['text-gray-700', 'hover:bg-gray-50', 'hover:text-blue-900'];
+
+    // Fungsi untuk set active navigation
+    function setActiveNav(targetId) {
+        // Reset semua navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            // Remove active classes
+            link.classList.remove(...activeClasses);
+            link.classList.remove('bg-blue-100', 'text-blue-900'); // Remove konflik class
+            // Add inactive classes
+            link.classList.add(...inactiveClasses);
+        });
+
+        // Set active untuk link yang sesuai
+        const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+        if (activeLink) {
+            // Remove inactive classes
+            activeLink.classList.remove(...inactiveClasses);
+            // Add active classes
+            activeLink.classList.add(...activeClasses);
+        }
+        
+        // Debug log
+        console.log('Active navigation set to:', targetId);
+    }
+
+    // Event listener untuk click navigation - UNIFIED HANDLING
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-target');
+            if (target) {
+                // Update navigation state
+                setActiveNav(target);
                 
-                <div class="footer-section" data-aos="fade-up" data-aos-delay="200">
-                    <h4>Kontak Kami</h4>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <span>Jl. Soekarno Hatta No.9, Malang</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="bi bi-telephone-fill"></i>
-                            <span>(0341) 404424</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="bi bi-envelope-fill"></i>
-                            <span>humas@polinema.ac.id</span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="bi bi-globe"></i>
-                            <span>www.polinema.ac.id</span>
-                        </div>
-                    </div>
-                </div>
+                // Scroll to target section smoothly
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
                 
-                <div class="footer-section" data-aos="fade-up" data-aos-delay="300">
-                    <h4>Lokasi Kampus</h4>
-                    <div class="map-container">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.4736746987033!2d112.61375931477563!3d-7.946115894275598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e78827687d272e7%3A0x789ce9a636cd3aa2!2sPoliteknik%20Negeri%20Malang!5e0!3m2!1sen!2sid!4v1647854123456!5m2!1sen!2sid"
-                            width="100%" 
-                            height="250" 
-                            style="border:0; border-radius: 12px;" 
-                            allowfullscreen="" 
-                            loading="lazy">
-                        </iframe>
-                    </div>
-                </div>
-            </div>
+                // Update URL hash
+                history.replaceState(null, null, `#${target}`);
+            }
+        });
+    });
+
+    // Intersection Observer dengan pengaturan yang lebih fleksibel
+    const sections = document.querySelectorAll('section[id]');
+    
+    if (sections.length > 0) {
+        const observerOptions = {
+            threshold: [0.1, 0.3, 0.5], // Multiple thresholds untuk lebih akurat
+            rootMargin: '-80px 0px -80px 0px' // Margin yang lebih kecil
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            // Cari section yang paling terlihat
+            let mostVisible = null;
+            let maxRatio = 0;
             
-            <div class="footer-bottom">
-                <p>&copy; 2025 Jurusan Teknologi Informasi - Politeknik Negeri Malang. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+                    maxRatio = entry.intersectionRatio;
+                    mostVisible = entry.target;
+                }
+            });
+            
+            // Update navigasi untuk section yang paling terlihat
+            if (mostVisible) {
+                setActiveNav(mostVisible.id);
+                // Update URL hash
+                history.replaceState(null, null, `#${mostVisible.id}`);
+            }
+        }, observerOptions);
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="js/main.js"></script>
+        // Observe semua sections
+        sections.forEach(section => {
+            observer.observe(section);
+            console.log('Observing section:', section.id); // Debug log
+        });
+    }
 
-</body>
-</html>
+    // Alternative: Manual scroll detection sebagai backup
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const scrollPos = window.scrollY + 150; // Offset untuk navbar
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionBottom = sectionTop + sectionHeight;
+                
+                // Check if current scroll position is within this section
+                if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+                    const currentActive = document.querySelector('.nav-link.bg-purple-600');
+                    const shouldBeActive = document.querySelector(`[data-target="${section.id}"]`);
+                    
+                    // Only update if different from current
+                    if (currentActive !== shouldBeActive) {
+                        setActiveNav(section.id);
+                        history.replaceState(null, null, `#${section.id}`);
+                    }
+                }
+            });
+        }, 100);
+    });
 
+    // Set active navigation berdasarkan URL hash saat halaman load
+    function initializeNavigation() {
+        const hash = window.location.hash.replace('#', '');
+        const targetId = hash || 'beranda'; // Default ke beranda
+        
+        setActiveNav(targetId);
+        
+        // Scroll ke section jika ada hash
+        if (hash) {
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                setTimeout(() => {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
+            }
+        }
+    }
+
+    // Initialize navigation
+    initializeNavigation();
+
+    // Update active navigation saat hash berubah (browser back/forward)
+    window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.replace('#', '');
+        const targetId = hash || 'beranda';
+        setActiveNav(targetId);
+        
+        // Scroll ke section
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+            targetSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+
+    // Smooth scrolling untuk anchor links (jika ada link dengan href="#...")
+    document.querySelectorAll('a[href^="#"]:not(.nav-link)').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').replace('#', '');
+            const target = document.getElementById(targetId);
+            if (target) {
+                // Scroll smoothly ke section
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                // Update navigation dan hash
+                setActiveNav(targetId);
+                history.replaceState(null, null, `#${targetId}`);
+            }
+        });
+    });
+    
+}); // End DOMContentLoaded
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const navLinks = document.getElementById('navLinks');
+    if (navLinks) {
+        navLinks.classList.toggle('hidden');
+    }
+}
+
+// Modal functions
+function openModal() {
+    const modal = document.getElementById('denahModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('denahModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+});
+  
+  // Close modal when clicking outside
+  document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('denahModal');
+      if (modal) {
+          modal.addEventListener('click', function(e) {
+              if (e.target === this) {
+                  closeModal();
+              }
+          });
+      }
+  });
+  
+  // FAQ Functions
+  function toggleFAQ(button) {
+      const answer = button.nextElementSibling;
+      const icon = button.querySelector('svg');
+      
+      // Close all other FAQ items
+      document.querySelectorAll('.bg-white').forEach(item => {
+          const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
+          const itemIcon = item.querySelector('svg');
+          if (itemAnswer && itemAnswer !== answer && !itemAnswer.classList.contains('hidden')) {
+              itemAnswer.classList.add('hidden');
+              if (itemIcon) itemIcon.classList.remove('rotate-180');
+          }
+      });
+      
+      // Toggle current FAQ item
+      answer.classList.toggle('hidden');
+      if (icon) icon.classList.toggle('rotate-180');
+  }
+  
+  // FAQ Search Function
+  document.addEventListener('DOMContentLoaded', function() {
+      const faqSearch = document.getElementById('faqSearch');
+      if (faqSearch) {
+          faqSearch.addEventListener('input', function(e) {
+              const searchTerm = e.target.value.toLowerCase();
+              const faqItems = document.querySelectorAll('#faqAccordion > div');
+              
+              faqItems.forEach(item => {
+                  const questionElement = item.querySelector('span');
+                  const answerElement = item.querySelector('div:last-child div');
+                  
+                  const question = questionElement ? questionElement.textContent.toLowerCase() : '';
+                  const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
+                  
+                  if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                      item.style.display = 'block';
+                  } else {
+                      item.style.display = 'none';
+                  }
+              });
+          });
+      }
+  });
+  </script>
+@endsection

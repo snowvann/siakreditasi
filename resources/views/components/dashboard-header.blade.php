@@ -1,154 +1,145 @@
-<header class="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-gray-200/50 shadow-xl">
-    <!-- Gradient background overlay -->
-    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5"></div>
-    
-    <div class="container mx-auto relative">
-        <div class="flex h-20 items-center justify-between px-4 md:px-6">
-            <!-- Enhanced Logo Section -->
-            <a class="flex items-center gap-4 group">
-                <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/30 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                    <img src="{{ asset('logo/logopolinema.png') }}" alt="Logo Polinema" class="h-10 w-auto">
-                    <div class="w-px h-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
-                    <img src="{{ asset('logo/logojti.png') }}" alt="Logo JTI" class="h-10 w-auto">
+<header class="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-gray-200/50 shadow-sm">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 sm:h-18 items-center justify-between">
+            <!-- KIRI: Logo Section -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <!-- Logo Container -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <img src="{{ asset('logo/logopolinema.png') }}" 
+                         alt="Logo Polinema" 
+                         class="h-8 sm:h-10 w-auto transition-all duration-200 hover:scale-105">
+                    <img src="{{ asset('logo/logojti.png') }}" 
+                         alt="Logo JTI" 
+                         class="h-8 sm:h-10 w-auto transition-all duration-200 hover:scale-105">
                 </div>
-                <div class="hidden lg:block">
-                    <div class="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                
+                                  <!-- Brand Text -->
+                <div class="hidden sm:block border-l border-gray-300 pl-3 sm:pl-4">
+                    <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent tracking-tight">
                         SIAKREDITASI
-                    </div>
-                    <div class="text-sm text-gray-500 font-medium">
+                    </h1>
+                    <p class="text-xs sm:text-sm text-gray-600 font-medium -mt-1">
                         Sistem Akreditasi D4 SIB
-                    </div>
+                    </p>
                 </div>
-            </a>
-
-            <!-- Right Side: Enhanced Avatar + Dropdown -->
-            <div class="flex items-center gap-4">
-                <!-- Notification Bell (Optional) -->
-                <div class="hidden md:flex items-center">
-                    <button class="relative p-2 rounded-xl bg-white/60 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
-                        <svg class="w-6 h-6 text-gray-600 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5v5zm-10-4V7a7 7 0 1114 0v6l2 2H3l2-2z"/>
-                        </svg>
-                        <!-- Notification dot -->
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full border-2 border-white animate-pulse"></div>
-                    </button>
+                
+                <!-- Mobile Brand Text -->
+                <div class="block sm:hidden">
+                    <h1 class="text-sm font-bold bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent">SIAKREDITASI</h1>
+                    <p class="text-xs text-gray-600 -mt-0.5">Sistem Akreditasi D4 SIB</p>
                 </div>
+            </div>
 
-                <!-- Enhanced Avatar & Dropdown -->
+            <!-- KANAN: User Section -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Notification Bell (Optional - Hidden on Mobile) -->
+                <button class="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors duration-200 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 group-hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-3.5-3.5a50.002 50.002 0 00-2.5 0zm0 0v-3a6 6 0 00-6-6v0a6 6 0 00-6 6v3m12 0H9m6 0l2 2-2 2m-6-4l-2 2 2 2" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Profil -->
                 <div x-data="{ open: false }" class="relative">
+                    <!-- Button Avatar + Arrow -->
                     <button @click="open = !open" 
-                            class="flex items-center gap-3 p-2 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/30 shadow-lg hover:shadow-xl focus:outline-none transition-all duration-300 hover:scale-105 group">
-                        <!-- Enhanced Avatar -->
-                        <div class="relative">
-                            <div class="h-12 w-12 rounded-2xl overflow-hidden border-2 border-gradient-to-r from-indigo-500 to-purple-500 shadow-lg">
-                                @if(auth()->user()->photo)
-                                    <img src="{{ asset('storage/photos/' . auth()->user()->photo) }}"
-                                         alt="User Photo"
-                                         class="object-cover w-full h-full">
-                                @else
-                                    <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-lg">
-                                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                                    </div>
-                                @endif
-                            </div>
-                            <!-- Online status indicator -->
+                            class="flex items-center gap-2 sm:gap-3 px-2 py-1 rounded-lg hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1">
+                        <!-- Avatar -->
+                        <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm ring-2 ring-white">
+                            @if(auth()->user()->photo)
+                                <img src="{{ asset('storage/photos/' . auth()->user()->photo) }}" 
+                                     alt="User Photo" 
+                                     class="object-cover w-full h-full">
+                            @else
+                                <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                </div>
+                            @endif
                         </div>
 
-                        <!-- User Info (Hidden on mobile) -->
+                        <!-- User Info (Hidden on Mobile) -->
                         <div class="hidden md:block text-left">
-                            <div class="text-sm font-semibold text-gray-800 leading-tight">
-                                {{ Str::limit(auth()->user()->name, 15) }}
-                            </div>
-                            <div class="text-xs text-gray-500 capitalize font-medium">
-                                {{ auth()->user()->role }}
-                            </div>
+                            <p class="text-sm font-semibold text-gray-900 leading-tight">
+                                {{ auth()->user()->name }}
+                            </p>
+                            <p class="text-xs text-gray-500 leading-tight">
+                                {{ ucfirst(auth()->user()->role) }}
+                            </p>
                         </div>
 
-                        <!-- Enhanced Arrow -->
-                        <svg class="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-all duration-200 transform group-hover:rotate-180" 
-                             fill="currentColor" viewBox="0 0 20 20">
+                        <!-- Chevron -->
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="w-4 h-4 text-gray-500 transition-transform duration-200"
+                             :class="{ 'rotate-180': open }"
+                             viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.084l3.71-3.855a.75.75 0 111.08 1.04l-4.25 4.417a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                         </svg>
                     </button>
 
-                    <!-- Enhanced Dropdown -->
-                    <div
-                        x-show="open"
-                        @click.away="open = false"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95 transform translate-y-2"
-                        x-transition:enter-end="opacity-100 scale-100 transform translate-y-0"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100 transform translate-y-0"
-                        x-transition:leave-end="opacity-0 scale-95 transform translate-y-2"
-                        class="absolute right-0 mt-4 w-72 bg-white/90 backdrop-blur-lg border border-gray-200/50 rounded-3xl shadow-2xl z-50 overflow-hidden"
-                    >
-                        <!-- Enhanced Header Info -->
-                        <div class="relative p-6 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
-                            <div class="absolute inset-0 bg-black/10"></div>
-                            <div class="relative flex items-center gap-4">
-                                <div class="h-16 w-16 rounded-2xl overflow-hidden border-3 border-white/30 shadow-xl">
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" 
+                         @click.away="open = false" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 scale-95 translate-y-1"
+                         class="absolute right-0 mt-3 w-72 sm:w-80 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50">
+                        
+                        <!-- Header -->
+                        <div class="px-4 sm:px-6 py-4 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="h-12 w-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
                                     @if(auth()->user()->photo)
-                                        <img src="{{ asset('storage/photos/' . auth()->user()->photo) }}"
-                                             alt="User Photo"
+                                        <img src="{{ asset('storage/photos/' . auth()->user()->photo) }}" 
+                                             alt="User Photo" 
                                              class="object-cover w-full h-full">
                                     @else
-                                        <div class="h-full w-full flex items-center justify-center bg-white/20 text-white font-bold text-xl">
+                                        <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
                                             {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                                         </div>
                                     @endif
                                 </div>
-                                <div class="text-white">
-                                    <p class="text-lg font-bold leading-tight">{{ auth()->user()->name }}</p>
-                                    <p class="text-white/80 capitalize font-medium">{{ auth()->user()->role }}</p>
-                              
+                                <div>
+                                    <p class="text-sm font-bold text-gray-900">{{ auth()->user()->name }}</p>
+                                    <p class="text-sm text-gray-600">{{ ucfirst(auth()->user()->role) }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Menu Items -->
-                        <div class="p-2">
-                            <!-- Profile Section -->
-                            <div class="space-y-1">
-                                <a href="{{ route('profile') }}" 
-                                   class="flex items-center gap-3 px-4 py-3 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-200 rounded-2xl group">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold text-gray-800">Profil Saya</div>
-                                        <div class="text-xs text-gray-500">Kelola informasi pribadi</div>
-                                    </div>
-                                    <svg class="w-4 h-4 text-gray-400 ml-auto group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        <div class="py-2">
+                            <a href="{{ route('profile') }}" 
+                               class="flex items-center px-4 sm:px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150 group">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-blue-100 transition-colors duration-150 mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
-                                </a>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Profil Saya</p>
+                                    <p class="text-xs text-gray-500">Kelola informasi profil</p>
+                                </div>
+                            </a>
 
-                                <!-- Settings (Optional) -->
-                                
-                            </div>
+                            <!-- Divider -->
+                            <div class="mx-4 sm:mx-6 my-2 border-t border-gray-100"></div>
 
-                            <hr class="my-3 border-gray-200">
-
-                            <!-- Enhanced Logout -->
+                            <!-- Logout -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
-                                        class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gradient-to-r hover:from-red-50 hover:to-rose-50 transition-all duration-200 rounded-2xl group">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-red-100 to-rose-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6-4v8"/>
+                                        class="w-full flex items-center px-4 sm:px-6 py-3 text-red-600 hover:bg-red-50 transition-colors duration-150 group">
+                                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 group-hover:bg-red-200 transition-colors duration-150 mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 12V4" />
                                         </svg>
                                     </div>
                                     <div class="text-left">
-                                        <div class="font-semibold text-red-600">Keluar</div>
-                                        <div class="text-xs text-red-500">Logout dari sistem</div>
+                                        <p class="text-sm font-medium">Keluar</p>
+                                        <p class="text-xs text-red-500">Logout dari sistem</p>
                                     </div>
-                                    <svg class="w-4 h-4 text-red-400 ml-auto group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
                                 </button>
                             </form>
                         </div>
@@ -157,38 +148,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Bottom border gradient -->
-    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
 </header>
-
-<style>
-    /* Enhanced dropdown animations */
-    [x-cloak] { display: none !important; }
-    
-    /* Custom gradient borders */
-    .border-gradient-to-r {
-        border-image: linear-gradient(to right, #6366f1, #8b5cf6) 1;
-    }
-    
-    /* Smooth hover effects */
-    .group:hover .group-hover\:rotate-180 {
-        transform: rotate(180deg);
-    }
-    
-    /* Custom backdrop blur for better browser support */
-    .backdrop-blur-lg {
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-    }
-    
-    /* Enhanced shadow effects */
-    .shadow-2xl {
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-    
-    /* Smooth animations */
-    * {
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-</style>
