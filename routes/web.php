@@ -83,10 +83,12 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
     // User Management Routes
     Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
     Route::get('/manage/user/{id}', [SuperAdminController::class, 'manageUser'])->name('superadmin.manage.user');
-    Route::put('/manage/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
+    Route::post('/manage/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
     Route::delete('/manage/user/{id}', [SuperAdminController::class, 'deleteUser'])->name('superadmin.delete.user');
 
     // Kriteria Management Routes
+    // SuperAdmin Routes - Tambahkan route baru untuk get user data
+    Route::get('/manage/user/{id}/data', [SuperAdminController::class, 'getUserData'])->name('superadmin.manage.user.data');
     Route::get('/manage/kriteria', [SuperAdminController::class, 'manageKriteria'])->name('superadmin.manage.kriteria');
     Route::get('/manage/kriteria/{id}', [SuperAdminController::class, 'manageKriteriaDetail'])->name('superadmin.manage.kriteria.detail');
     Route::put('/manage/kriteria/{id}', [SuperAdminController::class, 'updateKriteria'])->name('superadmin.update.kriteria');

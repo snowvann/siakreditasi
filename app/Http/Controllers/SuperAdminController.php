@@ -7,6 +7,7 @@ use App\Models\Kriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Notifikasi;
 
 class SuperAdminController extends Controller
@@ -119,66 +120,140 @@ class SuperAdminController extends Controller
             });
         }
 
-        $users = $usersQuery->paginate(10); // Fetch paginated users with search
+        $users = $usersQuery->paginate(10);
         return view('superadmin.users.manage', compact('users', 'search'));
     }
 
-    public function manageUser($id)
+    // API untuk mendapatkan data user untuk edit modal
+    public function getUserData($id)
     {
-        $user = User::findOrFail($id);
-        return view('superadmin.users.manage', compact('user'));
-    }
-
-    public function updateUser(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|unique:users,username,' . $id,
-            'role' => 'required|in:Validator,Anggota,SuperAdmin', // Adjusted to match migration enum
-            'is_active' => 'required|boolean'
-        ]);
-
-        $user = User::findOrFail($id);
-        $currentUser = Auth::user();
-
-        // Prevent self-demotion or role change to lower than current user
-        if ($user->id === $currentUser->id) {
-            if ($request->role !== 'SuperAdmin') {
-                return back()->with('error', 'You cannot change your own role from SuperAdmin!');
-            }
-        } elseif ($request->role === 'SuperAdmin' && $currentUser->role !== 'SuperAdmin') {
-            return back()->with('error', 'You do not have permission to promote to SuperAdmin!');
+        try {
+            $user = User::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'role' => $user->role,
+                    'is_active' => $user->is_active
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan'
+            ], 404);
         }
-
-        $user->update($request->only(['name', 'username', 'role', 'is_active']));
-
-        Log::info("SuperAdmin {$currentUser->name} updated user {$user->name} (ID: {$user->id})");
-
-        return redirect()->route('superadmin.manage.users')
-            ->with('success', 'User updated successfully');
     }
 
+    // Menambah user baru
+    public function storeUser(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|unique:users,username|max:255',
+                'role' => 'required|in:anggota,validator,superadmin',
+                'is_active' => 'required|boolean'
+            ]);
+
+            $user = User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'password' => Hash::make('password123'), // Default password
+                'role' => $request->role,
+                'is_active' => $request->is_active
+            ]);
+
+            Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil ditambahkan'
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error adding user: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Update user
+    public function updateUser(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|exists:users,id',
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username,' . $request->id,
+                'role' => 'required|in:anggota,validator,superadmin',
+                'is_active' => 'required|boolean'
+            ]);
+
+            $user = User::findOrFail($request->id);
+            $currentUser = Auth::user();
+
+            // Prevent self-demotion
+            if ($user->id === $currentUser->id && $request->role !== 'superadmin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak dapat mengubah role diri sendiri!'
+                ], 403);
+            }
+
+            $user->update([
+                'name' => $request->name,
+                'username' => $request->username,
+                'role' => $request->role,
+                'is_active' => $request->is_active
+            ]);
+
+            Log::info("SuperAdmin {$currentUser->name} updated user {$user->name} (ID: {$user->id})");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error updating user: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Delete user
     public function deleteUser($id)
     {
-        $user = User::findOrFail($id);
-        $currentUser = Auth::user();
+        try {
+            $user = User::findOrFail($id);
+            $currentUser = Auth::user();
 
-        // Prevent self-deletion
-        if ($user->id === $currentUser->id) {
-            return back()->with('error', 'You cannot delete yourself!');
+            // Prevent self-deletion
+            if ($user->id === $currentUser->id) {
+                return redirect()->back()->with('error', 'Anda tidak dapat menghapus diri sendiri!');
+            }
+
+            $userName = $user->name;
+            $user->delete();
+
+            Log::warning("SuperAdmin {$currentUser->name} deleted user {$userName} (ID: {$id})");
+
+            return redirect()->route('superadmin.manage.users')
+                ->with('success', "User {$userName} berhasil dihapus");
+        } catch (\Exception $e) {
+            Log::error("Error deleting user: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus user');
         }
-
-        $user->delete();
-
-        Log::warning("SuperAdmin {$currentUser->name} deleted user {$user->name} (ID: {$user->id})");
-
-        return redirect()->route('superadmin.manage.users')
-            ->with('success', 'User deleted successfully');
     }
 
     public function manageKriteria()
     {
-        $kriterias = Kriteria::paginate(10); // Fetch all kriteria for management
+        $kriterias = Kriteria::paginate(10);
         return view('superadmin.kriteria.manage', compact('kriterias'));
     }
 
@@ -210,7 +285,6 @@ class SuperAdminController extends Controller
         $judul = "Kriteria {$kriteria->nama_kriteria} Diperbarui";
         $pesan = "SuperAdmin {$superadmin->name} telah memperbarui kriteria ini";
 
-        // Send to Validators
         $recipients = User::where('role', 'Validator')->get();
 
         foreach ($recipients as $recipient) {
@@ -227,7 +301,13 @@ class SuperAdminController extends Controller
 
     public function manageAccess()
     {
-        $users = User::all(); // Fetch all users for access management
+        $users = User::all();
         return view('superadmin.access.manage', compact('users'));
+    }
+    
+    public function manageUser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('superadmin.users.detail', compact('user'));
     }
 }

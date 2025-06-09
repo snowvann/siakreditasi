@@ -5,16 +5,16 @@
     @include('components.dashboard-header')
     
     <!-- Enhanced Header Section -->
-    <div class="relative">
-        <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>
-        <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div class="space-y-2">
-                    <h1 class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                        Manajemen User
-                    </h1>
-                    <p class="text-gray-600 text-lg">Kelola pengguna dan hak akses mereka secara efisien</p>
-                </div>
+    <main class="container mx-auto px-4 py-8">
+    <div class="relative z-10">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>
+                <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 pb-25 shadow-xl border border-white/20 min-h-[170px]"> 
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <div class="space-y-4">
+                            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                Manajemen User</h1>
+                            <p class="text-gray-600 text-lg mt-5">Kelola pengguna dan hak akses mereka secara efisien</p>
+            </div>
                 
                 <!-- Enhanced Search -->
                 <div class="w-full lg:w-96">
@@ -41,13 +41,13 @@
     </div>
 
     <!-- Header Actions -->
-    <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <!-- Add User Button - Will trigger modal -->
-        <button onclick="openAddUserModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
-            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
-            Tambah User
-        </button>
-    </div>
+<div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- Add User Button -->
+    <button onclick="openAddUserModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+        <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+        Tambah User
+    </button>
+</div>
 
     <!-- Filters -->
     <div class="container mx-auto px-6">
@@ -134,6 +134,34 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum login' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex items-center gap-2">
+                                            <!-- Di bagian tombol aksi (ganti seluruh td terakhir) -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex items-center gap-2">
+                                                <!-- Edit Button -->
+                                                <button onclick="openEditUserModal({{ $user->id }})"
+                                                        class="text-white bg-blue-600 hover:bg-blue-700 rounded-md p-2 transition-colors duration-200 flex items-center">
+                                                    <i data-lucide="edit" class="w-4 h-4 mr-1"></i>
+                                                    <span>Edit</span>
+                                                </button>
+                                                
+                                                <!-- Delete Button -->
+                                                <button onclick="if(confirm('Yakin ingin menghapus user {{ $user->name }}?')) { document.getElementById('delete-form-{{ $user->id }}').submit(); }" 
+                                                        class="text-white bg-red-600 hover:bg-red-700 rounded-md p-2 transition-colors duration-200 flex items-center">
+                                                    <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>
+                                                    <span>Hapus</span>
+                                                </button>
+                                                
+                                                <!-- Delete Form (hidden) -->
+                                                <form id="delete-form-{{ $user->id }}" 
+                                                    action="{{ route('superadmin.delete.user', $user->id) }}" 
+                                                    method="POST" 
+                                                    style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <div class="flex items-center gap-2">
                                         <button onclick="openEditUserModal({{ $user->id }})" class="text-blue-600 hover:text-blue-800">
                                             <i data-lucide="edit" class="w-4 h-4"></i>
                                         </button>
@@ -306,72 +334,68 @@
     function closeAddUserModal() {
         document.getElementById('addUserModal').classList.add('hidden');
     }
-
-    function openEditUserModal(userId) {
-        fetch(`/superadmin/manage/user/${userId}`)
-            .then(response => response.json())
-            .then(user => {
-                document.getElementById('editUserId').value = user.id;
-                document.getElementById('editName').value = user.name;
-                document.getElementById('editUsername').value = user.username;
-                document.getElementById('editRole').value = user.role;
-                document.getElementById('editIsActive').value = user.is_active ? '1' : '0';
-                document.getElementById('editUserModal').classList.remove('hidden');
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
     function closeEditUserModal() {
         document.getElementById('editUserModal').classList.add('hidden');
     }
 
-    function saveUser() {
-        const form = document.getElementById('addUserForm');
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    function openEditUserModal(userId) {
+    fetch(`/superadmin/manage/user/${userId}/data`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.json();
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
+        .then(user => {
+            if (user.success) {
+                document.getElementById('editUserId').value = user.data.id;
+                document.getElementById('editName').value = user.data.name;
+                document.getElementById('editUsername').value = user.data.username;
+                document.getElementById('editRole').value = user.data.role;
+                document.getElementById('editIsActive').value = user.data.is_active ? '1' : '0';
+                document.getElementById('editUserModal').classList.remove('hidden');
             } else {
-                alert('Gagal menambahkan user: ' + (data.message || 'Error tidak diketahui'));
+                alert('Gagal memuat data user: ' + user.message);
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memuat data user');
+        });
+}
 
-        closeAddUserModal();
-    }
+function updateUser() {
+    const formData = new FormData();
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+    formData.append('_method', 'PUT');
+    formData.append('id', document.getElementById('editUserId').value);
+    formData.append('name', document.getElementById('editName').value);
+    formData.append('username', document.getElementById('editUsername').value);
+    formData.append('role', document.getElementById('editRole').value);
+    formData.append('is_active', document.getElementById('editIsActive').value);
 
-    function updateUser() {
-        const form = document.getElementById('editUserForm');
-        const formData = new FormData(form);
+    fetch('/superadmin/manage/user/' + document.getElementById('editUserId').value, {
+        method: 'POST',
+        body: formData
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Gagal mengupdate user: ' + (data.message || 'Error tidak diketahui'));
-            }
-        })
-        .catch(error => console.error('Error:', error));
 
-        closeEditUserModal();
-    }
+
+        
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('User berhasil diperbarui');
+            location.reload();
+        } else {
+            alert('Gagal memperbarui user: ' + (data.message || 'Error tidak diketahui'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memperbarui user');
+    });
+}
 
     // Filter users based on search and role
     function filterUsers() {

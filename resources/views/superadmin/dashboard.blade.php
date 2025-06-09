@@ -6,33 +6,32 @@
 
     <main class="container mx-auto px-4 py-8">
        <div class="relative z-10">
-    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>
-    <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 pb-25 shadow-xl border border-white/20 min-h-[170px]"> 
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div class="space-y-4">
-               <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-    Admin Management
-</h1>
-                <p class="text-gray-600 text-lg mt-5">Kelola dan pantau semua kriteria akreditasi institusi</p>
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>
+                <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 pb-25 shadow-xl border border-white/20 min-h-[170px]"> 
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <div class="space-y-4">
+                            <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                Admin Management</h1>
+                            <p class="text-gray-600 text-lg mt-5">Kelola dan pantau semua kriteria akreditasi institusi</p>
             </div>
             
             <!-- Enhanced Search -->
             <div class="w-full lg:w-96">
                 <form method="GET" class="relative group">
                     <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
-                    <div class="relative bg-white rounded-2xl shadow-lg border border-gray-200/50">
-                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
-                            </svg>
-                        </div>
-                                    <input
-                                        type="search"
-                                        name="q"
-                                        value="{{ request('q') }}"
-                                        placeholder="Cari kriteria atau subkriteria..."
-                                        class="w-full pl-12 pr-6 py-4 bg-transparent border-0 rounded-2xl focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-400"
-                                    />
+                        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-200/50">
+                            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
+                                        </svg>
+                                    </div>
+                            <input
+                                type="search"
+                                name="q"
+                                value="{{ request('q') }}"
+                                placeholder="Cari kriteria atau subkriteria..."
+                                class="w-full pl-12 pr-6 py-4 bg-transparent border-0 rounded-2xl focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-400"
+                            />
                                 </div>
                             </form>
                         </div>
@@ -40,25 +39,32 @@
                 </div>
             </div>
     <!-- Admin Panel Section -->
-<div class="container mx-auto px-6 py-10">
+<div class="container mx-auto px-4 py-8">
     <div class="flex justify-center">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-9xl w-full">
             <!-- Card Template Start -->
             @php
                 $cards = [
                     [
-                        'title' => 'User Management',
-                        'desc' => 'Add, edit, and delete users',
+                        'title' => 'Manajemen Pengguna',
+                        'desc' => 'Menambahkan, mengubah dan menghapus pengguna',
                         'img' => 'images/user-icon.png',
                         'route' => route('superadmin.manage.users'),
-                        'btn' => 'Manage Users',
+                        'btn' => 'Manajemen Pengguna',
                     ],
                     [
-                        'title' => 'Criteria & Subcriteria Management',
-                        'desc' => 'Add, edit, and delete criteria and subcriteria',
+                        'title' => 'Manajemen Kriteria dan Subkriteria',
+                        'desc' => 'Menambahkan, mengubah dan menghapus Kriteria dan Subkriteria',
                         'img' => 'images/criteria-icon.png',
                         'route' => route('superadmin.manage.kriteria'),
-                        'btn' => 'Manage Criteria',
+                        'btn' => 'Manajemen Kriteria dan Subkriteria',
+                    ],
+                    [
+                        'title' => 'Riwayat Perubahan Kriteria',
+                        'desc' => 'Menampilkan riwayat pengisian kriteria yang dilakukan oleh anggota',
+                        'img' => 'images/criteria-icon.png',
+                        'route' => route('superadmin.manage.kriteria'),
+                        'btn' => 'Riwayat Perubahan Kriteria',
                     ]
                 ];
             @endphp
@@ -74,10 +80,11 @@
                         </a>
                     </div>
                 </div>
-            @endforeach
-            <!-- Card Template End -->
+                @endforeach
+                <!-- Card Template End -->
+            </div>
         </div>
-    </div>
+    </main>
 </div>
 
 <!-- Initialize Lucide Icons -->
