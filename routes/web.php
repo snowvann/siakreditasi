@@ -80,11 +80,17 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
     Route::get('/kriteria/{id}/preview-pdf', [SuperAdminController::class, 'previewPdf'])->name('superadmin.kriteria.preview');
     Route::post('/kriteria/{id}/validate', [SuperAdminController::class, 'validateKriteria'])->name('superadmin.kriteria.validate');
 
-    // User Management Routes
+    // User Management Routes (SuperAdmin)
+    Route::prefix('/manage/user')->name('superadmin.')->group(function () {
+        Route::get('/{id}/data', [SuperAdminController::class, 'getUserData'])->name('user.data');
+        Route::post('/', [SuperAdminController::class, 'storeUser'])->name('user.store');
+        Route::post('/{id}', [SuperAdminController::class, 'updateUser'])->name('user.update');
+        Route::delete('/{id}', [SuperAdminController::class, 'deleteUser'])->name('delete.user'); // <- INI YANG DICARI
+    });
+
+    // Untuk menampilkan list user
     Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
-    Route::get('/manage/user/{id}', [SuperAdminController::class, 'manageUser'])->name('superadmin.manage.user');
-    Route::post('/manage/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
-    Route::delete('/manage/user/{id}', [SuperAdminController::class, 'deleteUser'])->name('superadmin.delete.user');
+
 
     // Kriteria Management Routes
     // SuperAdmin Routes - Tambahkan route baru untuk get user data
@@ -92,6 +98,8 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
     Route::get('/manage/kriteria', [SuperAdminController::class, 'manageKriteria'])->name('superadmin.manage.kriteria');
     Route::get('/manage/kriteria/{id}', [SuperAdminController::class, 'manageKriteriaDetail'])->name('superadmin.manage.kriteria.detail');
     Route::put('/manage/kriteria/{id}', [SuperAdminController::class, 'updateKriteria'])->name('superadmin.update.kriteria');
+    Route::post('/manage/user/store', [SuperAdminController::class, 'storeUser'])->name('superadmin.store.user');
+    Route::put('/manage/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
 
     // Access Management Routes
     Route::get('/manage/access', [SuperAdminController::class, 'manageAccess'])->name('superadmin.manage.access');
