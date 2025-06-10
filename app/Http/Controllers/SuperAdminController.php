@@ -182,21 +182,19 @@ class SuperAdminController extends Controller
     }
 
     // Update user
-    public function updateUser(Request $request)
+    public function updateUser(Request $request, $id)
     {
         try {
             $request->validate([
-                'id' => 'required|exists:users,id',
                 'name' => 'required|string|max:255',
-                'username' => 'required|string|max:255|unique:users,username,' . $request->id,
+                'username' => 'required|string|max:255|unique:users,username,' . $id,
                 'role' => 'required|in:anggota,validator,superadmin',
                 'is_active' => 'required|boolean'
             ]);
 
-            $user = User::findOrFail($request->id);
+            $user = User::findOrFail($id);
             $currentUser = Auth::user();
 
-            // Prevent self-demotion
             if ($user->id === $currentUser->id && $request->role !== 'superadmin') {
                 return response()->json([
                     'success' => false,
@@ -204,12 +202,7 @@ class SuperAdminController extends Controller
                 ], 403);
             }
 
-            $user->update([
-                'name' => $request->name,
-                'username' => $request->username,
-                'role' => $request->role,
-                'is_active' => $request->is_active
-            ]);
+            $user->update($request->only(['name', 'username', 'role', 'is_active']));
 
             Log::info("SuperAdmin {$currentUser->name} updated user {$user->name} (ID: {$user->id})");
 
@@ -225,6 +218,7 @@ class SuperAdminController extends Controller
             ], 500);
         }
     }
+
 
     // Delete user
     public function deleteUser($id)

@@ -13,7 +13,7 @@
                          class="h-8 sm:h-10 w-auto transition-all duration-200 hover:scale-105">
                 </div>
                 
-                                  <!-- Brand Text -->
+                    <!-- Brand Text -->
                 <div class="hidden sm:block border-l border-gray-300 pl-3 sm:pl-4">
                     <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent tracking-tight">
                         SIAKREDITASI
@@ -32,11 +32,12 @@
 
             <!-- KANAN: User Section -->
             <div class="flex items-center gap-2 sm:gap-4">
-                <!-- Notification Bell (Optional - Hidden on Mobile) -->
+                
+                <!-- Notification Bell Icon (Sesuai Gambar) -->
                 <button class="hidden sm:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-colors duration-200 group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 group-hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-3.5-3.5a50.002 50.002 0 00-2.5 0zm0 0v-3a6 6 0 00-6-6v0a6 6 0 00-6 6v3m12 0H9m6 0l2 2-2 2m-6-4l-2 2 2 2" />
-                    </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 group-hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1h6z" />
+                </svg>
                 </button>
 
                 <!-- Dropdown Profil -->
@@ -132,8 +133,10 @@
                                 <button type="submit"
                                         class="w-full flex items-center px-4 sm:px-6 py-3 text-red-600 hover:bg-red-50 transition-colors duration-150 group">
                                     <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-100 group-hover:bg-red-200 transition-colors duration-150 mr-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 12V4" />
+                                        <!-- Ikon baru di sini -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 17L15 12L10 7V10H3V14H10V17Z" />
+                                        <path d="M19 3H11C10.45 3 10 3.45 10 4V7H12V5H18V19H12V17H10V20C10 20.55 10.45 21 11 21H19C19.55 21 20 20.55 20 20V4C20 3.45 19.55 3 19 3Z" />
                                         </svg>
                                     </div>
                                     <div class="text-left">

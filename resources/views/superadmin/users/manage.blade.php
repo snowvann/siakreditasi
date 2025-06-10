@@ -185,169 +185,42 @@
     </div>
 </div>
 
-<!-- Add User Modal -->
-<div id="addUserModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-        
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Tambah User Baru</h3>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-500">Masukkan informasi user baru yang akan ditambahkan ke sistem.</p>
-                            
-                            {{-- <form id="addUserForm" action="{{ route('superadmin.update.user') }}" method="POST" class="space-y-4 mt-4"> --}}
-                                @csrf
-                                <input type="hidden" name="id" id="userId" value="0">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                        <input type="text" id="name" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                                        <input type="text" id="username" name="username" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="role" class="block text-sm font-medium text-gray-700">Peran</label>
-                                        <select id="role" name="role" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="anggota">Anggota</option>
-                                            <option value="validator">Validator</option>
-                                            <option value="superadmin">Super Admin</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="is_active" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="is_active" name="is_active" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="1">Aktif</option>
-                                            <option value="0">Nonaktif</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" onclick="saveUser()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                    Tambah User
-                </button>
-                <button type="button" onclick="closeAddUserModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit User Modal -->
-<div id="editUserModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-        
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Edit User</h3>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-500">Ubah informasi user yang dipilih.</p>
-                            
-                            {{-- <form id="editUserForm" action="{{ route('superadmin.update.user') }}" method="POST" class="space-y-4 mt-4"> --}}
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="id" id="editUserId">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="editName" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                        <input type="text" id="editName" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
-                                    <div>
-                                        <label for="editUsername" class="block text-sm font-medium text-gray-700">Username</label>
-                                        <input type="text" id="editUsername" name="username" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="editRole" class="block text-sm font-medium text-gray-700">Peran</label>
-                                        <select id="editRole" name="role" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="anggota">Anggota</option>
-                                            <option value="validator">Validator</option>
-                                            <option value="superadmin">Super Admin</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="editIsActive" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="editIsActive" name="is_active" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="1">Aktif</option>
-                                            <option value="0">Nonaktif</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" onclick="updateUser()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                    Simpan Perubahan
-                </button>
-                <button type="button" onclick="closeEditUserModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Di bagian akhir file, sebelum script -->
+@include('superadmin.users.create')
+@include('superadmin.users.edit')
 <!-- JavaScript for functionality -->
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
 
     // Modal functions
-    function openAddUserModal() {
-        document.getElementById('addUserModal').classList.remove('hidden');
-        document.getElementById('userId').value = 0;
-        document.getElementById('name').value = '';
-        document.getElementById('username').value = '';
-        document.getElementById('role').value = 'anggota';
-        document.getElementById('is_active').value = '1';
-    }
+function openAddUserModal() {
+    document.getElementById('addUserModal').classList.remove('hidden');
+    document.getElementById('userId').value = 0;
+    document.getElementById('name').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('role').value = 'anggota';
+    document.getElementById('is_active').value = '1';
+}
 
-    function closeAddUserModal() {
-        document.getElementById('addUserModal').classList.add('hidden');
-    }
-    function closeEditUserModal() {
-        document.getElementById('editUserModal').classList.add('hidden');
-    }
+function closeAddUserModal() {
+    document.getElementById('addUserModal').classList.add('hidden');
+}
 
-    function openEditUserModal(userId) {
+function closeEditUserModal() {
+    document.getElementById('editUserModal').classList.add('hidden');
+}
+
+function openEditUserModal(userId) {
     fetch(`/superadmin/manage/user/${userId}/data`)
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
         .then(user => {
             if (user.success) {
+                const form = document.getElementById('editUserForm');
+                form.action = `/superadmin/manage/user/${user.data.id}`;
                 document.getElementById('editUserId').value = user.data.id;
                 document.getElementById('editName').value = user.data.name;
                 document.getElementById('editUsername').value = user.data.username;
@@ -362,39 +235,6 @@
             console.error('Error:', error);
             alert('Terjadi kesalahan saat memuat data user');
         });
-}
-
-function updateUser() {
-    const formData = new FormData();
-    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-    formData.append('_method', 'PUT');
-    formData.append('id', document.getElementById('editUserId').value);
-    formData.append('name', document.getElementById('editName').value);
-    formData.append('username', document.getElementById('editUsername').value);
-    formData.append('role', document.getElementById('editRole').value);
-    formData.append('is_active', document.getElementById('editIsActive').value);
-
-    fetch('/superadmin/manage/user/' + document.getElementById('editUserId').value, {
-        method: 'POST',
-        body: formData
-
-
-
-        
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('User berhasil diperbarui');
-            location.reload();
-        } else {
-            alert('Gagal memperbarui user: ' + (data.message || 'Error tidak diketahui'));
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat memperbarui user');
-    });
 }
 
     // Filter users based on search and role
@@ -419,5 +259,57 @@ function updateUser() {
         
         document.getElementById('userCount').textContent = visibleCount;
     }
+
+    function addUser() {
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+        formData.append('name', document.getElementById('name').value);
+        formData.append('username', document.getElementById('username').value);
+        formData.append('role', document.getElementById('role').value);
+        formData.append('is_active', document.getElementById('is_active').value);
+
+        fetch('/superadmin/manage/user/store', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('User berhasil ditambahkan');
+                location.reload();
+            } else {
+                alert('Gagal menambahkan user: ' + (data.message || 'Error tidak diketahui'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menambahkan user');
+        });
+    }
+
+    function deleteUser(userId) {
+        if (!confirm('Yakin ingin menghapus user ini?')) return;
+
+        fetch(`/superadmin/manage/user/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Delete gagal');
+            return response.json();
+        })
+        .then(data => {
+            alert('User berhasil dihapus');
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal menghapus user');
+        });
+    }
+
+
 </script>
 @endsection

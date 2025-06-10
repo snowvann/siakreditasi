@@ -103,10 +103,11 @@
                       Mulai Sekarang <i class="bi bi-rocket-takeoff"></i>
                   </a>
                   <a href="#profile" 
-                  class="nav-link bg-white/20 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:-translate-y-1"
-                  data-target="profile">
-                   Lihat Profile <i class="bi bi-arrow-down"></i>
-               </a>
+                    class="nav-link text-white !text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 bg-white/20"
+                    style="color: white;"
+                    data-target="profile">
+                    Lihat Profile <i class="bi bi-arrow-down"></i>
+                    </a>
               </div>
           </div>
 

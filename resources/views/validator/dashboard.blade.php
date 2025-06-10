@@ -8,10 +8,9 @@
         <div class="grid gap-6">
             <!-- Header dan Search -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-slide-down">
-                <h1 class="text-3xl font-bold flex-shrink-0 bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent transition-all duration-300 cursor-default">
-                    Kriteria
-                </h1>
-            
+            <h1 class="text-3xl font-bold flex-shrink-0 bg-gradient-to-b from-[#EA8E32] to-[#4230BB] bg-clip-text text-transparent transition-all duration-300 cursor-default">
+                Kriteria
+            </h1>
                 <div class="flex-1 w-full">
                     <form method="GET" class="w-full">
                         <div class="relative w-full">
@@ -35,18 +34,18 @@
             </div>
 
             <!-- Progress Card -->
-            <div class="bg-gradient-to-r from-[#95A0E8] to-[#7548BE] rounded-lg shadow-sm animate-slide-up transition-all duration-300 hover:shadow-md hover:scale-[1.02] text-white">
-                <div class="p-6">
-                    <h2 class="text-lg font-semibold text-white">Progress Akreditasi</h2>
-                    <p class="text-sm text-white/80">Status keseluruhan kriteria akreditasi</p>
-                </div>
-                <div class="p-6 pt-0">
-                    <div class="space-y-2 text-sm">
-                        <p class="text-white/80">Tinjau semua kriteria di bawah ini.</p>
-                    </div>
+            <div class="bg-gradient-to-b from-[#FF9E59] to-[#5C00A7] rounded-lg shadow-sm animate-slide-up transition-all duration-300 hover:shadow-md hover:scale-[1.02] text-white">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold text-white">Progress Akreditasi</h2>
+                <p class="text-sm text-white/80">Status keseluruhan kriteria akreditasi</p>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="space-y-2 text-sm">
+                    <p class="text-white/80">Tinjau semua kriteria di bawah ini.</p>
                 </div>
             </div>
-
+        </div>
+        
             <!-- Daftar Semua Kriteria -->
             @php
                 $allKriteria = [
