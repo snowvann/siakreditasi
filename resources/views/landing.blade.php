@@ -5,9 +5,9 @@
 <!-- Navigation yang lebih kompak -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 backdrop-blur-xl bg-white/95 border-b border-gray-100">
   <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-          <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
-          <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+      <div class="flex items-center gap-2">
+          <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-10 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+          <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-10 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
       </div>
       
       <ul id="navLinks" class="hidden lg:flex gap-4 items-center py-2">

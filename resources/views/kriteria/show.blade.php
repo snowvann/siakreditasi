@@ -17,8 +17,10 @@
                         </svg>
                     </a>
                     <div class="flex-1 min-w-0">
-                        <h1 class="text-2xl font-bold text-blue-900 break-words">{{ $kriteriaData['nama_kriteria'] }}</h1>
-                        <p class="text-sm text-gray-500 break-words">{{ $kriteriaData['deskripsi'] }}</p>
+                        <h1 class="text-2xl font-bold flex-shrink-0 bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent transition-all duration-300 cursor-default">
+                            Kriteria {{ $kriteriaData['id'] }}
+                        </h1>
+                    <p class="text-sm text-gray-500 break-words">{{ $kriteriaData['nama_kriteria'] }}</p>
                     </div>
                 </div>
 
