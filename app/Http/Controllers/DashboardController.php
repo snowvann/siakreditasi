@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Kriteria;
+use App\Models\Isian;
 
 class DashboardController extends Controller
 {
@@ -32,22 +33,64 @@ class DashboardController extends Controller
         return view('superAdmin.dashboard', compact('user'));
     }
 
-    public function index()
-    {
-        // Total pengguna
-        $totalUsers = User::count();
+    public function index(Request $request)
+{
+    $query = $request->input('q');
 
-        // Ambil data kriteria dan hitung progres berdasarkan jumlah submissions
-        $kriteriaData = Kriteria::withCount('submissions')->get()->map(function ($kriteria) use ($totalUsers) {
-            $progress = $totalUsers > 0 ? min(100, ($kriteria->submissions_count / $totalUsers) * 100) : 0;
+    $kriteriaQuery = Kriteria::with(['subkriteria'])->withCount([
+        'subkriteria as totalSubkriteria',
+        'subkriteria as completedSubkriteria' => function ($q) {
+            $q->whereHas('isian'); // sesuaikan relasi jika perlu
+        }
+    ]);
 
-            return [
-                'id' => $kriteria->id,
-                'nama' => $kriteria->nama,
-                'progress' => round($progress, 2)
-            ];
+    if ($query) {
+        $kriteriaQuery->where(function ($q2) use ($query) {
+            $q2->where('nama_kriteria', 'like', '%' . $query . '%')
+                ->orWhere('status', 'like', '%' . $query . '%');
+        });
+    }
+
+    $kriteriaList = $kriteriaQuery->get();
+
+    $kriteriaData = [];
+    $totalProgressSum = 0;
+    $totalKriteriaCount = $kriteriaList->count();
+
+    foreach ($kriteriaList as $kriteria) {
+        $subKriteriaWithProgress = $kriteria->subkriteria->map(function ($subKriteria) {
+            $hasIsian = Isian::where('subkriteria_id', $subKriteria->id)
+                ->where('akreditasi_id', 1) // sesuaikan dengan akreditasi aktif
+                ->whereNotNull('nilai')
+                ->exists();
+
+            $subKriteria->has_isian = $hasIsian;
+            return $subKriteria;
         });
 
-        return view('dashboard', compact('kriteriaData', 'totalUsers'));
+        $totalSubkriteria = $kriteria->subkriteria->count();
+        $completedSubkriteria = $subKriteriaWithProgress->where('has_isian', true)->count();
+        $progressPercentage = $totalSubkriteria > 0 ? round(($completedSubkriteria / $totalSubkriteria) * 100) : 0;
+
+        $totalProgressSum += $progressPercentage;
+
+        $kriteriaData[] = [
+            'id' => $kriteria->id,
+            'nama_kriteria' => $kriteria->nama_kriteria,
+            'progressPercentage' => $progressPercentage,
+            'totalSubkriteria' => $totalSubkriteria,
+            'completedSubkriteria' => $completedSubkriteria,
+        ];
     }
+
+    $averageProgress = $totalKriteriaCount > 0 ? round($totalProgressSum / $totalKriteriaCount) : 0;
+    $totalUsers = User::count();
+
+    return view('dashboard', [
+        'kriteria' => $kriteriaData,
+        'averageProgress' => $averageProgress,
+        'totalUsers' => $totalUsers,
+    ]);
+}
+
 }

@@ -19,48 +19,68 @@ use App\Models\ValidasiLog;
 class KriteriaController extends Controller
 {
     public function show($id)
-{
-    $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
-
-    $anggotaKriteria = [
-        ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
-        ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
-    ];
-
-    // Ambil semua user yang punya level validator
-    $validatorList = User::whereNotNull('level_validator')
-        ->orderBy('level_validator')
-        ->get();
-
-    // Ambil validasi terakhir tiap user untuk kriteria ini
-    $logs = ValidasiLog::where('kriteria_id', $id)
-        ->with('user')
-        ->orderByDesc('created_at')
-        ->get()
-        ->groupBy('user_id');
-
-    $allValidasiDisplay = [];
-
-    foreach ($validatorList as $validator) {
-        $userId = $validator->id;
-        $latestLog = $logs->has($userId) ? $logs[$userId]->first() : null;
-
-        $allValidasiDisplay[] = [
-            'user' => $validator,
-            'status' => $latestLog->status ?? 'belum validasi',
-            'komentar' => $latestLog->komentar ?? '-',
-            'waktu' => $latestLog->created_at ?? null,
+    {
+        $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
+    
+        $anggotaKriteria = [
+            ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
+            ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
         ];
+    
+        // Ambil semua user yang punya level validator
+        $validatorList = User::whereNotNull('level_validator')
+            ->orderBy('level_validator')
+            ->get();
+    
+        // Ambil validasi terakhir tiap user untuk kriteria ini
+        $logs = ValidasiLog::where('kriteria_id', $id)
+            ->with('user')
+            ->orderByDesc('created_at')
+            ->get()
+            ->groupBy('user_id');
+    
+        $allValidasiDisplay = [];
+    
+        foreach ($validatorList as $validator) {
+            $userId = $validator->id;
+            $latestLog = $logs->has($userId) ? $logs[$userId]->first() : null;
+    
+            $allValidasiDisplay[] = [
+                'user' => $validator,
+                'status' => $latestLog->status ?? 'belum validasi',
+                'komentar' => $latestLog->komentar ?? '-',
+                'waktu' => $latestLog->created_at ?? null,
+            ];
+        }
+    
+        // Hitung progress untuk setiap subkriteria
+        $subKriteriaWithProgress = $kriteria->subkriteria->map(function ($subKriteria) {
+            // Cek apakah subkriteria ini sudah memiliki isian
+            $hasIsiaan = Isian::where('subkriteria_id', $subKriteria->id)
+                              ->where('akreditasi_id', 1) // atau sesuai akreditasi yang aktif
+                              ->whereNotNull('nilai')
+                              ->exists();
+            
+            $subKriteria->has_isian = $hasIsiaan;
+            return $subKriteria;
+        });
+    
+        // Hitung total progress
+        $totalSubkriteria = $kriteria->subkriteria->count();
+        $completedSubkriteria = $subKriteriaWithProgress->where('has_isian', true)->count();
+        $progressPercentage = $totalSubkriteria > 0 ? round(($completedSubkriteria / $totalSubkriteria) * 100) : 0;
+    
+        return view('kriteria.show', [
+            'kriteriaId' => $kriteria->id,
+            'kriteriaData' => $kriteria,
+            'anggotaKriteria' => $anggotaKriteria,
+            'subKriteriaList' => $subKriteriaWithProgress,
+            'validasis' => $allValidasiDisplay,
+            'progressPercentage' => $progressPercentage,
+            'totalSubkriteria' => $totalSubkriteria,
+            'completedSubkriteria' => $completedSubkriteria
+        ]);
     }
-
-    return view('kriteria.show', [
-        'kriteriaId' => $kriteria->id,
-        'kriteriaData' => $kriteria,
-        'anggotaKriteria' => $anggotaKriteria,
-        'subKriteriaList' => $kriteria->subkriteria,
-        'validasis' => $allValidasiDisplay
-    ]);
-}
 
 
     public function showSubKriteria($kriteriaId, $subKriteriaId)
