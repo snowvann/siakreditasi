@@ -82,11 +82,8 @@
                             @include('components.status-badge', ['status' => $kriteria->status])
                         </div>
                         <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                            {{ $kriteria->nama_kriteria }}
+                            Sub Kriteria {{ $kriteria->id }}
                         </h2>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            {{ $kriteria->description ?? 'Deskripsi lengkap untuk kriteria ini yang menjelaskan apa yang perlu diisi.' }}
-                        </p>
                     </div>
                 </div>
             </div>
@@ -97,8 +94,9 @@
             <div class="xl:col-span-4 2xl:col-span-3">
                 <div class="sticky top-6">
                     <div class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+                       
                         <!-- Header -->
-                        <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6">
+                        <div class="p-6" style="background: linear-gradient(to right, #832C94, #E8A344);">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

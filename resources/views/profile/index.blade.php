@@ -8,7 +8,7 @@
         <!-- Header Section -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                My Profile
+               Profil Saya
             </h1>
             <p class="text-gray-600">Manage your personal information and preferences</p>
         </div>
