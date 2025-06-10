@@ -27,14 +27,28 @@ class AuthController extends Controller
             ->where('role', ucfirst($credentials['role']))
             ->first();
 
-        Log::info('Pengguna ditemukan: ', ['user' => $user]);
-        Log::info('Pemeriksaan kata sandi: ', ['input' => $credentials['password'], 'hashed' => $user->password, 'result' => Hash::check($credentials['password'], $user->password)]);
-
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return back()->withErrors([
-                'username' => 'Username atau password salah.',
-            ])->withInput();
-        }
+            if (!$user) {
+                Log::warning('User tidak ditemukan dengan username dan role yang diberikan', $credentials);
+            
+                return back()->withErrors([
+                    'username' => 'Username atau password salah.',
+                ])->withInput();
+            }
+            
+            // Ini aman, karena $user tidak null
+            Log::info('Pengguna ditemukan: ', ['user' => $user]);
+            Log::info('Pemeriksaan kata sandi: ', [
+                'input' => $credentials['password'],
+                'hashed' => $user->password,
+                'result' => Hash::check($credentials['password'], $user->password),
+            ]);
+            
+            if (!Hash::check($credentials['password'], $user->password)) {
+                return back()->withErrors([
+                    'username' => 'Username atau password salah.',
+                ])->withInput();
+            }
+            
 
         Auth::login($user);
 

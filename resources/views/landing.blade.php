@@ -842,49 +842,85 @@ window.addEventListener('scroll', function() {
       }
   });
   
-  // FAQ Functions
-  function toggleFAQ(button) {
-      const answer = button.nextElementSibling;
-      const icon = button.querySelector('svg');
-      
-      // Close all other FAQ items
-      document.querySelectorAll('.bg-white').forEach(item => {
-          const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
-          const itemIcon = item.querySelector('svg');
-          if (itemAnswer && itemAnswer !== answer && !itemAnswer.classList.contains('hidden')) {
-              itemAnswer.classList.add('hidden');
-              if (itemIcon) itemIcon.classList.remove('rotate-180');
-          }
-      });
-      
-      // Toggle current FAQ item
-      answer.classList.toggle('hidden');
-      if (icon) icon.classList.toggle('rotate-180');
-  }
-  
-  // FAQ Search Function
-  document.addEventListener('DOMContentLoaded', function() {
-      const faqSearch = document.getElementById('faqSearch');
-      if (faqSearch) {
-          faqSearch.addEventListener('input', function(e) {
-              const searchTerm = e.target.value.toLowerCase();
-              const faqItems = document.querySelectorAll('#faqAccordion > div');
-              
-              faqItems.forEach(item => {
-                  const questionElement = item.querySelector('span');
-                  const answerElement = item.querySelector('div:last-child div');
-                  
-                  const question = questionElement ? questionElement.textContent.toLowerCase() : '';
-                  const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
-                  
-                  if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                      item.style.display = 'block';
-                  } else {
-                      item.style.display = 'none';
-                  }
-              });
-          });
-      }
-  });
+// FAQ Functions - Fixed Version
+function toggleFAQ(button) {
+    const currentFaqItem = button.closest('.bg-white');
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('svg');
+    
+    // Close all other FAQ items (hanya di dalam #faqAccordion)
+    document.querySelectorAll('#faqAccordion .bg-white').forEach(item => {
+        if (item !== currentFaqItem) {
+            const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
+            const itemIcon = item.querySelector('svg');
+            
+            // Pastikan kita menutup FAQ yang benar
+            if (itemAnswer && itemAnswer.classList.contains('px-6')) {
+                itemAnswer.classList.add('hidden');
+                if (itemIcon) itemIcon.classList.remove('rotate-180');
+            }
+        }
+    });
+    
+    // Toggle current FAQ item
+    if (answer) {
+        answer.classList.toggle('hidden');
+    }
+    if (icon) {
+        icon.classList.toggle('rotate-180');
+    }
+}
+
+// Alternative solution - Lebih spesifik
+function toggleFAQAlternative(button) {
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('svg');
+    
+    // Tutup semua FAQ lain dengan selector yang lebih spesifik
+    const allFaqAnswers = document.querySelectorAll('#faqAccordion .bg-white > div:last-child');
+    const allFaqIcons = document.querySelectorAll('#faqAccordion .bg-white svg');
+    
+    allFaqAnswers.forEach((faqAnswer, index) => {
+        if (faqAnswer !== answer && !faqAnswer.classList.contains('hidden')) {
+            faqAnswer.classList.add('hidden');
+            if (allFaqIcons[index]) {
+                allFaqIcons[index].classList.remove('rotate-180');
+            }
+        }
+    });
+    
+    // Toggle current FAQ
+    if (answer) {
+        answer.classList.toggle('hidden');
+    }
+    if (icon) {
+        icon.classList.toggle('rotate-180');
+    }
+}
+
+// FAQ Search Function (tidak berubah)
+document.addEventListener('DOMContentLoaded', function() {
+    const faqSearch = document.getElementById('faqSearch');
+    if (faqSearch) {
+        faqSearch.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const faqItems = document.querySelectorAll('#faqAccordion > div');
+            
+            faqItems.forEach(item => {
+                const questionElement = item.querySelector('span');
+                const answerElement = item.querySelector('div:last-child div');
+                
+                const question = questionElement ? questionElement.textContent.toLowerCase() : '';
+                const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
   </script>
 @endsection
