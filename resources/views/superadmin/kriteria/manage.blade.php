@@ -827,7 +827,46 @@
         lucide.createIcons();
     });
 
-    
+    // Di dalam script manage.blade.php
+    function submitAddCriteria(event) {
+        event.preventDefault();
+        showLoading();
+        
+        const formData = new FormData(event.target);
+        
+        fetch("{{ route('criteria.store') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                closeAddCriteriaModal();
+                showNotification(data.message || 'Kriteria berhasil ditambahkan!', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification(data.message || 'Gagal menambahkan kriteria', 'error');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            console.error('Error:', error);
+            showNotification(error.message || 'Terjadi kesalahan saat menambahkan kriteria', 'error');
+        });
+    }
+
+    // Fungsi serupa untuk edit, delete, dan subkriteria
+    // Pastikan semua fetch request memiliki error handling yang baik
 </script>
 
 <style>

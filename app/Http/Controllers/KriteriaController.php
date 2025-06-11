@@ -257,4 +257,103 @@ class KriteriaController extends Controller
         $kriteriaList = Kriteria::with('subkriteria')->get();
         return view('admin.kriteria.manage', compact('kriteriaList'));
     }
+
+    // Tambahkan di KriteriaController.php
+    public function manage()
+    {
+        $kriteriaList = Kriteria::with('subkriteria')->get();
+        return view('superadmin.kriteria.manage', compact('kriteriaList'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'persentase' => 'required|numeric|min:0|max:100'
+        ]);
+
+        try {
+            $kriteria = Kriteria::create([
+                'nama_kriteria' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'persentase' => $request->persentase,
+                'status' => 'active'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kriteria berhasil ditambahkan',
+                'data' => $kriteria
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function edit($id)
+    {
+        try {
+            $kriteria = Kriteria::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => $kriteria
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kriteria tidak ditemukan'
+            ], 404);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'persentase' => 'required|numeric|min:0|max:100'
+        ]);
+
+        try {
+            $kriteria = Kriteria::findOrFail($id);
+            $kriteria->update([
+                'nama_kriteria' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'persentase' => $request->persentase
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kriteria berhasil diperbarui',
+                'data' => $kriteria
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $kriteria = Kriteria::findOrFail($id);
+            $kriteria->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kriteria berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -43,19 +43,24 @@ Route::middleware(['auth'])->group(function () {
 
     // Kriteria Routes
     Route::prefix('kriteria')->group(function () {
-        Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage'); // Add this line
+        Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage');
         Route::get('/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])->name('kriteria.unduh-pdf');
         Route::get('/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
-        Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
-            ->name('kriteria.subkriteria.simpanIsian');
-        Route::get('/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
-            ->name('kriteria.subkriteria.show');
-        
-        // Add these new routes for criteria management
         Route::post('/store', [KriteriaController::class, 'store'])->name('criteria.store');
         Route::get('/{id}/edit', [KriteriaController::class, 'edit'])->name('criteria.edit');
         Route::post('/{id}/update', [KriteriaController::class, 'update'])->name('criteria.update');
         Route::delete('/{id}/delete', [KriteriaController::class, 'destroy'])->name('criteria.destroy');
+        
+        // Sub-Kriteria Routes
+        Route::post('/subkriteria/store', [SubKriteriaController::class, 'store'])->name('subcriteria.store');
+        Route::get('/subkriteria/{id}/edit', [SubKriteriaController::class, 'edit'])->name('subcriteria.edit');
+        Route::post('/subkriteria/{id}/update', [SubKriteriaController::class, 'update'])->name('subcriteria.update');
+        Route::delete('/subkriteria/{id}/delete', [SubKriteriaController::class, 'destroy'])->name('subcriteria.destroy');
+        
+        Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
+            ->name('kriteria.subkriteria.simpanIsian');
+        Route::get('/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
+            ->name('kriteria.subkriteria.show');
     });
 
     // Dashboard Routes
