@@ -20,7 +20,7 @@ class Subkriteria extends Model
     // Relasi dengan kriteria
     public function kriteria()
     {
-        return $this->belongsTo(Kriteria::class);
+        return $this->belongsTo(Kriteria::class, 'kriteria_id', 'id');  
     }
 
         public function isian()

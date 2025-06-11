@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Kriteria;
+use App\Models\SubKriteria;
+use App\Models\Notifikasi;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Notifikasi;
 
 class SuperAdminController extends Controller
 {
@@ -23,9 +25,9 @@ class SuperAdminController extends Controller
         $activeTab = $request->input('tab', 'users');
         $sortBy = $request->input('sort', 'newest');
 
-        // User Management Query
+        // User and Kriteria Queries
         $userQuery = User::query();
-        $kriteriaQuery = Kriteria::query();
+        $kriteriaQuery = Kriteria::with('subkriteria');
 
         // Search functionality
         if ($search) {
@@ -37,7 +39,11 @@ class SuperAdminController extends Controller
 
             $kriteriaQuery->where(function ($q) use ($search) {
                 $q->where('nama_kriteria', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%");
+                  ->orWhere('deskripsi', 'like', "%{$search}%")
+                  ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
+                      $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
+                               ->orWhere('deskripsi', 'like', "%{$search}%");
+                  });
             });
         }
 
@@ -71,7 +77,7 @@ class SuperAdminController extends Controller
         // Calculate stats with optimization
         $stats = User::selectRaw('
             COUNT(*) as total_users,
-            SUM(CASE WHEN role = "Admin" THEN 1 ELSE 0 END) as total_admins,
+            SUM(CASE WHEN role = "SuperAdmin" THEN 1 ELSE 0 END) as total_admins,
             SUM(CASE WHEN role = "Validator" THEN 1 ELSE 0 END) as total_validators
         ')->first() ?? ['total_users' => 0, 'total_admins' => 0, 'total_validators' => 0];
 
@@ -83,15 +89,20 @@ class SuperAdminController extends Controller
         $validatedKriteria = Kriteria::where('status', 'validated')->count();
         $pendingReview = Kriteria::where('status', 'pending')->count();
 
-        // Recent activities (example data, replace with actual logic if needed)
-        $recentActivities = [
-            ['title' => 'User baru ditambahkan', 'by' => 'Dr. Ahmad Rahman', 'time' => '2 jam yang lalu'],
-            ['title' => 'Kriteria 3 divalidasi', 'by' => 'Prof. Dr. Siti Aminah', 'time' => '4 jam yang lalu'],
-            ['title' => 'Akses kriteria diperbarui', 'by' => 'Super Admin', 'time' => '6 jam yang lalu'],
-            ['title' => 'Subkriteria baru ditambahkan', 'by' => 'Admin', 'time' => '1 hari yang lalu'],
-        ];
+        // Fetch recent activities from audit_logs
+        $recentActivities = AuditLog::with('user')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'title' => $log->aksi,
+                    'by' => $log->user ? $log->user->name : 'System',
+                    'time' => $log->created_at->diffForHumans(),
+                ];
+            });
 
-        return view('superadmin/dashboard', compact(
+        return view('superadmin.dashboard', compact(
             'data',
             'totalUsers',
             'totalAdmins',
@@ -111,7 +122,6 @@ class SuperAdminController extends Controller
         $search = $request->input('search', '');
         $usersQuery = User::query();
 
-        // Search functionality
         if ($search) {
             $usersQuery->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -124,7 +134,6 @@ class SuperAdminController extends Controller
         return view('superadmin.users.manage', compact('users', 'search'));
     }
 
-    // API untuk mendapatkan data user untuk edit modal
     public function getUserData($id)
     {
         try {
@@ -140,6 +149,7 @@ class SuperAdminController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            Log::error("Error fetching user: " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'User tidak ditemukan'
@@ -147,31 +157,41 @@ class SuperAdminController extends Controller
         }
     }
 
-    // Menambah user baru
     public function storeUser(Request $request)
     {
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|unique:users,username|max:255',
-                'role' => 'required|in:anggota,validator,superadmin',
+                'role' => 'required|in:Anggota,Validator,SuperAdmin',
                 'is_active' => 'required|boolean'
             ]);
 
             $user = User::create([
                 'name' => $request->name,
                 'username' => $request->username,
-                'password' => Hash::make('password123'), // Default password
+                'password' => Hash::make('password123'),
                 'role' => $request->role,
                 'is_active' => $request->is_active
             ]);
 
             Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Tambah User',
+                'deskripsi' => "Menambahkan user {$user->name} dengan role {$user->role}",
+                'ip' => $request->ip(),
+            ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'User berhasil ditambahkan'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
         } catch (\Exception $e) {
             Log::error("Error adding user: " . $e->getMessage());
             return response()->json([
@@ -181,21 +201,20 @@ class SuperAdminController extends Controller
         }
     }
 
-    // Update user
     public function updateUser(Request $request, $id)
     {
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255|unique:users,username,' . $id,
-                'role' => 'required|in:anggota,validator,superadmin',
+                'role' => 'required|in:Anggota,Validator,SuperAdmin',
                 'is_active' => 'required|boolean'
             ]);
 
             $user = User::findOrFail($id);
             $currentUser = Auth::user();
 
-            if ($user->id === $currentUser->id && $request->role !== 'superadmin') {
+            if ($user->id === $currentUser->id && $request->role !== 'SuperAdmin') {
                 return response()->json([
                     'success' => false,
                     'message' => 'Anda tidak dapat mengubah role diri sendiri!'
@@ -205,11 +224,22 @@ class SuperAdminController extends Controller
             $user->update($request->only(['name', 'username', 'role', 'is_active']));
 
             Log::info("SuperAdmin {$currentUser->name} updated user {$user->name} (ID: {$user->id})");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Update User',
+                'deskripsi' => "Memperbarui user {$user->name} dengan role {$user->role}",
+                'ip' => $request->ip(),
+            ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'User berhasil diperbarui'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
         } catch (\Exception $e) {
             Log::error("Error updating user: " . $e->getMessage());
             return response()->json([
@@ -219,65 +249,323 @@ class SuperAdminController extends Controller
         }
     }
 
-
-    // Delete user
     public function deleteUser($id)
     {
         try {
             $user = User::findOrFail($id);
             $currentUser = Auth::user();
 
-            // Prevent self-deletion
             if ($user->id === $currentUser->id) {
-                return redirect()->back()->with('error', 'Anda tidak dapat menghapus diri sendiri!');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak dapat menghapus diri sendiri!'
+                ], 403);
             }
 
             $userName = $user->name;
             $user->delete();
 
             Log::warning("SuperAdmin {$currentUser->name} deleted user {$userName} (ID: {$id})");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Hapus User',
+                'deskripsi' => "Menghapus user {$userName}",
+                'ip' => request()->ip(),
+            ]);
 
-            return redirect()->route('superadmin.manage.users')
-                ->with('success', "User {$userName} berhasil dihapus");
+            return response()->json([
+                'success' => true,
+                'message' => "User {$userName} berhasil dihapus"
+            ]);
         } catch (\Exception $e) {
             Log::error("Error deleting user: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal menghapus user');
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus user: ' . $e->getMessage()
+            ], 500);
         }
     }
 
     public function manageKriteria()
     {
-        $kriterias = Kriteria::paginate(10);
-        return view('superadmin.kriteria.manage', compact('kriterias'));
+        // Pastikan Anda mengambil data kriteria, misalnya:
+        $kriteriaList = Kriteria::with('subKriteria')->get(); // sesuaikan dengan model Anda
+
+        // Kirimkan variabel ke view
+        return view('superadmin.kriteria.manage', compact('kriteriaList'));
     }
 
-    public function manageKriteriaDetail($id)
+
+    public function getCriteria(Request $request)
     {
-        $kriteria = Kriteria::findOrFail($id);
-        return view('superadmin.kriteria.manage', compact('kriteria'));
+        $search = $request->input('search', '');
+        $kriterias = Kriteria::with('subkriteria')
+            ->when($search, function ($query, $search) {
+                $query->where('nama_kriteria', 'like', "%{$search}%")
+                      ->orWhere('deskripsi', 'like', "%{$search}%")
+                      ->orWhereHas('subkriteria', function ($q) use ($search) {
+                          $q->where('nama_subkriteria', 'like', "%{$search}%")
+                            ->orWhere('deskripsi', 'like', "%{$search}%");
+                      });
+            })
+            ->get();
+
+        return response()->json(['success' => true, 'criteria' => $kriterias]);
+    }
+
+    public function getCriteriaById($id)
+    {
+        try {
+            $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
+            return response()->json(['success' => true, 'data' => $kriteria]);
+        } catch (\Exception $e) {
+            Log::error("Error fetching criteria: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Kriteria tidak ditemukan'], 404);
+        }
+    }
+
+    public function storeCriteria(Request $request)
+    {
+        try {
+            $request->validate([
+                'nama_kriteria' => 'required|string|max:255',
+                'deskripsi' => 'nullable|string',
+                'status' => 'required|in:pending,needs_revision,validated',
+            ]);
+
+            $kriteria = Kriteria::create([
+                'nama_kriteria' => $request->nama_kriteria,
+                'deskripsi' => $request->deskripsi,
+                'status' => $request->status,
+            ]);
+
+            Log::info("SuperAdmin " . Auth::user()->name . " added new criteria: {$kriteria->nama_kriteria}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Tambah Kriteria',
+                'deskripsi' => "Menambahkan kriteria {$kriteria->nama_kriteria}",
+                'ip' => $request->ip(),
+            ]);
+
+            $this->sendKriteriaUpdateNotification($kriteria, Auth::user(), 'dibuat');
+
+            return response()->json(['success' => true, 'message' => 'Kriteria berhasil ditambahkan']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error adding criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan kriteria: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function updateKriteria(Request $request, $id)
     {
-        $request->validate([
-            'nama_kriteria' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'status' => 'required|in:pending,needs_revision,validated'
-        ]);
+        try {
+            $request->validate([
+                'nama_kriteria' => 'required|string|max:255',
+                'deskripsi' => 'nullable|string',
+                'status' => 'required|in:pending,needs_revision,validated',
+            ]);
 
-        $kriteria = Kriteria::findOrFail($id);
-        $kriteria->update($request->only(['nama_kriteria', 'deskripsi', 'status']));
+            $kriteria = Kriteria::findOrFail($id);
+            $kriteria->update([
+                'nama_kriteria' => $request->nama_kriteria,
+                'deskripsi' => $request->deskripsi,
+                'status' => $request->status,
+            ]);
 
-        $this->sendKriteriaUpdateNotification($kriteria, Auth::user());
+            Log::info("SuperAdmin " . Auth::user()->name . " updated criteria: {$kriteria->nama_kriteria}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Update Kriteria',
+                'deskripsi' => "Memperbarui kriteria {$kriteria->nama_kriteria}",
+                'ip' => $request->ip(),
+            ]);
 
-        return redirect()->route('superadmin.manage.kriteria')
-            ->with('success', 'Kriteria updated successfully');
+            $this->sendKriteriaUpdateNotification($kriteria, Auth::user(), 'diperbarui');
+
+            return response()->json(['success' => true, 'message' => 'Kriteria berhasil diperbarui']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error updating criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui kriteria: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    private function sendKriteriaUpdateNotification($kriteria, $superadmin)
+    public function deleteKriteria($id)
     {
-        $judul = "Kriteria {$kriteria->nama_kriteria} Diperbarui";
-        $pesan = "SuperAdmin {$superadmin->name} telah memperbarui kriteria ini";
+        try {
+            $kriteria = Kriteria::findOrFail($id);
+            $kriteriaName = $kriteria->nama_kriteria;
+            $kriteria->delete();
+
+            Log::warning("SuperAdmin " . Auth::user()->name . " deleted criteria: {$kriteriaName}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Hapus Kriteria',
+                'deskripsi' => "Menghapus kriteria {$kriteriaName}",
+                'ip' => request()->ip(),
+            ]);
+
+            $this->sendKriteriaUpdateNotification((object)['nama_kriteria' => $kriteriaName], Auth::user(), 'dihapus');
+
+            return response()->json(['success' => true, 'message' => 'Kriteria berhasil dihapus']);
+        } catch (\Exception $e) {
+            Log::error("Error deleting criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function storeSubKriteria(Request $request)
+    {
+        try {
+            $request->validate([
+                'kriteria_id' => 'required|exists:kriteria,id',
+                'nama_subkriteria' => 'required|string|max:255',
+                'deskripsi' => 'nullable|string',
+            ]);
+
+            $subKriteria = SubKriteria::create([
+                'kriteria_id' => $request->kriteria_id,
+                'nama_subkriteria' => $request->nama_subkriteria,
+                'deskripsi' => $request->deskripsi,
+            ]);
+
+            Log::info("SuperAdmin " . Auth::user()->name . " added new sub-criteria: {$subKriteria->nama_subkriteria} for criteria ID: {$subKriteria->kriteria_id}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Tambah Sub-Kriteria',
+                'deskripsi' => "Menambahkan sub-kriteria {$subKriteria->nama_subkriteria} untuk kriteria ID {$subKriteria->kriteria_id}",
+                'ip' => $request->ip(),
+            ]);
+
+            $this->sendSubKriteriaUpdateNotification($subKriteria, Auth::user(), 'dibuat');
+
+            return response()->json(['success' => true, 'message' => 'Sub-Kriteria berhasil ditambahkan']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error adding sub-criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan sub-kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getSubKriteriaById($id)
+    {
+        try {
+            $subKriteria = SubKriteria::findOrFail($id);
+            return response()->json(['success' => true, 'data' => $subKriteria]);
+        } catch (\Exception $e) {
+            Log::error("Error fetching sub-criteria: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Sub-Kriteria tidak ditemukan'], 404);
+        }
+    }
+
+    public function updateSubKriteria(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'nama_subkriteria' => 'required|string|max:255',
+                'deskripsi' => 'nullable|string',
+            ]);
+
+            $subKriteria = SubKriteria::findOrFail($id);
+            $subKriteria->update([
+                'nama_subkriteria' => $request->nama_subkriteria,
+                'deskripsi' => $request->deskripsi,
+            ]);
+
+            Log::info("SuperAdmin " . Auth::user()->name . " updated sub-criteria: {$subKriteria->nama_subkriteria}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Update Sub-Kriteria',
+                'deskripsi' => "Memperbarui sub-kriteria {$subKriteria->nama_subkriteria}",
+                'ip' => $request->ip(),
+            ]);
+
+            $this->sendSubKriteriaUpdateNotification($subKriteria, Auth::user(), 'diperbarui');
+
+            return response()->json(['success' => true, 'message' => 'Sub-Kriteria berhasil diperbarui']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error updating sub-criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui sub-kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteSubKriteria($id)
+    {
+        try {
+            $subKriteria = SubKriteria::findOrFail($id);
+            $subKriteriaName = $subKriteria->nama_subkriteria;
+            $kriteriaId = $subKriteria->kriteria_id;
+            $subKriteria->delete();
+
+            Log::warning("SuperAdmin " . Auth::user()->name . " deleted sub-criteria: {$subKriteriaName}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Hapus Sub-Kriteria',
+                'deskripsi' => "Menghapus sub-kriteria {$subKriteriaName} dari kriteria ID {$kriteriaId}",
+                'ip' => request()->ip(),
+            ]);
+
+            $this->sendSubKriteriaUpdateNotification((object)['nama_subkriteria' => $subKriteriaName, 'kriteria_id' => $kriteriaId], Auth::user(), 'dihapus');
+
+            return response()->json(['success' => true, 'message' => 'Sub-Kriteria berhasil dihapus']);
+        } catch (\Exception $e) {
+            Log::error("Error deleting sub-criteria: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus sub-kriteria: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function manageAccess()
+    {
+        $users = User::all();
+        return view('superadmin.access.manage', compact('users'));
+    }
+
+    public function manageUser($id)
+    {
+        $user = User::findOrFail($id);
+        return view('superadmin.users.detail', compact('user'));
+    }
+
+    private function sendKriteriaUpdateNotification($kriteria, $superadmin, $action)
+    {
+        $judul = "Kriteria {$kriteria->nama_kriteria} " . ucfirst($action);
+        $pesan = "SuperAdmin {$superadmin->name} telah {$action} kriteria {$kriteria->nama_kriteria}";
 
         $recipients = User::where('role', 'Validator')->get();
 
@@ -290,18 +578,26 @@ class SuperAdminController extends Controller
             ]);
         }
 
-        Log::info("Notifikasi update kriteria dikirim ke {$recipients->count()} recipients (Validators)");
+        Log::info("Notifikasi {$action} kriteria dikirim ke {$recipients->count()} recipients (Validators)");
     }
 
-    public function manageAccess()
+    private function sendSubKriteriaUpdateNotification($subKriteria, $superadmin, $action)
     {
-        $users = User::all();
-        return view('superadmin.access.manage', compact('users'));
-    }
-    
-    public function manageUser($id)
-    {
-        $user = User::findOrFail($id);
-        return view('superadmin.users.detail', compact('user'));
+        $kriteria = Kriteria::find($subKriteria->kriteria_id);
+        $judul = "Sub-Kriteria {$subKriteria->nama_subkriteria} " . ucfirst($action);
+        $pesan = "SuperAdmin {$superadmin->name} telah {$action} sub-kriteria {$subKriteria->nama_subkriteria} pada kriteria {$kriteria->nama_kriteria}";
+
+        $recipients = User::where('role', 'Validator')->get();
+
+        foreach ($recipients as $recipient) {
+            Notifikasi::create([
+                'user_id' => $recipient->id,
+                'judul' => $judul,
+                'pesan' => $pesan,
+                'dibaca' => false,
+            ]);
+        }
+
+        Log::info("Notifikasi {$action} sub-kriteria dikirim ke {$recipients->count()} recipients (Validators)");
     }
 }
