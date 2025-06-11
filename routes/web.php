@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardUtamaController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\ValidatorKriteriaController;
 use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\SubKriteriaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,12 +43,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Kriteria Routes
     Route::prefix('kriteria')->group(function () {
+        Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage'); // Add this line
         Route::get('/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])->name('kriteria.unduh-pdf');
         Route::get('/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
         Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
             ->name('kriteria.subkriteria.simpanIsian');
         Route::get('/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
             ->name('kriteria.subkriteria.show');
+        
+        // Add these new routes for criteria management
+        Route::post('/store', [KriteriaController::class, 'store'])->name('criteria.store');
+        Route::get('/{id}/edit', [KriteriaController::class, 'edit'])->name('criteria.edit');
+        Route::post('/{id}/update', [KriteriaController::class, 'update'])->name('criteria.update');
+        Route::delete('/{id}/delete', [KriteriaController::class, 'destroy'])->name('criteria.destroy');
     });
 
     // Dashboard Routes
@@ -85,15 +93,13 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
         Route::get('/{id}/data', [SuperAdminController::class, 'getUserData'])->name('user.data');
         Route::post('/', [SuperAdminController::class, 'storeUser'])->name('user.store');
         Route::post('/{id}', [SuperAdminController::class, 'updateUser'])->name('user.update');
-        Route::delete('/{id}', [SuperAdminController::class, 'deleteUser'])->name('delete.user'); // <- INI YANG DICARI
+        Route::delete('/{id}', [SuperAdminController::class, 'deleteUser'])->name('delete.user');
     });
 
     // Untuk menampilkan list user
     Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
 
-
     // Kriteria Management Routes
-    // SuperAdmin Routes - Tambahkan route baru untuk get user data
     Route::get('/manage/user/{id}/data', [SuperAdminController::class, 'getUserData'])->name('superadmin.manage.user.data');
     Route::get('/manage/kriteria', [SuperAdminController::class, 'manageKriteria'])->name('superadmin.manage.kriteria');
     Route::get('/manage/kriteria/{id}', [SuperAdminController::class, 'manageKriteriaDetail'])->name('superadmin.manage.kriteria.detail');
@@ -109,6 +115,7 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
 Route::middleware(['auth', 'role:anggota'])->group(function () {
     Route::get('/member/dashboard', [DashboardController::class, 'memberDashboard'])->name('member.dashboard');
 });
+
 Route::get('/dashboardUtama', [DashboardUtamaController::class, 'index'])->name('dashboardUtama');
 
 require __DIR__.'/auth.php';

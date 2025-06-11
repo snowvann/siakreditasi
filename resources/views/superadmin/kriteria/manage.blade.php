@@ -17,9 +17,9 @@
                         <p class="text-gray-600 text-lg mt-5">Kelola kriteria penilaian dan sub-kriteria secara efisien</p>
                     </div>
                     
-                    <!-- Enhanced Search -->
+                    {{-- <!-- Enhanced Search -->
                     <div class="w-full lg:w-96">
-                        {{-- <form method="GET" action="{{ route('criteria.manage') }}" class="relative group"> --}}
+                        <form method="GET" action="{{ route('criteria.manage') }}" class="relative group">
                             <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
                             <div class="relative bg-white rounded-2xl shadow-lg border border-gray-200/50">
                                 <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -36,17 +36,23 @@
                                 />
                             </div>
                         </form>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
 
         <!-- Header Actions -->
-        <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
             <!-- Add Criteria Button -->
             <button onclick="openAddCriteriaModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
                 <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
                 Tambah Kriteria
+            </button>
+            
+            <!-- Add Sub-Criteria Button (Visible when a criteria is selected) -->
+            <button id="addSubCriteriaBtn" onclick="openAddSubCriteriaModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md flex items-center hidden">
+                <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                Tambah Sub-Kriteria
             </button>
         </div>
 
@@ -388,6 +394,13 @@
     </div>
 </div>
 
+<!-- Tambahkan di head atau sebelum penutup body -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    // Kode JavaScript Anda
+    lucide.createIcons(); // Inisialisasi icons
+</script>
+
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
@@ -415,6 +428,53 @@
         }
     }
 
+    // Add this to your JavaScript section
+    let selectedCriteriaId = null;
+
+    function setSelectedCriteria(id) {
+        selectedCriteriaId = id;
+        const addSubBtn = document.getElementById('addSubCriteriaBtn');
+        if (id) {
+            addSubBtn.classList.remove('hidden');
+            addSubBtn.onclick = function() { openAddSubCriteriaModal(id) };
+        } else {
+            addSubBtn.classList.add('hidden');
+        }
+    }
+
+    function openAddSubCriteriaModal(id = null) {
+        if (!id && !selectedCriteriaId) return;
+        const criteriaId = id || selectedCriteriaId;
+        document.getElementById('parentCriteriaId').value = criteriaId;
+        document.getElementById('addSubCriteriaModal').classList.remove('hidden');
+        document.getElementById('addSubCriteriaForm').reset();
+        lucide.createIcons();
+    }
+
+    // Modify your toggleCriteria function to handle selection
+    function toggleCriteria(criteriaId) {
+        const content = document.getElementById(`content-${criteriaId}`);
+        const icon = document.getElementById(`icon-${criteriaId}`);
+        
+        if (content.style.display === 'none' || content.style.display === '') {
+            // Close all other criteria first
+            document.querySelectorAll('.criteria-content').forEach(el => {
+                if (el.id !== `content-${criteriaId}`) {
+                    el.style.display = 'none';
+                    const otherId = el.id.split('-')[1];
+                    document.getElementById(`icon-${otherId}`).style.transform = 'rotate(0deg)';
+                }
+            });
+            
+            content.style.display = 'block';
+            icon.style.transform = 'rotate(180deg)';
+            setSelectedCriteria(criteriaId);
+        } else {
+            content.style.display = 'none';
+            icon.style.transform = 'rotate(0deg)';
+            setSelectedCriteria(null);
+        }
+    }
     // ======================
     // ADD CRITERIA FUNCTIONS
     // ======================
@@ -766,6 +826,8 @@
         // Initialize icons for any dynamically loaded content
         lucide.createIcons();
     });
+
+    
 </script>
 
 <style>
@@ -783,6 +845,19 @@
     
     .subcriteria-item:hover {
         background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    /* New styles for buttons */
+    .action-btn {
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 </style>
 
