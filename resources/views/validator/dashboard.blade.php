@@ -34,7 +34,7 @@
             </div>
 
             <!-- Progress Card -->
-            <div class="bg-gradient-to-b from-[#FF9E59] to-[#5C00A7] rounded-lg shadow-sm animate-slide-up transition-all duration-300 hover:shadow-md hover:scale-[1.02] text-white">
+            <div class="bg-gradient-to-b from-[#d3394c] to-[#7C4585] rounded-lg shadow-sm animate-slide-up transition-all duration-300 hover:shadow-md hover:scale-[1.02] text-white">
             <div class="p-6">
                 <h2 class="text-lg font-semibold text-white">Progress Akreditasi</h2>
                 <p class="text-sm text-white/80">Status keseluruhan kriteria akreditasi</p>

@@ -96,7 +96,7 @@
                     <div class="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 overflow-hidden">
                        
                         <!-- Header -->
-                        <div class="p-6" style="background: linear-gradient(to right, #832C94, #E8A344);">
+                        <div class="p-6" style="background: linear-gradient(to right, #832C94, #d3394c);">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,25 +134,23 @@
                                 <!-- Action Buttons -->
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
                                     <button 
-                                        type="submit"
-                                        name="aksi"
-                                        value="valid"
-                                        class="group relative px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:ring-offset-2 transition-all duration-200 hover:scale-105"
-                                    >
-                                        <div class="flex items-center justify-center gap-2">
-                                            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            Validasi
-                                        </div>
-                                    </button>
+                                    type="submit"
+                                    name="aksi"
+                                    value="valid"
+                                    class="group relative px-6 py-3 text-sm font-semibold text-white bg-[#3E7B27] rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:ring-offset-2 transition-all duration-200 hover:scale-105">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        Validasi
+                                    </div>
+                                </button>
                                     
                                     <button 
                                         type="submit"
                                         name="aksi"
                                         value="revisi"
-                                        class="group relative px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 transition-all duration-200 hover:scale-105"
-                                    >
+                                        class="group relative px-6 py-3 text-sm font-semibold text-white bg-[#DC2525] rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:ring-offset-2 transition-all duration-200 hover:scale-105">
                                         <div class="flex items-center justify-center gap-2">
                                             <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

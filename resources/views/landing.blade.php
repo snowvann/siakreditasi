@@ -5,9 +5,9 @@
 <!-- Navigation yang lebih kompak -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 py-3 transition-all duration-300 backdrop-blur-xl bg-white/95 border-b border-gray-100">
   <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-          <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-10 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
-          <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-10 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+      <div class="flex items-center gap-3">
+          <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
+          <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-9 w-auto transition-all duration-300 drop-shadow-lg hover:scale-110">
       </div>
       
       <ul id="navLinks" class="hidden lg:flex gap-4 items-center py-2">
@@ -843,85 +843,49 @@ window.addEventListener('scroll', function() {
       }
   });
   
-// FAQ Functions - Fixed Version
-function toggleFAQ(button) {
-    const currentFaqItem = button.closest('.bg-white');
-    const answer = button.nextElementSibling;
-    const icon = button.querySelector('svg');
-    
-    // Close all other FAQ items (hanya di dalam #faqAccordion)
-    document.querySelectorAll('#faqAccordion .bg-white').forEach(item => {
-        if (item !== currentFaqItem) {
-            const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
-            const itemIcon = item.querySelector('svg');
-            
-            // Pastikan kita menutup FAQ yang benar
-            if (itemAnswer && itemAnswer.classList.contains('px-6')) {
-                itemAnswer.classList.add('hidden');
-                if (itemIcon) itemIcon.classList.remove('rotate-180');
-            }
-        }
-    });
-    
-    // Toggle current FAQ item
-    if (answer) {
-        answer.classList.toggle('hidden');
-    }
-    if (icon) {
-        icon.classList.toggle('rotate-180');
-    }
-}
-
-// Alternative solution - Lebih spesifik
-function toggleFAQAlternative(button) {
-    const answer = button.nextElementSibling;
-    const icon = button.querySelector('svg');
-    
-    // Tutup semua FAQ lain dengan selector yang lebih spesifik
-    const allFaqAnswers = document.querySelectorAll('#faqAccordion .bg-white > div:last-child');
-    const allFaqIcons = document.querySelectorAll('#faqAccordion .bg-white svg');
-    
-    allFaqAnswers.forEach((faqAnswer, index) => {
-        if (faqAnswer !== answer && !faqAnswer.classList.contains('hidden')) {
-            faqAnswer.classList.add('hidden');
-            if (allFaqIcons[index]) {
-                allFaqIcons[index].classList.remove('rotate-180');
-            }
-        }
-    });
-    
-    // Toggle current FAQ
-    if (answer) {
-        answer.classList.toggle('hidden');
-    }
-    if (icon) {
-        icon.classList.toggle('rotate-180');
-    }
-}
-
-// FAQ Search Function (tidak berubah)
-document.addEventListener('DOMContentLoaded', function() {
-    const faqSearch = document.getElementById('faqSearch');
-    if (faqSearch) {
-        faqSearch.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const faqItems = document.querySelectorAll('#faqAccordion > div');
-            
-            faqItems.forEach(item => {
-                const questionElement = item.querySelector('span');
-                const answerElement = item.querySelector('div:last-child div');
-                
-                const question = questionElement ? questionElement.textContent.toLowerCase() : '';
-                const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
-                
-                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    }
-});
+  // FAQ Functions
+  function toggleFAQ(button) {
+      const answer = button.nextElementSibling;
+      const icon = button.querySelector('svg');
+      
+      // Close all other FAQ items
+      document.querySelectorAll('.bg-white').forEach(item => {
+          const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
+          const itemIcon = item.querySelector('svg');
+          if (itemAnswer && itemAnswer !== answer && !itemAnswer.classList.contains('hidden')) {
+              itemAnswer.classList.add('hidden');
+              if (itemIcon) itemIcon.classList.remove('rotate-180');
+          }
+      });
+      
+      // Toggle current FAQ item
+      answer.classList.toggle('hidden');
+      if (icon) icon.classList.toggle('rotate-180');
+  }
+  
+  // FAQ Search Function
+  document.addEventListener('DOMContentLoaded', function() {
+      const faqSearch = document.getElementById('faqSearch');
+      if (faqSearch) {
+          faqSearch.addEventListener('input', function(e) {
+              const searchTerm = e.target.value.toLowerCase();
+              const faqItems = document.querySelectorAll('#faqAccordion > div');
+              
+              faqItems.forEach(item => {
+                  const questionElement = item.querySelector('span');
+                  const answerElement = item.querySelector('div:last-child div');
+                  
+                  const question = questionElement ? questionElement.textContent.toLowerCase() : '';
+                  const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
+                  
+                  if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                      item.style.display = 'block';
+                  } else {
+                      item.style.display = 'none';
+                  }
+              });
+          });
+      }
+  });
   </script>
 @endsection

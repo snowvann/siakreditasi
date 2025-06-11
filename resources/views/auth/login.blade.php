@@ -31,8 +31,8 @@
   <div class="flex-1 flex justify-center items-center" style="background: linear-gradient(to bottom right, #77419C, #587CAA, #AFCAED);">
     <div class="rounded-3xl p-10 w-full max-w-md shadow-xl text-center" style="background-color: #FFFFFF;">
       <div class="flex justify-center items-center gap-4 mb-4">
-        <img src="{{ asset('images/logoPolinema.png') }}" alt="Logo Polinema" class="h-16">
-        <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-16">
+        <img src="{{ asset('images/logoPolinema.png') }}" alt="Logo Polinema" class="h-20">
+        <img src="{{ asset('images/logoJTI.png') }}" alt="Logo JTI" class="h-20">
       </div>
       <h5 class="mb-2 font-semibold text-lg">SELAMAT DATANG !</h5>
       <p class="mb-8 text-gray-600 text-sm">Masukan username dan password anda</p>
