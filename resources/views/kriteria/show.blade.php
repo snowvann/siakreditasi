@@ -16,6 +16,8 @@
                             <path d="M19 12H5"></path>
                         </svg>
                     </a>
+
+                   
                     <div class="flex-1 min-w-0">
                         <h1 class="text-2xl font-bold flex-shrink-0 bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent transition-all duration-300 cursor-default">
                             Kriteria {{ $kriteriaData['id'] }}
@@ -23,6 +25,13 @@
                     <p class="text-sm text-gray-500 break-words">{{ $kriteriaData['nama_kriteria'] }}</p>
                     </div>
                 </div>
+
+                 @if (!empty($kriteriaData['penanggungJawab']) && count($kriteriaData['penanggungJawab']) > 0)
+    <div class="bg-purple-100 border border-purple-200 text-purple-800 px-4 py-3 rounded-lg shadow-sm mb-4">
+        <strong>Penanggung Jawab:</strong>
+        {{ collect($kriteriaData['penanggungJawab'])->pluck('name')->join(', ') }}
+    </div>
+@endif
 
             <!-- Progress Bar Section -->
             <div class="rounded-lg border border-gray-200 shadow-sm bg-white p-6 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
