@@ -7,18 +7,53 @@
     <main class="container mx-auto px-4 py-6">
         <div class="grid gap-6">
 
-            <!-- Header & Kembali -->
-            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                <a href="{{ route('dashboard') }}" 
-                   class="inline-flex items-center justify-center h-9 w-9 rounded-md text-sm font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg text-gray-700 bg-white hover:bg-gradient-to-r hover:from-[#95A0E8] hover:to-[#7548BE] hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                        <path d="m12 19-7-7 7-7"></path>
-                        <path d="M19 12H5"></path>
-                    </svg>
-                </a>
-                <div class="flex-1">
-                    <h1 class="text-2xl font-bold text-blue-900">{{ $kriteriaData['nama_kriteria'] }}</h1>
-                    <p class="text-sm text-gray-500">{{ $kriteriaData['deskripsi'] }}</p>
+                            <!-- Header & Kembali -->
+                <div class="flex items-start gap-3">
+                    <a href="{{ route('dashboard') }}" 
+                    class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg text-gray-700 bg-white border border-gray-200 hover:bg-gradient-to-r hover:from-[#95A0E8] hover:to-[#7548BE] hover:text-white hover:border-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                            <path d="m12 19-7-7 7-7"></path>
+                            <path d="M19 12H5"></path>
+                        </svg>
+                    </a>
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-2xl font-bold flex-shrink-0 bg-gradient-to-r from-[#95A0E8] to-[#7548BE] bg-clip-text text-transparent transition-all duration-300 cursor-default">
+                            Kriteria {{ $kriteriaData['id'] }}
+                        </h1>
+                    <p class="text-sm text-gray-500 break-words">{{ $kriteriaData['nama_kriteria'] }}</p>
+                    </div>
+                </div>
+
+            <!-- Progress Bar Section -->
+            <div class="rounded-lg border border-gray-200 shadow-sm bg-white p-6 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-gray-900">Progress Pengisian</h3>
+                    <span class="text-sm font-medium text-gray-600">{{ $completedSubkriteria }}/{{ $totalSubkriteria }} Sub-kriteria</span>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-2 overflow-hidden">
+                    <div class="bg-gradient-to-r from-[#95A0E8] to-[#7548BE] h-3 rounded-full transition-all duration-700 ease-out shadow-sm" 
+                         style="width: {{ $progressPercentage }}%"></div>
+                </div>
+                
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">
+                        @if($progressPercentage == 100)
+                            🎉 Semua sub-kriteria telah terisi
+                        @elseif($progressPercentage >= 75)
+                            Hampir selesai!
+                        @elseif($progressPercentage >= 50)
+                            Separuh perjalanan
+                        @elseif($progressPercentage > 0)
+                            Terus semangat!
+                        @else
+                            Mulai mengisi sub-kriteria
+                        @endif
+                    </span>
+                    <span class="font-semibold text-lg {{ $progressPercentage >= 100 ? 'text-green-600' : 'text-blue-600' }}">
+                        {{ $progressPercentage }}%
+                    </span>
                 </div>
             </div>
 
@@ -56,18 +91,37 @@
                     @foreach($subKriteriaList as $subKriteria)
                         <div class="rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-lg bg-white">
                             <div class="flex items-center justify-between p-6">
-                                <div>
-                                    <h2 class="font-medium text-gray-900">{{ $subKriteria['nama_subkriteria'] }}</h2>
+                                <div class="flex items-center gap-3">
+                                    <!-- Indicator Pengisian -->
+                                    <div class="flex-shrink-0">
+                                        @if($subKriteria->has_isian)
+                                            <div class="w-3 h-3 bg-green-500 rounded-full shadow-sm animate-pulse"></div>
+                                        @else
+                                            <div class="w-3 h-3 bg-gray-300 rounded-full shadow-sm"></div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h2 class="font-medium text-gray-900">{{ $subKriteria['nama_subkriteria'] }}</h2>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            @if($subKriteria->has_isian)
+                                                ✅ Sudah terisi
+                                            @else
+                                                ⏳ Belum terisi
+                                            @endif
+                                        </p>
+                                    </div>
                                 </div>
+
                                 <div class="flex items-center gap-2">
-                                    <x-status-badge :status="$subKriteria['status']" />
                                     <a href="{{ url('kriteria/'.$kriteriaId.'/sub-kriteria/'.$subKriteria['id']) }}"
-                                        class="inline-flex items-center justify-center h-9 w-9 rounded-md text-sm font-medium transition-all duration-300 ease-in-out text-gray-700 hover:bg-gradient-to-r hover:from-[#95A0E8] hover:to-[#7548BE] hover:text-white">
+                                        class="inline-flex items-center gap-2 text-sm text-white bg-gradient-to-r from-[#95A0E8] to-[#7548BE] px-3 py-2 rounded-md transition-all duration-300 ease-in-out hover:opacity-90">
+                                        <span>Detail</span>
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path d="m9 18 6-6-6-6"></path>
                                         </svg>
                                     </a>
                                 </div>
+
                             </div>
                         </div>
                     @endforeach

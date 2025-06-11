@@ -2,53 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use Illuminate\Http\Request;
 use App\Models\Kriteria;
 use App\Models\SubKriteria;
 use App\Models\Isian;
-use App\Models\ValidasiLog;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use App\Models\ValidasiKriteria;
+use App\Models\User;
+use App\Models\ValidasiLog;
+
 
 class KriteriaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:SuperAdmin|Validator|Anggota']);
-    }
-
     public function show($id)
     {
         $kriteria = Kriteria::with('subkriteria')->findOrFail($id);
-
-        // Fetch members associated with the criteria (replace with actual logic)
+    
         $anggotaKriteria = [
             ['id' => 1, 'name' => 'Dr. Budi Santoso, M.Pd.'],
             ['id' => 2, 'name' => 'Dr. Siti Rahayu, M.Si.']
         ];
-
-        // Fetch all validators
+    
+        // Ambil semua user yang punya level validator
         $validatorList = User::whereNotNull('level_validator')
             ->orderBy('level_validator')
             ->get();
-
-        // Fetch the latest validation logs for this criteria
+    
+        // Ambil validasi terakhir tiap user untuk kriteria ini
         $logs = ValidasiLog::where('kriteria_id', $id)
             ->with('user')
             ->orderByDesc('created_at')
             ->get()
             ->groupBy('user_id');
-
+    
         $allValidasiDisplay = [];
+    
         foreach ($validatorList as $validator) {
             $userId = $validator->id;
             $latestLog = $logs->has($userId) ? $logs[$userId]->first() : null;
-
+    
             $allValidasiDisplay[] = [
                 'user' => $validator,
                 'status' => $latestLog->status ?? 'belum validasi',
@@ -56,23 +52,24 @@ class KriteriaController extends Controller
                 'waktu' => $latestLog->created_at ?? null,
             ];
         }
-
-        // Calculate progress for each sub-criteria
+    
+        // Hitung progress untuk setiap subkriteria
         $subKriteriaWithProgress = $kriteria->subkriteria->map(function ($subKriteria) {
-            $hasIsian = Isian::where('subkriteria_id', $subKriteria->id)
-                ->where('akreditasi_id', 1)
-                ->whereNotNull('nilai')
-                ->exists();
-
-            $subKriteria->has_isian = $hasIsian;
+            // Cek apakah subkriteria ini sudah memiliki isian
+            $hasIsiaan = Isian::where('subkriteria_id', $subKriteria->id)
+                              ->where('akreditasi_id', 1) // atau sesuai akreditasi yang aktif
+                              ->whereNotNull('nilai')
+                              ->exists();
+            
+            $subKriteria->has_isian = $hasIsiaan;
             return $subKriteria;
         });
-
-        // Calculate total progress
+    
+        // Hitung total progress
         $totalSubkriteria = $kriteria->subkriteria->count();
         $completedSubkriteria = $subKriteriaWithProgress->where('has_isian', true)->count();
         $progressPercentage = $totalSubkriteria > 0 ? round(($completedSubkriteria / $totalSubkriteria) * 100) : 0;
-
+    
         return view('kriteria.show', [
             'kriteriaId' => $kriteria->id,
             'kriteriaData' => $kriteria,
@@ -84,6 +81,7 @@ class KriteriaController extends Controller
             'completedSubkriteria' => $completedSubkriteria
         ]);
     }
+
 
     public function showSubKriteria($kriteriaId, $subKriteriaId)
     {
@@ -138,14 +136,12 @@ class KriteriaController extends Controller
             return redirect()->back()->with('status', 'Data berhasil di-reset.');
         }
 
-        $request->validate([
-            'nilai' => 'required|string',
-        ]);
+        $nilai = $request->input('nilai');
 
         // Save or update the isian
         Isian::updateOrCreate(
             ['subkriteria_id' => $subKriteriaId, 'akreditasi_id' => $akreditasiId],
-            ['nilai' => $request->input('nilai')]
+            ['nilai' => $nilai]
         );
 
         $pesan = $action === 'submit' ? 'Data berhasil disubmit.' : 'Data berhasil disimpan.';
@@ -154,22 +150,28 @@ class KriteriaController extends Controller
 
     private function getValidationLogs($kriteriaId, $subKriteriaId)
     {
-        // Fetch actual validation logs from the database
-        return ValidasiLog::where('kriteria_id', $kriteriaId)
-            ->where('subkriteria_id', $subKriteriaId)
-            ->with('user')
-            ->orderByDesc('created_at')
-            ->get()
-            ->map(function ($log) {
-                return [
-                    'id' => $log->id,
-                    'peran_validator' => $log->user->role ?? 'Unknown',
-                    'status_sebelum' => $log->status_sebelum ?? 'menunggu_validasi',
-                    'status_sesudah' => $log->status_sesudah ?? 'belum validasi',
-                    'komentar' => $log->komentar ?? '-',
-                    'created_at' => $log->created_at->format('d M Y'),
-                ];
-            })->toArray();
+        if ($kriteriaId <= 2) {
+            return [
+                [
+                    'id' => 1,
+                    'peran_validator' => "KPS",
+                    'status_sebelum' => "menunggu_validasi",
+                    'status_sesudah' => "validated",
+                    'komentar' => "Data sudah lengkap dan sesuai dengan standar akreditasi.",
+                    'created_at' => "14 Mei 2025",
+                ],
+                [
+                    'id' => 2,
+                    'peran_validator' => "Kajur",
+                    'status_sebelum' => "menunggu_validasi",
+                    'status_sesudah' => "validated",
+                    'komentar' => "Disetujui.",
+                    'created_at' => "15 Mei 2025",
+                ],
+            ];
+        }
+
+        return [];
     }
 
     public function unduhPdf($kriteriaId)
@@ -186,7 +188,7 @@ class KriteriaController extends Controller
             $html = view('pdf.kriteria', $data)->render();
             $html = $this->convertImagesToBase64($html);
 
-            $pdf = Pdf::loadHTML($html)
+            $pdf = PDF::loadHTML($html)
                 ->setPaper('a4', 'portrait')
                 ->setOptions([
                     'dpi' => 150,
@@ -196,18 +198,18 @@ class KriteriaController extends Controller
                 ]);
 
             $filename = 'Kriteria_' . $kriteria->id . '_' . date('Y-m-d_H-i-s') . '.pdf';
-            $path = 'public/pdf/' . $filename;
-            Storage::put($path, $pdf->output());
-
-            // Optionally save the path to the database
-            $kriteria->pdf_path = Storage::url($path);
-            $kriteria->save();
-
             return $pdf->stream($filename);
+
         } catch (\Exception $e) {
             Log::error('Error generating PDF: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal menggenerate PDF: ' . $e->getMessage());
         }
+         // Simpan PDF ke penyimpanan
+            Storage::put($path, $pdf->output());
+
+            // Simpan jalur di database
+            $kriteria->pdf_path = Storage::url($path);
+            $kriteria->save();
     }
 
     private function convertImagesToBase64($html)
@@ -251,6 +253,8 @@ class KriteriaController extends Controller
             return $matches[0];
         }, $html);
     }
+
+
 
     public function index()
     {
