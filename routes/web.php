@@ -93,13 +93,13 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
     Route::get('/kriteria/{id}/preview-pdf', [SuperAdminController::class, 'previewPdf'])->name('superadmin.kriteria.preview');
     Route::post('/kriteria/{id}/validate', [SuperAdminController::class, 'validateKriteria'])->name('superadmin.kriteria.validate');
 
-    // User Management Routes (SuperAdmin)
-    Route::prefix('/manage/user')->name('superadmin.')->group(function () {
-        Route::get('/{id}/data', [SuperAdminController::class, 'getUserData'])->name('user.data');
-        Route::post('/', [SuperAdminController::class, 'storeUser'])->name('user.store');
-        Route::post('/{id}', [SuperAdminController::class, 'updateUser'])->name('user.update');
-        Route::delete('/{id}', [SuperAdminController::class, 'deleteUser'])->name('delete.user');
-    });
+    Route::prefix('superadmin/manage')->middleware(['auth', 'superadmin'])->group(function () {
+        Route::get('/users', [SuperAdminController::class, 'index'])->name('superadmin.manage.users');
+        Route::post('/user/store', [SuperAdminController::class, 'store'])->name('superadmin.store.user');
+        Route::get('/user/{id}/data', [SuperAdminController::class, 'getUserData'])->name('superadmin.user.data');
+        Route::put('/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
+        Route::delete('/user/{id}', [SuperAdminController::class, 'deleteUser'])->name('superadmin.delete.user');
+});
 
     // Untuk menampilkan list user
     Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
