@@ -15,7 +15,16 @@ class Isian extends Model
         'akreditasi_id',
         'subkriteria_id',
         'nilai',
+        'user_id',
+
     ];
+
+    
+    // Relasi ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Relasi ke Akreditasi
     public function akreditasi()

@@ -88,6 +88,7 @@ Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(functi
 Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(function () {
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/superadmin/kriteria', [SuperAdminController::class, 'getCriteria'])->name('superadmin.criteria');
+    Route::get('/riwayat-isian', [SuperAdminController::class, 'riwayatIsian'])->name('superadmin.riwayat.isian');
     Route::get('/kriteria/{id}', [SuperAdminController::class, 'show'])->name('superadmin.kriteria.show');
     Route::post('/kriteria/{id}/validasi', [SuperAdminController::class, 'validasiStore'])->name('superadmin.validasi.store');
     Route::get('/kriteria/{id}/preview-pdf', [SuperAdminController::class, 'previewPdf'])->name('superadmin.kriteria.preview');

@@ -141,7 +141,8 @@ class KriteriaController extends Controller
         // Save or update the isian
         Isian::updateOrCreate(
             ['subkriteria_id' => $subKriteriaId, 'akreditasi_id' => $akreditasiId],
-            ['nilai' => $nilai]
+            ['nilai' => $nilai,'user_id' => auth()->id()
+            ]
         );
 
         $pesan = $action === 'submit' ? 'Data berhasil disubmit.' : 'Data berhasil disimpan.';

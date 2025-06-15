@@ -53,18 +53,20 @@
                         'btn' => 'Manajemen Pengguna',
                     ],
                     [
-                        'title' => 'Manajemen Kriteria dan Subkriteria',
-                        'desc' => 'Menambahkan, mengubah dan menghapus Kriteria dan Subkriteria',
-                        'img' => 'images/criteria-icon.png',
-                        'route' => route('superadmin.manage.kriteria'),
-                        'btn' => 'Manajemen Kriteria dan Subkriteria',
-                    ],
-                    [
                         'title' => 'Riwayat Perubahan Kriteria',
                         'desc' => 'Menampilkan riwayat pengisian kriteria yang dilakukan oleh anggota',
                         'img' => 'images/criteria-icon.png',
                         'route' => route('superadmin.manage.kriteria'),
                         'btn' => 'Riwayat Perubahan Kriteria',
+        ],
+
+                    [
+                    'title' => 'Riwayat Pengisian Kriteria',
+                    'desc' => 'Menampilkan riwayat pengisian kriteria yang dilakukan oleh semua user',
+                    'img' => 'images/history-icon.png', // atau gunakan icon yang sama
+                    'route' => route('superadmin.riwayat.isian'),
+                    'btn' => 'Lihat Riwayat Pengisian',
+                    'color' => 'purple'
                     ]
                 ];
             @endphp

@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Kriteria;
 use App\Models\SubKriteria;
+use App\Models\Isian;
+
 use App\Models\Notifikasi;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+
+
 
 class SuperAdminController extends Controller
 {
@@ -114,6 +118,103 @@ class SuperAdminController extends Controller
             'activeTab',
             'sortBy',
             'search'
+        ));
+    }
+
+        public function riwayatIsian(Request $request)
+    {
+        $search = $request->input('search', '');
+        $sortBy = $request->input('sort', 'newest');
+        $filterKriteria = $request->input('kriteria', '');
+        $filterUser = $request->input('user', '');
+
+        // Query untuk mengambil data isian dengan relasi
+        $isianQuery = Isian::with(['user', 'subkriteria.kriteria', 'akreditasi'])
+            ->select('t_isian.*');
+
+        // Search functionality
+        if ($search) {
+            $isianQuery->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('username', 'like', "%{$search}%");
+                })
+                ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
+                    $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
+                            ->orWhereHas('kriteria', function ($kriteriaQuery) use ($search) {
+                                $kriteriaQuery->where('nama_kriteria', 'like', "%{$search}%");
+                            });
+                })
+                ->orWhere('nilai', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by kriteria
+        if ($filterKriteria) {
+            $isianQuery->whereHas('subkriteria.kriteria', function ($q) use ($filterKriteria) {
+                $q->where('id', $filterKriteria);
+            });
+        }
+
+        // Filter by user
+        if ($filterUser) {
+            $isianQuery->where('user_id', $filterUser);
+        }
+
+        // Sorting
+        switch ($sortBy) {
+            case 'newest':
+                $isianQuery->latest('updated_at');
+                break;
+            case 'oldest':
+                $isianQuery->oldest('updated_at');
+                break;
+            case 'user-asc':
+                $isianQuery->join('users', 't_isian.user_id', '=', 'users.id')
+                        ->orderBy('users.name', 'asc');
+                break;
+            case 'user-desc':
+                $isianQuery->join('users', 't_isian.user_id', '=', 'users.id')
+                        ->orderBy('users.name', 'desc');
+                break;
+            case 'kriteria-asc':
+                $isianQuery->join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
+                        ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
+                        ->orderBy('kriteria.nama_kriteria', 'asc');
+                break;
+            case 'kriteria-desc':
+                $isianQuery->join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
+                        ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
+                        ->orderBy('kriteria.nama_kriteria', 'desc');
+                break;
+        }
+
+        // Paginate results
+        $isian = $isianQuery->paginate(15)->appends($request->query());
+
+        // Get data for filter dropdowns
+        $kriteria = Kriteria::orderBy('nama_kriteria')->get();
+        $users = User::orderBy('name')->get();
+
+        // Statistics
+        $stats = [
+            'total_isian' => Isian::count(),
+            'total_users_pengisi' => Isian::distinct('user_id')->count(),
+            'total_kriteria_diisi' => Isian::join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
+                                            ->distinct('subkriteria.kriteria_id')
+                                            ->count(),
+            'total_subkriteria_diisi' => Isian::distinct('subkriteria_id')->count(),
+        ];
+
+        return view('superadmin.riwayat-isian', compact(
+            'isian',
+            'kriteria',
+            'users',
+            'stats',
+            'search',
+            'sortBy',
+            'filterKriteria',
+            'filterUser'
         ));
     }
 
@@ -600,4 +701,6 @@ class SuperAdminController extends Controller
 
         Log::info("Notifikasi {$action} sub-kriteria dikirim ke {$recipients->count()} recipients (Validators)");
     }
+
+    
 }
