@@ -57,18 +57,10 @@
                         'title' => 'Riwayat Perubahan Kriteria',
                         'desc' => 'Menampilkan riwayat pengisian kriteria yang dilakukan oleh anggota',
                         'img' => 'images/time.png',
-                        'route' => route('superadmin.manage.kriteria'),
+                        'route' => route('superadmin.riwayat.isian'),
                         'btn' => 'Riwayat Perubahan Kriteria',
-        ],
+        ]
 
-                    [
-                    'title' => 'Riwayat Pengisian Kriteria',
-                    'desc' => 'Menampilkan riwayat pengisian kriteria yang dilakukan oleh semua user',
-                    'img' => 'images/history-icon.png', // atau gunakan icon yang sama
-                    'route' => route('superadmin.riwayat.isian'),
-                    'btn' => 'Lihat Riwayat Pengisian',
-                    'color' => 'purple'
-                    ]
                 ];
             @endphp
 
