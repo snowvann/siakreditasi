@@ -10,7 +10,6 @@
             <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
                Profil Saya
             </h1>
-            <p class="text-gray-600">Manage your personal information and preferences</p>
         </div>
 
         <!-- Main Profile Card -->
@@ -153,7 +152,7 @@
                         Kembali
                     </a>
                     
-                    <a href="{{ route('edit') }}"
+                    <a href="{{ route('anggota.edit') }}"
                        class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <svg class="w-5 h-5 mr-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">

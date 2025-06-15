@@ -12,20 +12,20 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\User;
 
 
-class ProfileController extends Controller
+class ProfileValidatorController extends Controller
 {
     // Tampilkan profil
     public function index()
     {
         $user = Auth::user();
-        return view('profile.index', compact('user'));
+        return view('profile.validator.index', compact('user'));
     }
 
     // Tampilkan form edit
     public function edit()
     {
         $user = Auth::user();
-        return view('profile.edit', compact('user'));
+        return view('profile.validator.edit', compact('user'));
     }
 
     // Proses update profil
@@ -45,7 +45,7 @@ class ProfileController extends Controller
 
     $user->save();
 
-    return redirect()->route('index')->with('success', 'Profil berhasil diperbarui.');
+    return redirect()->route('validator.index')->with('success', 'Profil berhasil diperbarui.');
 }
 
 }

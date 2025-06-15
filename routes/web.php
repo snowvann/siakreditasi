@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileAnggotaController;
+use App\Http\Controllers\ProfileValidatorController;
+use App\Http\Controllers\ProfileAdminController;
 use App\Http\Controllers\KriteriaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
@@ -34,13 +36,26 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Profile
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'index'])->name('index');     // Halaman view profil
-        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');     // Halaman edit profil
-        Route::put('/update', [ProfileController::class, 'update'])->name('update'); // Simpan perubahan
-        Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    });
-
+        Route::prefix('profile')->group(function () {
+            Route::prefix('anggota')->group(function () {
+                Route::get('/', [ProfileAnggotaController::class, 'index'])->name('anggota'); // ← ini yang penting!
+                Route::get('/edit', [ProfileAnggotaController::class, 'edit'])->name('anggota.edit');
+                Route::put('/update', [ProfileAnggotaController::class, 'update'])->name('anggota.update');
+                Route::get('/anggota', [ProfileAnggotaController::class, 'index'])->name('anggota.index');
+            });
+            Route::prefix('validator')->group(function () {
+                Route::get('/', [ProfileValidatorController::class, 'index'])->name('validator'); // ← ini yang penting!
+                Route::get('/edit', [ProfileValidatorController::class, 'edit'])->name('validator.edit');
+                Route::put('/update', [ProfileValidatorController::class, 'update'])->name('validator.update');
+                Route::get('/validator', [ProfileValidatorController::class, 'index'])->name('validator.index');
+            });
+            Route::prefix('admin')->group(function () {
+                Route::get('/', [ProfileAdminController::class, 'index'])->name('admin'); // ← ini yang penting!
+                Route::get('/edit', [ProfileAdminController::class, 'edit'])->name('admin.edit');
+                Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.update');
+                Route::get('/admin', [ProfileAdminController::class, 'index'])->name('admin.index');
+            });
+});
     // Kriteria Routes
     Route::prefix('kriteria')->group(function () {
         Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage');
@@ -77,12 +92,13 @@ Route::delete('/api/notifikasi/{id}', [NotifikasiController::class, 'hapus']);
 Route::middleware(['auth', 'role:validator'])->prefix('validator')->group(function () {
     Route::post('/validator/kriteria/{id}/validasi', [ValidatorKriteriaController::class, 'validasiStore'])->name('validator.validasi.store');
     Route::get('/validator/kriteria/{id}/preview-pdf', [ValidatorKriteriaController::class, 'previewPdf'])->name('validator.kriteria.preview');
-    Route::get('/dashboard-validator', [ValidatorKriteriaController::class, 'index'])->name('validator.dashboard');
     Route::get('/kriteria', [ValidatorKriteriaController::class, 'list'])->name('validator.kriteria');
     Route::get('/kriteria/{id}', [ValidatorKriteriaController::class, 'show'])->name('validator.kriteria.show');
     Route::post('/kriteria/{id}/validate', [ValidatorKriteriaController::class, 'validatekriteria'])
         ->name('validator.kriteria.validate');
 });
+
+Route::get('/validator/dashboard-validator', [ValidatorKriteriaController::class, 'index'])->name('validator.dashboard');
 
 // SuperAdmin Routes
 Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(function () {

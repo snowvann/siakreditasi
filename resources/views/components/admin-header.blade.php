@@ -111,7 +111,7 @@
 
                         <!-- Menu Items -->
                         <div class="py-2">
-                            <a href="{{ route('anggota') }}" 
+                            <a href="{{ route('admin') }}" 
                                class="flex items-center px-4 sm:px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150 group">
                                 <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-blue-100 transition-colors duration-150 mr-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-600 group-hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
