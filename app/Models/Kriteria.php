@@ -38,4 +38,10 @@ class Kriteria extends Model
     {
         return $this->hasMany(Submission::class); // Ganti dengan nama model yang sesuai
     }
+
+    public function penanggungJawab()
+{
+    return $this->belongsToMany(User::class, 'kriteria_user');
+}
+
 }

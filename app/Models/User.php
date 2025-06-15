@@ -70,4 +70,6 @@ public function hasAccessToKriteria($kriteriaId)
 {
     return $this->kriteria()->where('kriteria.id', $kriteriaId)->exists();
 }
+
+
 }

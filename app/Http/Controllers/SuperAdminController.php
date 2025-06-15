@@ -235,6 +235,7 @@ class SuperAdminController extends Controller
         return view('superadmin.users.manage', compact('users', 'search'));
     }
 
+    // Add this method to fetch user data
     public function getUserData($id)
     {
         try {
@@ -250,11 +251,10 @@ class SuperAdminController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
-            Log::error("Error fetching user: " . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'User tidak ditemukan'
-            ], 404);
+                'message' => 'Gagal memuat data user: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -308,39 +308,47 @@ class SuperAdminController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:255|unique:users,username,' . $id,
-                'role' => 'required|in:Anggota,Validator,SuperAdmin',
+                'role' => 'required|in:anggota,validator,superadmin',
                 'is_active' => 'required|boolean'
             ]);
 
             $user = User::findOrFail($id);
             $currentUser = Auth::user();
 
-            if ($user->id === $currentUser->id && $request->role !== 'SuperAdmin') {
+            // Prevent self role change
+            if ($user->id === $currentUser->id && $request->role !== 'superadmin') {
                 return response()->json([
                     'success' => false,
                     'message' => 'Anda tidak dapat mengubah role diri sendiri!'
                 ], 403);
             }
 
-            $user->update($request->only(['name', 'username', 'role', 'is_active']));
+            $user->update([
+                'name' => $request->name,
+                'username' => $request->username,
+                'role' => $request->role,
+                'is_active' => $request->is_active
+            ]);
 
             Log::info("SuperAdmin {$currentUser->name} updated user {$user->name} (ID: {$user->id})");
             AuditLog::create([
                 'user_id' => Auth::id(),
                 'aksi' => 'Update User',
-                'deskripsi' => "Memperbarui user {$user->name} dengan role {$user->role}",
+                'deskripsi' => "Memperbarui user {$user->name}",
                 'ip' => $request->ip(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'User berhasil diperbarui'
+                'message' => 'User berhasil diperbarui',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'role' => $user->role,
+                    'is_active' => $user->is_active
+                ]
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
-            ], 422);
         } catch (\Exception $e) {
             Log::error("Error updating user: " . $e->getMessage());
             return response()->json([

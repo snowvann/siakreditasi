@@ -2,55 +2,7 @@
 
 @section('content')
     <div class="min-h-screen bg-gray-100">
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h1 class="text-lg font-bold">Sistem Akreditasi</h1>
-                                <p class="text-xs text-gray-600">Dashboard Validator</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-4">
-                        <nav class="hidden md:flex items-center gap-4">
-                            <a href="{{ route('validator.dashboard') }}" class="px-3 py-2 text-sm font-medium {{ request()->routeIs('validator.dashboard') ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600' }}">
-                                Beranda
-                            </a>
-                            <a href="{{ route('validator.kriteria') }}" class="px-3 py-2 text-sm font-medium {{ request()->routeIs('validator.kriteria') ? 'text-blue-600 bg-blue-50 rounded-md' : 'text-gray-600 hover:text-blue-600' }}">
-                                Validasi Kriteria
-                            </a>
-                        </nav>
-
-                        <div class="flex items-center gap-2">
-                            <div class="relative">
-                                <img src="{{ asset('images/avatar.png') }}" alt="User" class="w-8 h-8 rounded-full">
-                            </div>
-                            <div class="hidden sm:block">
-                                <p class="text-sm font-medium">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-gray-500">Validator</p>
-                            </div>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="ml-2 text-gray-500 hover:text-red-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        @include('components.validator-header')
 
         <main class="container mx-auto px-4 py-6">
             <div class="bg-white rounded-lg shadow-sm p-6">

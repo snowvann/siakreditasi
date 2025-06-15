@@ -10,7 +10,6 @@
             <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
                 Edit Profile
             </h1>
-            <p class="text-gray-600">Update your personal information and preferences</p>
         </div>
 
         <!-- Main Edit Form Card -->
@@ -21,8 +20,8 @@
                 <div class="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full"></div>
                 <div class="absolute -bottom-2 -left-4 w-16 h-16 bg-white/10 rounded-full"></div>
                 
-                <!-- Back Button -->
-                <a href="{{ route('dashboard') }}" 
+                <!-- Back Button - Fixed to go to index -->
+                <a href="{{ route('anggota.index') }}" 
                    class="absolute top-4 left-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -30,7 +29,7 @@
                 </a>
             </div>
 
-            <form action="{{ route('update', $user->id) }}" method="POST" enctype="multipart/form-data" class="p-8">
+            <form action="{{ route('anggota.update', $user->id) }}" method="POST" enctype="multipart/form-data" class="p-8">
                 @csrf
                 @method('PUT')
 

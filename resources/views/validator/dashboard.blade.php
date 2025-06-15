@@ -2,35 +2,15 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
-    @include('components.dashboard-header')
+    @include('components.validator-header')
 
     <main class="container mx-auto px-4 py-6 animate-fade-in">
         <div class="grid gap-6">
             <!-- Header dan Search -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-slide-down">
             <h1 class="text-3xl font-bold flex-shrink-0 bg-gradient-to-b from-[#EA8E32] to-[#4230BB] bg-clip-text text-transparent transition-all duration-300 cursor-default">
-                Kriteria
+                Kriteria Validator
             </h1>
-                <div class="flex-1 w-full">
-                    <form method="GET" class="w-full">
-                        <div class="relative w-full">
-                            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
-                                </svg>
-                            </span>
-                            <input
-                                type="search"
-                                name="q"
-                                value="{{ request('q') }}"
-                                placeholder="Cari kriteria atau subkriteria..."
-                                class="w-full pl-10 pr-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 focus:scale-[1.02] hover:border-gray-400 transition-all duration-200"
-                            />
-                        </div>
-                    </form>
-                </div>
             </div>
 
             <!-- Progress Card -->
