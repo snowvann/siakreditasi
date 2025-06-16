@@ -60,7 +60,6 @@
                         'route' => route('superadmin.riwayat.isian'),
                         'btn' => 'Riwayat Perubahan Kriteria',
         ]
-
                 ];
             @endphp
 
