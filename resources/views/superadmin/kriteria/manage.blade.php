@@ -495,7 +495,7 @@
         
         const formData = new FormData(event.target);
         
-        fetch('/criteria/store', {
+        fetch('/kriteria/store', {
             method: 'POST',
             body: formData,
             headers: {
@@ -528,7 +528,7 @@
     function openEditCriteriaModal(criteriaId) {
         showLoading();
         
-        fetch(`/criteria/${criteriaId}/edit`)
+        fetch(`/kriteria/${criteriaId}/edit`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -558,26 +558,41 @@
     function submitEditCriteria(event) {
         event.preventDefault();
         showLoading();
-        
+
         const formData = new FormData(event.target);
         const criteriaId = document.getElementById('editCriteriaId').value;
-        
-        fetch(`/criteria/${criteriaId}/update`, {
-            method: 'POST',
+
+        // Tambahkan override method agar dianggap PUT oleh Laravel
+        formData.append('_method', 'PUT');
+
+        fetch(`/kriteria/${criteriaId}/update`, {
+            method: 'POST', // tetap pakai POST agar FormData bisa dikirim
             body: formData,
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         })
-        .then(response => response.json())
+        .then(async response => {
+            const contentType = response.headers.get("content-type");
+            const responseBody = await response.text();
+
+            if (!response.ok) {
+                console.error('HTTP Error:', response.status, responseBody);
+                throw new Error('Server error');
+            }
+
+            if (contentType && contentType.includes("application/json")) {
+                return JSON.parse(responseBody);
+            } else {
+                throw new Error('Invalid JSON response');
+            }
+        })
         .then(data => {
             hideLoading();
             if (data.success) {
                 closeEditCriteriaModal();
                 showNotification('Kriteria berhasil diupdate!', 'success');
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
+                setTimeout(() => location.reload(), 1500);
             } else {
                 showNotification(data.message || 'Gagal mengupdate kriteria', 'error');
             }
@@ -588,6 +603,7 @@
             showNotification('Terjadi kesalahan saat mengupdate kriteria', 'error');
         });
     }
+
 
     // ======================
     // ADD SUB-CRITERIA FUNCTIONS
@@ -611,7 +627,7 @@
         
         const formData = new FormData(event.target);
         
-        fetch('/subcriteria/store', {
+        fetch('/kriteria/subkriteria/store', {
             method: 'POST',
             body: formData,
             headers: {
@@ -644,7 +660,7 @@
     function openEditSubCriteriaModal(subCriteriaId) {
         showLoading();
         
-        fetch(`/subcriteria/${subCriteriaId}/edit`)
+        fetch(`/kriteria/subkriteria/${subCriteriaId}/edit`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -678,12 +694,19 @@
         const formData = new FormData(event.target);
         const subCriteriaId = document.getElementById('editSubCriteriaId').value;
         
-        fetch(`/subcriteria/${subCriteriaId}/update`, {
-            method: 'POST',
-            body: formData,
+        // Gunakan PUT dan route update yang benar
+        fetch(`/kriteria/subkriteria/${subCriteriaId}/update`, {
+            method: 'PUT',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                nama_subkriteria: document.getElementById('editSubCriteriaName').value,
+                deskripsi: document.getElementById('editSubCriteriaDescription').value,
+                persentase: document.getElementById('editSubCriteriaPercentage').value
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -712,7 +735,7 @@
         if (confirm('Yakin ingin menghapus kriteria ini? Semua sub-kriteria juga akan terhapus.')) {
             showLoading();
             
-            fetch(`/criteria/${criteriaId}/delete`, {
+            fetch(`/kriteria/${criteriaId}/delete`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -742,7 +765,7 @@
         if (confirm('Yakin ingin menghapus sub-kriteria ini?')) {
             showLoading();
             
-            fetch(`/subcriteria/${subCriteriaId}/delete`, {
+            fetch(`/kriteria/subkriteria/${subCriteriaId}/delete`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -817,11 +840,11 @@
 
     // Auto-expand first criteria (optional)
     document.addEventListener('DOMContentLoaded', function() {
-        const firstCriteria = document.querySelector('[id^="content-"]');
-        if (firstCriteria) {
-            const criteriaId = firstCriteria.id.split('-')[1];
-            toggleCriteria(criteriaId);
-        }
+        // const firstCriteria = document.querySelector('[id^="content-"]');
+        // if (firstCriteria) {
+        //     const criteriaId = firstCriteria.id.split('-')[1];
+        //     toggleCriteria(criteriaId);
+        // }
         
         // Initialize icons for any dynamically loaded content
         lucide.createIcons();
@@ -834,7 +857,7 @@
         
         const formData = new FormData(event.target);
         
-        fetch("{{ route('criteria.store') }}", {
+        fetch("{{ route('kriteria.store') }}", {
             method: 'POST',
             body: formData,
             headers: {

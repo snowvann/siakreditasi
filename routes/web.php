@@ -61,15 +61,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage');
         Route::get('/{id}/unduh-pdf', [KriteriaController::class, 'unduhPdf'])->name('kriteria.unduh-pdf');
         Route::get('/{id}', [KriteriaController::class, 'show'])->name('kriteria.show');
-        Route::post('/store', [KriteriaController::class, 'store'])->name('criteria.store');
-        Route::get('/{id}/edit', [KriteriaController::class, 'edit'])->name('criteria.edit');
-        Route::post('/{id}/update', [KriteriaController::class, 'update'])->name('criteria.update');
+        Route::post('/store', [KriteriaController::class, 'store'])->name('kriteria.store');
+        Route::get('/{id}/edit', [KriteriaController::class, 'edit'])->name('kriteria.edit');
+        Route::put('/{id}/update', [KriteriaController::class, 'update'])->name('kriteria.update');
         Route::delete('/{id}/delete', [KriteriaController::class, 'destroy'])->name('criteria.destroy');
         
         // Sub-Kriteria Routes
-        Route::post('/subkriteria/store', [SubKriteriaController::class, 'store'])->name('subcriteria.store');
-        Route::get('/subkriteria/{id}/edit', [SubKriteriaController::class, 'edit'])->name('subcriteria.edit');
-        Route::post('/subkriteria/{id}/update', [SubKriteriaController::class, 'update'])->name('subcriteria.update');
+        Route::post('/subkriteria/store', [SubKriteriaController::class, 'store'])->name('subkriteria.store');
+        Route::get('/subkriteria/{id}/edit', [SubKriteriaController::class, 'edit'])->name('subkriteria.edit');
+        Route::put('/subkriteria/{id}/update', [SubKriteriaController::class, 'update'])->name('subkriteria.update');
         Route::delete('/subkriteria/{id}/delete', [SubKriteriaController::class, 'destroy'])->name('subcriteria.destroy');
         
         Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])

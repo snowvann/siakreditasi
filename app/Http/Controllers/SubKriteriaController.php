@@ -10,6 +10,7 @@ class SubKriteriaController extends Controller
 {
     public function store(Request $request)
     {
+        Log::info('Store Subkriteria', $request->all());
         $request->validate([
             'kriteria_id' => 'required|exists:kriteria,id',
             'nama_subkriteria' => 'required|string|max:255',
@@ -31,7 +32,6 @@ class SubKriteriaController extends Controller
                 'data' => $subkriteria
             ]);
         } catch (\Exception $e) {
-            Log::error('Error storing subkriteria: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menambahkan sub-kriteria: ' . $e->getMessage()
@@ -77,7 +77,6 @@ class SubKriteriaController extends Controller
                 'data' => $subkriteria
             ]);
         } catch (\Exception $e) {
-            Log::error('Error updating subkriteria: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memperbarui sub-kriteria: ' . $e->getMessage()

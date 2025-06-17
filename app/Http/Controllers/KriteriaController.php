@@ -255,8 +255,6 @@ class KriteriaController extends Controller
         }, $html);
     }
 
-
-
     public function index()
     {
         $kriteriaList = Kriteria::with('subkriteria')->get();
