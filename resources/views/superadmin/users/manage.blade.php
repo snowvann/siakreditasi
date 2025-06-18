@@ -5,15 +5,27 @@
     @include('components.dashboard-header')
     
     <main class="container mx-auto px-4 py-8">
+        
         <!-- Header Section -->
                 <div class="relative rounded-xl bg-gradient-to-r from-purple-700 to-pink-500 text-white p-6 flex items-center justify-between shadow-lg">
                 <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>      
 
+                <!-- Konten Header -->
+                <div class="flex items-center gap-4 relative z-10">
+                    <!-- Tombol Back -->
+                    <a href="{{ route('superadmin.dashboard') }}"
+                        class="inline-flex items-center justify-center text-white hover:text-gray-100 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300">
+                        <!-- Icon Back (Heroicon) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </a>
                 <div class="space-y-4">
                     <h1 class="text-3xl lg:text-4xl font-bold text-white">
                         Manajemen Pengguna
                     </h1>
                     <p class="text-white/90 text-lg">Kelola pengguna dan hak akses mereka secara efisien</p>
+                </div>
                 </div>
 
                 <div class="text-4xl">
@@ -108,13 +120,12 @@
                                             </span>
                                                 </td>        
                                     <td class="px-2 py-4 whitespace-nowrap text-center">
-    <span class="inline-flex items-center justify-center gap-1 px-3 py-1 text-xs font-semibold 
-        {{ $user->is_active ? 'bg-green-300 text-green-900' : 'bg-red-300 text-red-900' }} rounded-full">
-        <i data-lucide="{{ $user->is_active ? 'user-check' : 'user-x' }}" class="w-3 h-3"></i>
-        {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
-    </span>
-</td>
-
+                                    <span class="inline-flex items-center justify-center gap-1 px-3 py-1 text-xs font-semibold 
+                                        {{ $user->is_active ? 'bg-green-300 text-green-900' : 'bg-red-300 text-red-900' }} rounded-full">
+                                        <i data-lucide="{{ $user->is_active ? 'user-check' : 'user-x' }}" class="w-3 h-3"></i>
+                                        {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center justify-center gap-2">
                                             <!-- Tombol Edit -->

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="min-h-screen" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-    @include('components.dashboard-header')
+    @include('components.admin-header')
 
     <main class="container mx-auto px-4 py-8">
         <!-- Back Button -->

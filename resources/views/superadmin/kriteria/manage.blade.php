@@ -2,44 +2,39 @@
 
 @section('content')
 <div class="min-h-screen" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-    @include('components.dashboard-header')
+    @include('components.admin-header')
     
     <!-- Enhanced Header Section -->
     <main class="container mx-auto px-4 py-8">
-        <div class="relative z-10">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>
-            <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 pb-25 shadow-xl border border-white/20 min-h-[170px]"> 
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                    <div class="space-y-4">
-                        <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                            Manajemen Kriteria dan Sub-Kriteria
-                        </h1>
-                        <p class="text-gray-600 text-lg mt-5">Kelola kriteria penilaian dan sub-kriteria secara efisien</p>
-                    </div>
-                    
-                    {{-- <!-- Enhanced Search -->
-                    <div class="w-full lg:w-96">
-                        <form method="GET" action="{{ route('criteria.manage') }}" class="relative group">
-                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity"></div>
-                            <div class="relative bg-white rounded-2xl shadow-lg border border-gray-200/50">
-                                <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
-                                    </svg>
-                                </div>
-                                <input
-                                    type="search"
-                                    name="search"
-                                    value="{{ request('search') }}"
-                                    placeholder="Cari kriteria atau sub-kriteria..."
-                                    class="w-full pl-12 pr-6 py-4 bg-transparent border-0 rounded-2xl focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-400"
-                                />
-                            </div>
-                        </form>
-                    </div> --}}
+         <!-- Header Section -->
+                <div class="relative rounded-xl bg-gradient-to-r from-purple-700 to-pink-500 text-white p-6 flex items-center justify-between shadow-lg">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>      
+
+                <!-- Konten Header -->
+                <div class="flex items-center gap-4 relative z-10">
+                    <!-- Tombol Back -->
+                    <a href="{{ route('superadmin.dashboard') }}"
+                        class="inline-flex items-center justify-center text-white hover:text-gray-100 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300">
+                        <!-- Icon Back (Heroicon) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </a>
+                <div class="space-y-4">
+                    <h1 class="text-3xl lg:text-4xl font-bold text-white">
+                        Manajemen Kriteria dan Sub-Kriteria
+                    </h1>
+                    <p class="text-white/90 text-lg">Kelola kriteria penilaian dan sub-kriteria secara efisien</p>
+                </div>
+                </div>
+
+                <div class="text-4xl">
+                    <!-- Ikon user solid seperti di gambar -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-10 h-10" viewBox="0 0 20 20">
+                        <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z" />
+                    </svg>
                 </div>
             </div>
-        </div>
 
         <!-- Header Actions -->
         <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">

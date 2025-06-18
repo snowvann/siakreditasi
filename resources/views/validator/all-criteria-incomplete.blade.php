@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
-    @include('components.dashboard-header')
+    @include('components.validator-header')
 
     <main class="container mx-auto px-4 py-6">
         <div class="max-w-6xl mx-auto">

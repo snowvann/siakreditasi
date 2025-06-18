@@ -49,7 +49,7 @@
                     [
                         'title' => 'Manajemen Kriteria dan Subkriteria',
                         'desc' => 'Menambahkan, mengubah dan menghapus Kriteria dan Subkriteria',
-                        'img' => 'images/criteria-icon.png',
+                        'img' => 'images/list.png',
                         'route' => route('superadmin.manage.kriteria'),
                         'btn' => 'Manajemen Kriteria dan Subkriteria',
                     ],
