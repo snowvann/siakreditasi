@@ -830,62 +830,121 @@ window.addEventListener('scroll', function() {
         }
     }
 });
-  
-  // Close modal when clicking outside
-  document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('denahModal');
-      if (modal) {
-          modal.addEventListener('click', function(e) {
-              if (e.target === this) {
-                  closeModal();
-              }
-          });
-      }
-  });
-  
-  // FAQ Functions
-  function toggleFAQ(button) {
-      const answer = button.nextElementSibling;
-      const icon = button.querySelector('svg');
-      
-      // Close all other FAQ items
-      document.querySelectorAll('.bg-white').forEach(item => {
-          const itemAnswer = item.querySelector('div.hidden, div:not(.hidden)');
-          const itemIcon = item.querySelector('svg');
-          if (itemAnswer && itemAnswer !== answer && !itemAnswer.classList.contains('hidden')) {
-              itemAnswer.classList.add('hidden');
-              if (itemIcon) itemIcon.classList.remove('rotate-180');
-          }
-      });
-      
-      // Toggle current FAQ item
-      answer.classList.toggle('hidden');
-      if (icon) icon.classList.toggle('rotate-180');
-  }
-  
-  // FAQ Search Function
-  document.addEventListener('DOMContentLoaded', function() {
-      const faqSearch = document.getElementById('faqSearch');
-      if (faqSearch) {
-          faqSearch.addEventListener('input', function(e) {
-              const searchTerm = e.target.value.toLowerCase();
-              const faqItems = document.querySelectorAll('#faqAccordion > div');
-              
-              faqItems.forEach(item => {
-                  const questionElement = item.querySelector('span');
-                  const answerElement = item.querySelector('div:last-child div');
-                  
-                  const question = questionElement ? questionElement.textContent.toLowerCase() : '';
-                  const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
-                  
-                  if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                      item.style.display = 'block';
-                  } else {
-                      item.style.display = 'none';
-                  }
-              });
-          });
-      }
-  });
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('denahModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    }
+});
+
+// FAQ Functions - FIXED VERSION FOR YOUR STRUCTURE  
+function toggleFAQ(button) {
+    // Prevent event bubbling that might interfere with navigation
+    if (typeof event !== 'undefined') {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    const answer = button.nextElementSibling;
+    const icon = button.querySelector('svg');
+    
+    // Get FAQ container and only work within it
+    const faqContainer = document.getElementById('faqAccordion');
+    if (!faqContainer) return;
+    
+    // Find all FAQ items but ONLY within the FAQ container
+    const faqItems = faqContainer.querySelectorAll(':scope > div');
+    
+    // Close all other FAQ items (only within FAQ section)
+    faqItems.forEach(item => {
+        // Skip if this is the current item being clicked
+        if (item.contains(button)) return;
+        
+        // Find the answer div (second child which has the hidden class)
+        const itemButton = item.querySelector('button');
+        const itemAnswer = item.querySelector('div.hidden, div:not(.hidden):last-child');
+        const itemIcon = itemButton ? itemButton.querySelector('svg') : null;
+        
+        // Close this FAQ item if it's open
+        if (itemAnswer && !itemAnswer.classList.contains('hidden')) {
+            itemAnswer.classList.add('hidden');
+            if (itemIcon) itemIcon.classList.remove('rotate-180');
+        }
+    });
+    
+    // Toggle current FAQ item
+    if (answer) {
+        answer.classList.toggle('hidden');
+    }
+    if (icon) {
+        icon.classList.toggle('rotate-180');
+    }
+}
+
+// FAQ Search Function - IMPROVED VERSION
+document.addEventListener('DOMContentLoaded', function() {
+    const faqSearch = document.getElementById('faqSearch');
+    if (faqSearch) {
+        faqSearch.addEventListener('input', function(e) {
+            // Prevent event bubbling
+            e.stopPropagation();
+            
+            const searchTerm = e.target.value.toLowerCase();
+            const faqContainer = document.getElementById('faqAccordion');
+            
+            if (!faqContainer) return;
+            
+            const faqItems = faqContainer.querySelectorAll(':scope > div, .faq-item');
+            
+            faqItems.forEach(item => {
+                const questionElement = item.querySelector('button span, .faq-question, h3, h4');
+                const answerElement = item.querySelector('.faq-answer, div:last-child div, p');
+                
+                const question = questionElement ? questionElement.textContent.toLowerCase() : '';
+                const answer = answerElement ? answerElement.textContent.toLowerCase() : '';
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm) || searchTerm === '') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+
+// Additional fix: Prevent any unintended DOM modifications
+document.addEventListener('click', function(e) {
+    // If click is within FAQ section, don't let it affect navigation
+    const faqSection = document.getElementById('faq');
+    const navbar = document.getElementById('navbar');
+    
+    if (faqSection && faqSection.contains(e.target) && !navbar.contains(e.target)) {
+        // This is a click within FAQ section, ensure navigation remains intact
+        const navLinks = document.getElementById('navLinks');
+        if (navLinks && navLinks.classList.contains('hidden') && window.innerWidth >= 1024) {
+            // If navigation is hidden on desktop, show it back
+            navLinks.classList.remove('hidden');
+        }
+    }
+});
+
+// Additional safety check for navigation visibility
+setInterval(function() {
+    const navLinks = document.getElementById('navLinks');
+    const navbar = document.getElementById('navbar');
+    
+    // If we're on desktop and navigation is hidden (but shouldn't be)
+    if (navLinks && navbar && window.innerWidth >= 1024 && navLinks.classList.contains('hidden')) {
+        console.warn('Navigation was unexpectedly hidden, restoring...');
+        navLinks.classList.remove('hidden');
+    }
+}, 2000); // Check every 2 seconds
   </script>
 @endsection

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @section('content')
 <div class="min-h-screen" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
     @include('components.dashboard-header')
@@ -136,14 +136,34 @@
                                                 </svg>
                                                 <span>Ubah</span>
                                             </button>
+                                            {{-- <!-- Tombol Akses -->
+                                           <button onclick="openAccessModal({{ $user->id }}, '{{ $user->name }}')"
+    class="text-white bg-blue-600 hover:bg-blue-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2C9.243 2 7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-8c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v3H9V7c0-1.654 1.346-3 3-3zm6 10v6H6v-6h12z"/>
+    </svg>
+                                                <span>Akses</span>
+                                            </button> --}}
                                             <!-- Tombol Hapus -->
-                                            <button onclick="if(confirm('Yakin ingin menghapus user {{ $user->name }}?')) { document.getElementById('delete-form-{{ $user->id }}').submit(); }"
+                                             @csrf
+                                            {{-- <button onclick="deleteUser({{ $user->id }})"
                                                 class="text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
                                                     <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                                 </svg>
                                                 <span>Hapus</span>
-                                            </button>
+                                            </button> --}}
+                                            <form action="{{ route('superadmin.delete.user', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
+            <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+        </svg>
+        <span>Hapus</span>
+    </button>
+</form>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -158,6 +178,7 @@
     </div>
 
     @include('superadmin.users.create')
+    @include('superadmin.users.access-modal')
     @include('superadmin.users.edit')
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -238,35 +259,134 @@
             document.getElementById('userCount').textContent = visibleCount;
         }
 
-        function addUser() {
-            const formData = new FormData();
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-            formData.append('name', document.getElementById('name').value);
-            formData.append('username', document.getElementById('username').value);
-            formData.append('role', document.getElementById('role').value);
-            formData.append('is_active', document.getElementById('is_active').value);
+        // Di dalam script manage.blade.php, tambahkan event listener untuk form submit
+            document.addEventListener('DOMContentLoaded', function() {
+                const addUserForm = document.getElementById('addUserForm');
+                if (addUserForm) {
+                    addUserForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        addUser();
+                    });
+                }
+            });
 
-            fetch('/superadmin/manage/user/store', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'User berhasil ditambahkan',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => location.reload());
-                } else {
+            // Ganti fungsi addUser() dengan versi yang lebih baik
+            function addUser() {
+                const form = document.getElementById('addUserForm');
+                const formData = new FormData(  );
+                
+                // Tampilkan loading indicator
+                Swal.fire({
+                    title: 'Sedang memproses...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch('/superadmin/manage/user/store', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'User berhasil ditambahkan',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            closeAddUserModal();
+                            location.reload(); // Reload halaman untuk menampilkan user baru
+                        });
+                    } else {
+                        throw new Error(data.message || 'Gagal menambahkan user');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        text: data.message || 'Gagal menambahkan user',
+                        text: error.message || 'Terjadi kesalahan saat menambahkan user',
                         showConfirmButton: true
                     });
+                });
+            }
+
+function deleteUser(userId) {
+    // Konfirmasi penghapusan user
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data user akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Tampilkan loading
+            Swal.fire({
+                title: 'Menghapus...',
+                html: 'Sedang memproses penghapusan user',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Kirim request DELETE
+            fetch(`/superadmin/manage/user/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Tutup loading
+                    Swal.close();
+                    
+                    // Tampilkan notifikasi sukses
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message || 'User berhasil dihapus',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // Hapus baris dari tabel
+                        const row = document.querySelector(`.user-row[data-id="${userId}"]`);
+                        if (row) {
+                            row.remove();
+                        }
+                        
+                        // Update counter
+                        const userCount = document.getElementById('userCount');
+                        if (userCount) {
+                            const currentCount = parseInt(userCount.textContent);
+                            userCount.textContent = currentCount > 0 ? currentCount - 1 : 0;
+                        }
+                    });
+                } else {
+                    throw new Error(data.message || 'Gagal menghapus user');
                 }
             })
             .catch(error => {
@@ -274,55 +394,13 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: 'Terjadi kesalahan saat menambahkan user',
+                    text: error.message || 'Terjadi kesalahan saat menghapus user',
                     showConfirmButton: true
                 });
             });
         }
-
-        function deleteUser(userId) {
-            Swal.fire({
-                title: 'Yakin ingin menghapus user ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/superadmin/manage/user/${userId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Delete gagal');
-                        return response.json();
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'User berhasil dihapus',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => location.reload());
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Gagal menghapus user',
-                            showConfirmButton: true
-                        });
-                    });
-                }
-            });
-        }
-
+    });
+}
         function submitEditUserForm() {
     const form = document.getElementById('editUserForm');
     const formData = new FormData(form);
@@ -422,9 +500,104 @@
                 statusCell.innerHTML = `<i data-lucide="${isActive ? 'user-check' : 'user-x'}" class="w-3 h-3"></i> ${isActive ? 'Aktif' : 'Nonaktif'}`;
                 statusCell.className = `px-2 py-1 text-xs rounded-full flex items-center gap-1 ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
             }
-
-            lucide.createIcons();
         }
-    </script>
+            lucide.createIcons();
+
+function openAccessModal(userId, userName) {
+    console.log('Opening modal for user:', userId, userName); // Debug log
+    
+    const modal = document.getElementById('accessModal');
+    if (!modal) {
+        console.error('Modal element not found!');
+        return;
+    }
+    
+    modal.classList.remove('hidden');
+    document.getElementById('accessUserName').value = userName;
+    document.getElementById('accessUserId').value = userId;
+    
+    // Load current access permissions
+    fetch(`/superadmin/manage/user/${userId}/access`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                document.getElementById('readAccess').checked = data.permissions.read;
+                document.getElementById('writeAccess').checked = data.permissions.write;
+                document.getElementById('validateAccess').checked = data.permissions.validate;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching access data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Gagal memuat data akses'
+            });
+        });
+}
+
+function closeAccessModal() {
+    const modal = document.getElementById('accessModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function updateUserAccess() {
+    const userId = document.getElementById('accessUserId').value;
+    const kriteriaId = document.getElementById('accessKriteria').value;
+    const permissions = {
+        read: document.getElementById('readAccess').checked,
+        write: document.getElementById('writeAccess').checked,
+        validate: document.getElementById('validateAccess').checked
+    };
+
+    fetch(`/superadmin/manage/user/${userId}/access`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            kriteria_id: kriteriaId,
+            permissions: permissions
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Hak akses berhasil diperbarui',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            closeAccessModal();
+        } else {
+            throw new Error(data.message || 'Gagal memperbarui hak akses');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: error.message || 'Terjadi kesalahan saat memperbarui hak akses',
+            showConfirmButton: true
+        });
+    });
+}
+            </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

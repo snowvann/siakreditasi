@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
-    @include('components.validator-header')
+    @include('components.dashboard-header')
 
     <main class="container mx-auto px-4 py-6">
         <div class="max-w-6xl mx-auto">
@@ -14,53 +14,44 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        Kembali ke Dashboard
+                        Kembali
                     </a>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900">Status Pengisian Kriteria</h1>
             </div>
 
             <!-- Alert Card -->
-            <div class="bg-white rounded-lg shadow-sm border border-red-200 mb-6">
-                <div class="p-6">
-                    <!-- Icon dan Status -->
-                    <div class="flex items-center justify-center mb-6">
-                        <div class="flex items-center justify-center w-20 h-20 bg-red-100 rounded-full">
-                            <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
-                            </svg>
-                        </div>
+            <div class="rounded-lg mb-6 bg-gradient-to-r from-yellow-400 to-orange-400 p-6">
+                <!-- Icon dan Status -->
+                <div class="flex flex-col items-center justify-center text-center mb-6">
+                    <div class="flex items-center justify-center w-24 h-24 bg-white rounded-full mb-4">
+                        <svg class="w-22 h-22 text-black" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+                        </svg>
                     </div>
+                    <h2 class="text-lg font-bold text-black">Validasi Belum Dapat Dilakukan</h2>
+                    <p class="text-sm text-black mt-1">
+                        Semua kriteria harus diselesaikan terlebih dahulu oleh anggota sebelum proses validasi dapat dimulai.
+                    </p>
+                </div>
 
-                    <!-- Judul -->
-                    <div class="text-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-2">
-                            Validasi Belum Dapat Dilakukan
-                        </h2>
-                        <p class="text-gray-600">
-                            Semua kriteria harus diselesaikan terlebih dahulu oleh anggota sebelum proses validasi dapat dimulai.
-                        </p>
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center bg-white rounded-lg p-4 shadow">
+                        <div class="text-3xl font-bold text-green-600">{{ $completedKriteria }}</div>
+                        <div class="text-sm text-green-700 mt-1">Kriteria Sudah Selesai</div>
                     </div>
-
-                    <!-- Summary Stats -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                            <div class="text-3xl font-bold text-green-600">{{ $completedKriteria }}</div>
-                            <div class="text-sm text-green-700">Kriteria Selesai</div>
-                        </div>
-                        <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200">
-                            <div class="text-3xl font-bold text-red-600">{{ $totalKriteria - $completedKriteria }}</div>
-                            <div class="text-sm text-red-700">Kriteria Belum Selesai</div>
-                        </div>
-                        <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                            <div class="text-3xl font-bold text-blue-600">{{ $totalKriteria }}</div>
-                            <div class="text-sm text-blue-700">Total Kriteria</div>
-                        </div>
+                    <div class="text-center bg-white rounded-lg p-4 shadow">
+                        <div class="text-3xl font-bold text-red-600">{{ $totalKriteria - $completedKriteria }}</div>
+                        <div class="text-sm text-red-700 mt-1">Kriteria Belum Selesai</div>
                     </div>
-
-                    
+                    <div class="text-center bg-white rounded-lg p-4 shadow">
+                        <div class="text-3xl font-bold text-blue-600">{{ $totalKriteria }}</div>
+                        <div class="text-sm text-blue-700 mt-1">Total Kriteria</div>
+                    </div>
                 </div>
             </div>
+
 
             <!-- Detail Kriteria -->
             <div class="bg-white rounded-lg shadow-sm mb-6">

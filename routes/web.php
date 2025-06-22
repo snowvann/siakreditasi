@@ -41,19 +41,20 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [ProfileAnggotaController::class, 'index'])->name('anggota'); // ← ini yang penting!
                 Route::get('/edit', [ProfileAnggotaController::class, 'edit'])->name('anggota.edit');
                 Route::put('/update', [ProfileAnggotaController::class, 'update'])->name('anggota.update');
-                Route::get('/anggota', [ProfileAnggotaController::class, 'index'])->name('anggota.index');
+                Route::get('/profile/anggota', [ProfileValidatorController::class, 'index'])->name('profile.anggota.index');
             });
             Route::prefix('validator')->group(function () {
                 Route::get('/', [ProfileValidatorController::class, 'index'])->name('validator'); // ← ini yang penting!
                 Route::get('/edit', [ProfileValidatorController::class, 'edit'])->name('validator.edit');
                 Route::put('/update', [ProfileValidatorController::class, 'update'])->name('validator.update');
                 Route::get('/validator', [ProfileValidatorController::class, 'index'])->name('validator.index');
+                Route::get('/profile/validator', [ProfileValidatorController::class, 'index'])->name('profile.validator.index');
             });
             Route::prefix('admin')->group(function () {
                 Route::get('/', [ProfileAdminController::class, 'index'])->name('admin'); // ← ini yang penting!
                 Route::get('/edit', [ProfileAdminController::class, 'edit'])->name('admin.edit');
                 Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.update');
-                Route::get('/admin', [ProfileAdminController::class, 'index'])->name('admin.index');
+                Route::get('/profile/admin', [ProfileValidatorController::class, 'index'])->name('profile.admin.index');
             });
 });
     // Kriteria Routes
@@ -115,7 +116,10 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
         Route::post('/user/store', [SuperAdminController::class, 'store'])->name('superadmin.store.user');
         Route::get('/user/{id}/data', [SuperAdminController::class, 'getUserData'])->name('superadmin.user.data');
         Route::put('/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
-        Route::delete('/user/{id}', [SuperAdminController::class, 'deleteUser'])->name('superadmin.delete.user');
+        Route::get('/superadmin/manage/user/{id}/access', [SuperAdminController::class, 'getUserAccess'])->name('superadmin.user.access');
+        Route::post('/superadmin/manage/user/{id}/access', [SuperAdminController::class, 'updateUserAccess'])->name('superadmin.user.access.update');
+        Route::delete('superadmin/manage/user/{id}', [SuperAdminController::class, 'destroy'])->name('superadmin.delete.user');
+
 });
 
     // Untuk menampilkan list user

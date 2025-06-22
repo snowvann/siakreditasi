@@ -259,48 +259,49 @@ class SuperAdminController extends Controller
     }
 
     public function storeUser(Request $request)
-    {
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'username' => 'required|string|unique:users,username|max:255',
-                'role' => 'required|in:Anggota,Validator,SuperAdmin',
-                'is_active' => 'required|boolean'
-            ]);
+{
+    try {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|unique:users,username|max:255',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:anggota,validator,superadmin',
+            'is_active' => 'required|boolean'
+        ]);
 
-            $user = User::create([
-                'name' => $request->name,
-                'username' => $request->username,
-                'password' => Hash::make('password123'),
-                'role' => $request->role,
-                'is_active' => $request->is_active
-            ]);
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'is_active' => $request->is_active
+        ]);
 
-            Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
-            AuditLog::create([
-                'user_id' => Auth::id(),
-                'aksi' => 'Tambah User',
-                'deskripsi' => "Menambahkan user {$user->name} dengan role {$user->role}",
-                'ip' => $request->ip(),
-            ]);
+        Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Tambah User',
+            'deskripsi' => "Menambahkan user {$user->name} dengan role {$user->role}",
+            'ip' => $request->ip(),
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User berhasil ditambahkan'
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
-            ], 422);
-        } catch (\Exception $e) {
-            Log::error("Error adding user: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menambahkan user: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'User berhasil ditambahkan'
+        ]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+        ], 422);
+    } catch (\Exception $e) {
+        Log::error("Error adding user: " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menambahkan user: ' . $e->getMessage()
+        ], 500);
     }
+}
 
     public function updateUser(Request $request, $id)
     {
@@ -358,42 +359,114 @@ class SuperAdminController extends Controller
         }
     }
 
+
+    public function getUserAccess($id)
+{
+    try {
+        $user = User::findOrFail($id);
+        $kriteriaList = Kriteria::all();
+        
+        // Get current permissions for the user (adjust based on your permission structure)
+        $permissions = [
+            'read' => true, // Default values - replace with actual logic
+            'write' => false,
+            'validate' => false
+        ];
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'kriteriaList' => $kriteriaList,
+            'permissions' => $permissions
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal memuat data akses: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+public function updateUserAccess(Request $request, $id)
+{
+    try {
+        $request->validate([
+            'kriteria_id' => 'required|exists:kriteria,id',
+            'permissions' => 'required|array',
+            'permissions.read' => 'required|boolean',
+            'permissions.write' => 'required|boolean',
+            'permissions.validate' => 'required|boolean'
+        ]);
+
+        $user = User::findOrFail($id);
+        $kriteriaId = $request->kriteria_id;
+        $permissions = $request->permissions;
+
+        // Here you would save the permissions to your database
+        // This is just a placeholder - implement your actual permission logic
+        // Example:
+        // $user->permissions()->updateOrCreate(
+        //     ['kriteria_id' => $kriteriaId],
+        //     $permissions
+        // );
+
+        Log::info("SuperAdmin " . Auth::user()->name . " updated access for user {$user->name} on kriteria {$kriteriaId}");
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Update Akses',
+            'deskripsi' => "Memperbarui hak akses untuk user {$user->name} pada kriteria ID {$kriteriaId}",
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hak akses berhasil diperbarui'
+        ]);
+    } catch (\Exception $e) {
+        Log::error("Error updating user access: " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal memperbarui hak akses: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
     public function deleteUser($id)
-    {
-        try {
-            $user = User::findOrFail($id);
-            $currentUser = Auth::user();
+{
+    try {
+        $user = User::findOrFail($id);
+        $currentUser = Auth::user();
 
-            if ($user->id === $currentUser->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Anda tidak dapat menghapus diri sendiri!'
-                ], 403);
-            }
-
-            $userName = $user->name;
-            $user->delete();
-
-            Log::warning("SuperAdmin {$currentUser->name} deleted user {$userName} (ID: {$id})");
-            AuditLog::create([
-                'user_id' => Auth::id(),
-                'aksi' => 'Hapus User',
-                'deskripsi' => "Menghapus user {$userName}",
-                'ip' => request()->ip(),
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => "User {$userName} berhasil dihapus"
-            ]);
-        } catch (\Exception $e) {
-            Log::error("Error deleting user: " . $e->getMessage());
+        if ($user->id === $currentUser->id) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghapus user: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Anda tidak dapat menghapus diri sendiri!'
+            ], 403);
         }
+
+        $userName = $user->name;
+        $user->delete();
+
+        Log::warning("SuperAdmin {$currentUser->name} deleted user {$userName} (ID: {$id})");
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'Hapus User',
+            'deskripsi' => "Menghapus user {$userName}",
+            'ip' => request()->ip(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "User {$userName} berhasil dihapus"
+        ]);
+    } catch (\Exception $e) {
+        Log::error("Error deleting user: " . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menghapus user: ' . $e->getMessage()
+        ], 500);
     }
+}
 
     public function manageKriteria()
     {
@@ -709,6 +782,17 @@ class SuperAdminController extends Controller
 
         Log::info("Notifikasi {$action} sub-kriteria dikirim ke {$recipients->count()} recipients (Validators)");
     }
+
+    public function destroy($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'User berhasil dihapus.'
+    ]);
+}
 
     
 }
