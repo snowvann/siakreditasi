@@ -1,14 +1,17 @@
 @extends('layouts.app')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('content')
-<div class="min-h-screen" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-    @include('components.dashboard-header')
-    
-    <main class="container mx-auto px-4 py-8">
-        
-        <!-- Header Section -->
-                <div class="relative rounded-xl bg-gradient-to-r from-purple-700 to-pink-500 text-white p-6 flex items-center justify-between shadow-lg">
-                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl"></div>      
+    <div class="min-h-screen" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+        @include('components.dashboard-header')
+
+        <main class="container mx-auto px-4 py-8">
+
+            <!-- Header Section -->
+            <div
+                class="relative rounded-xl bg-gradient-to-r from-purple-700 to-pink-500 text-white p-6 flex items-center justify-between shadow-lg">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl opacity-10 blur-xl">
+                </div>
 
                 <!-- Konten Header -->
                 <div class="flex items-center gap-4 relative z-10">
@@ -16,16 +19,17 @@
                     <a href="{{ route('superadmin.dashboard') }}"
                         class="inline-flex items-center justify-center text-white hover:text-gray-100 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-300">
                         <!-- Icon Back (Heroicon) -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </a>
-                <div class="space-y-4">
-                    <h1 class="text-3xl lg:text-4xl font-bold text-white">
-                        Manajemen Pengguna
-                    </h1>
-                    <p class="text-white/90 text-lg">Kelola pengguna dan hak akses mereka secara efisien</p>
-                </div>
+                    <div class="space-y-4">
+                        <h1 class="text-3xl lg:text-4xl font-bold text-white">
+                            Manajemen Pengguna
+                        </h1>
+                        <p class="text-white/90 text-lg">Kelola pengguna dan hak akses mereka secara efisien</p>
+                    </div>
                 </div>
 
                 <div class="text-4xl">
@@ -36,24 +40,19 @@
                 </div>
             </div>
 
-        <!-- Filters -->
+            <!-- Filters -->
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row gap-4">
                     <div class="flex-1 relative">
-                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                        <input 
-                            type="text" 
-                            placeholder="Cari user berdasarkan nama atau username..." 
+                        <i data-lucide="search"
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                        <input type="text" placeholder="Cari user berdasarkan nama atau username..."
                             class="w-full pl-10 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            id="searchInput"
-                            oninput="filterUsers()"
-                        >
+                            id="searchInput" oninput="filterUsers()">
                     </div>
-                    <select 
-                        id="roleFilter" 
+                    <select id="roleFilter"
                         class="w-48 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onchange="filterUsers()"
-                    >
+                        onchange="filterUsers()">
                         <option value="all">Semua Peran</option>
                         <option value="superadmin">Super Admin</option>
                         <option value="admin">Admin</option>
@@ -63,80 +62,102 @@
                 </div>
             </div>
 
-             <!-- Header Actions -->
+            <!-- Header Actions -->
             <div class="container mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <!-- Add User Button -->
-                <button onclick="openAddUserModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                 Tambah User
-            </button>
+                <button onclick="openAddUserModal()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah User
+                </button>
             </div>
 
 
-        <!-- Users Table -->
-        <div class="container mx-auto px-6">
-            <div class="bg-white rounded-lg shadow-sm">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold mb-4">Daftar User (<span id="userCount">{{ $users->total() }}</span>)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pengguna</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Peran</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            <thead>
-                                <tbody class="bg-white divide-y divide-gray-200" id="userTableBody">
-                                    @foreach ($users as $user)
-                                    <tr class="user-row" data-id="{{ $user->id }}" data-role="{{ strtolower($user->role) }}" data-search="{{ $user->name }} {{ $user->username }}">
-                                        
-                                <!-- Nama -->
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="text-sm text-xs font-medium text-gray-900">
-                                            {{ $user->name }}
-                                      </div>
-                                            </td>
+            <!-- Users Table -->
+            <div class="container mx-auto px-6">
+                <div class="bg-white rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-4">Daftar User (<span id="userCount">{{ $users->total() }}</span>)
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Pengguna</th>
+                                        <th
+                                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Username</th>
+                                        <th
+                                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Peran</th>
+                                        <th
+                                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Aksi</th>
+                                    </tr>
+                                    <thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="userTableBody">
+                                        @foreach ($users as $user)
+                                            <tr class="user-row" data-id="{{ $user->id }}"
+                                                data-role="{{ strtolower($user->role) }}"
+                                                data-search="{{ $user->name }} {{ $user->username }}">
 
-                                <!-- Username -->
-                                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <div class="flex justify-center items-center gap-2 text-sm">
-                                            <i data-lucide="user" class="w-3 h-3"></i>
-                                             <span>{{ $user->username }}</span>
-                                        </div>
-                                        </td>
+                                                <!-- Nama -->
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm text-xs font-medium text-gray-900">
+                                                        {{ $user->name }}
+                                                    </div>
+                                                </td>
 
-                                <!-- Role -->
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                  <span class="px-2 py-1 text-xs rounded-full 
-                                      {{ $user->role === 'superadmin' ? 'bg-indigo-100 text-indigo-800' : 
-                                        ($user->role === 'validator' ? 'bg-blue-100 text-blue-800' : 
-                                        'bg-gray-100 text-gray-800') }}">
-                                        {{ ucfirst($user->role) }}
-                                            </span>
-                                                </td>        
-                                    <td class="px-2 py-4 whitespace-nowrap text-center">
-                                    <span class="inline-flex items-center justify-center gap-1 px-3 py-1 text-xs font-semibold 
+                                                <!-- Username -->
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="flex justify-center items-center gap-2 text-sm">
+                                                        <i data-lucide="user" class="w-3 h-3"></i>
+                                                        <span>{{ $user->username }}</span>
+                                                    </div>
+                                                </td>
+
+                                                <!-- Role -->
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <span
+                                                        class="px-2 py-1 text-xs rounded-full 
+                                      {{ $user->role === 'superadmin'
+                                          ? 'bg-indigo-100 text-indigo-800'
+                                          : ($user->role === 'validator'
+                                              ? 'bg-blue-100 text-blue-800'
+                                              : 'bg-gray-100 text-gray-800') }}">
+                                                        {{ ucfirst($user->role) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-2 py-4 whitespace-nowrap text-center">
+                                                    <span
+                                                        class="inline-flex items-center justify-center gap-1 px-3 py-1 text-xs font-semibold 
                                         {{ $user->is_active ? 'bg-green-300 text-green-900' : 'bg-red-300 text-red-900' }} rounded-full">
-                                        <i data-lucide="{{ $user->is_active ? 'user-check' : 'user-x' }}" class="w-3 h-3"></i>
-                                        {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
-                                    </span>
-                                </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <!-- Tombol Edit -->
-                                            <button onclick="openEditUserModal({{ $user->id }})"
-                                                class="text-white bg-yellow-400 hover:bg-yellow-500 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
-                                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM21.41 6.34a1.25 1.25 0 0 0 0-1.77l-2.98-2.98a1.25 1.25 0 0 0-1.77 0l-1.83 1.83 4.75 4.75 1.83-1.83z"/>
-                                                </svg>
-                                                <span>Ubah</span>
-                                            </button>
-                                            {{-- <!-- Tombol Akses -->
+                                                        <i data-lucide="{{ $user->is_active ? 'user-check' : 'user-x' }}"
+                                                            class="w-3 h-3"></i>
+                                                        {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <div class="flex items-center justify-center gap-2">
+                                                        <!-- Tombol Edit -->
+                                                        <button onclick="openEditUserModal({{ $user->id }})"
+                                                            class="text-white bg-yellow-400 hover:bg-yellow-500 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
+                                                                <path
+                                                                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM21.41 6.34a1.25 1.25 0 0 0 0-1.77l-2.98-2.98a1.25 1.25 0 0 0-1.77 0l-1.83 1.83 4.75 4.75 1.83-1.83z" />
+                                                            </svg>
+                                                            <span>Ubah</span>
+                                                        </button>
+                                                        {{-- <!-- Tombol Akses -->
                                            <button onclick="openAccessModal({{ $user->id }}, '{{ $user->name }}')"
     class="text-white bg-blue-600 hover:bg-blue-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
@@ -144,37 +165,43 @@
     </svg>
                                                 <span>Akses</span>
                                             </button> --}}
-                                            <!-- Tombol Hapus -->
-                                             @csrf
-                                            {{-- <button onclick="deleteUser({{ $user->id }})"
+                                                        <!-- Tombol Hapus -->
+                                                        @csrf
+                                                        {{-- <button onclick="deleteUser({{ $user->id }})"
                                                 class="text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
                                                     <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                                 </svg>
                                                 <span>Hapus</span>
                                             </button> --}}
-                                            <form action="{{ route('superadmin.delete.user', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
-            <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-        </svg>
-        <span>Hapus</span>
-    </button>
-</form>
+                                                        <form action="{{ route('superadmin.delete.user', $user->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Yakin ingin menghapus user ini?');"
+                                                            style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="text-white bg-red-600 hover:bg-red-700 rounded-full px-4 py-2 transition-colors duration-200 flex items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
+                                                                    <path
+                                                                        d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                                                                </svg>
+                                                                <span>Hapus</span>
+                                                            </button>
+                                                        </form>
 
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                            </table>
+                        </div>
+                        {{ $users->links() }}
                     </div>
-                    {{ $users->links() }}
                 </div>
             </div>
-        </div>
     </div>
 
     @include('superadmin.users.create')
@@ -247,7 +274,7 @@
             rows.forEach(row => {
                 const matchesSearch = row.getAttribute('data-search').toLowerCase().includes(searchQuery);
                 const matchesRole = roleFilter === 'all' || row.getAttribute('data-role') === roleFilter;
-                
+
                 if (matchesSearch && matchesRole) {
                     row.style.display = '';
                     visibleCount++;
@@ -255,42 +282,53 @@
                     row.style.display = 'none';
                 }
             });
-            
+
             document.getElementById('userCount').textContent = visibleCount;
         }
 
         // Di dalam script manage.blade.php, tambahkan event listener untuk form submit
-            document.addEventListener('DOMContentLoaded', function() {
-                const addUserForm = document.getElementById('addUserForm');
-                if (addUserForm) {
-                    addUserForm.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        addUser();
-                    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const addUserForm = document.getElementById('addUserForm');
+            if (addUserForm) {
+                addUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addUser();
+                });
+            }
+        });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Ganti fungsi addUser() dengan versi yang lebih baik
+        function addUser() {
+            const form = document.getElementById('addUserForm');
+            const formData = new FormData(form); // Mengambil semua data dari formulir
+
+            // Tampilkan loading indicator
+            Swal.fire({
+                title: 'Sedang memproses...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
             });
 
-            // Ganti fungsi addUser() dengan versi yang lebih baik
-            function addUser() {
-                const form = document.getElementById('addUserForm');
-                const formData = new FormData(  );
-                
-                // Tampilkan loading indicator
-                Swal.fire({
-                    title: 'Sedang memproses...',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                fetch('/superadmin/manage/user/store', {
+            fetch('/superadmin/manage/user/store', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        return response.json().then(err => {
+                            throw err;
+                        });
                     }
                     return response.json();
                 })
@@ -312,161 +350,90 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    let errorMessage = 'Terjadi kesalahan saat menambahkan user';
+                    if (error.message) {
+                        errorMessage = error.message;
+                    } else if (error.errors) {
+                        errorMessage = Object.values(error.errors).flat().join(', ');
+                    }
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal!',
-                        text: error.message || 'Terjadi kesalahan saat menambahkan user',
+                        text: errorMessage,
                         showConfirmButton: true
                     });
                 });
-            }
-
-function deleteUser(userId) {
-    // Konfirmasi penghapusan user
-    Swal.fire({
-        title: 'Yakin ingin menghapus?',
-        text: "Data user akan dihapus permanen!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Tampilkan loading
-            Swal.fire({
-                title: 'Menghapus...',
-                html: 'Sedang memproses penghapusan user',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-            
-            // Kirim request DELETE
-            fetch(`/superadmin/manage/user/${userId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw err; });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Tutup loading
-                    Swal.close();
-                    
-                    // Tampilkan notifikasi sukses
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: data.message || 'User berhasil dihapus',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        // Hapus baris dari tabel
-                        const row = document.querySelector(`.user-row[data-id="${userId}"]`);
-                        if (row) {
-                            row.remove();
-                        }
-                        
-                        // Update counter
-                        const userCount = document.getElementById('userCount');
-                        if (userCount) {
-                            const currentCount = parseInt(userCount.textContent);
-                            userCount.textContent = currentCount > 0 ? currentCount - 1 : 0;
-                        }
-                    });
-                } else {
-                    throw new Error(data.message || 'Gagal menghapus user');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: error.message || 'Terjadi kesalahan saat menghapus user',
-                    showConfirmButton: true
-                });
-            });
         }
-    });
-}
+
         function submitEditUserForm() {
-    const form = document.getElementById('editUserForm');
-    const formData = new FormData(form);
-    formData.append('_method', 'PUT');
-    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+            const form = document.getElementById('editUserForm');
+            const formData = new FormData(form);
+            formData.append('_method', 'PUT');
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
-    // Disable the submit button to prevent multiple submissions
-    const submitButton = form.querySelector('button[type="button"][onclick="submitEditUserForm()"]');
-    if (submitButton) submitButton.disabled = true;
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = form.querySelector('button[type="button"][onclick="submitEditUserForm()"]');
+            if (submitButton) submitButton.disabled = true;
 
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json'
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    console.log('Response Status:', response.status);
+                    console.log('Response Headers:', response.headers);
+                    return response.json().then(data => ({
+                        status: response.status,
+                        data: data
+                    }));
+                })
+                .then(({
+                    status,
+                    data
+                }) => {
+                    // Re-enable the submit button
+                    if (submitButton) submitButton.disabled = false;
+
+                    if (status >= 200 && status < 300 && data.success) {
+                        // Close modal immediately on success
+                        closeEditUserModal();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'User berhasil diperbarui',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            updateUserRow(data.data);
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat memperbarui user',
+                            showConfirmButton: true
+                        }).then(() => {
+                            // Keep modal open on error for user to correct
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Re-enable the submit button on error
+                    if (submitButton) submitButton.disabled = false;
+                    console.error('Error in submitEditUserForm:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: error.message || 'Terjadi kesalahan saat memperbarui user',
+                        showConfirmButton: true
+                    }).then(() => {
+                        // Keep modal open on error for user to correct
+                    });
+                });
         }
-    })
-    .then(response => {
-        console.log('Response Status:', response.status);
-        console.log('Response Headers:', response.headers);
-        return response.json().then(data => ({
-            status: response.status,
-            data: data
-        }));
-    })
-    .then(({ status, data }) => {
-        // Re-enable the submit button
-        if (submitButton) submitButton.disabled = false;
-
-        if (status >= 200 && status < 300 && data.success) {
-            // Close modal immediately on success
-            closeEditUserModal();
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: data.message || 'User berhasil diperbarui',
-                showConfirmButton: false,
-                timer: 1500
-            }).then(() => {
-                updateUserRow(data.data);
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: data.message || 'Terjadi kesalahan saat memperbarui user',
-                showConfirmButton: true
-            }).then(() => {
-                // Keep modal open on error for user to correct
-            });
-        }
-    })
-    .catch(error => {
-        // Re-enable the submit button on error
-        if (submitButton) submitButton.disabled = false;
-        console.error('Error in submitEditUserForm:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: error.message || 'Terjadi kesalahan saat memperbarui user',
-            showConfirmButton: true
-        }).then(() => {
-            // Keep modal open on error for user to correct
-        });
-    });
-}
 
         function updateUserRow(userData) {
             const row = document.querySelector(`.user-row[data-id="${userData.id}"]`);
@@ -497,107 +464,109 @@ function deleteUser(userId) {
             const statusCell = row.querySelector('td:nth-child(4) span');
             if (statusCell) {
                 const isActive = userData.is_active;
-                statusCell.innerHTML = `<i data-lucide="${isActive ? 'user-check' : 'user-x'}" class="w-3 h-3"></i> ${isActive ? 'Aktif' : 'Nonaktif'}`;
-                statusCell.className = `px-2 py-1 text-xs rounded-full flex items-center gap-1 ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                statusCell.innerHTML =
+                    `<i data-lucide="${isActive ? 'user-check' : 'user-x'}" class="w-3 h-3"></i> ${isActive ? 'Aktif' : 'Nonaktif'}`;
+                statusCell.className =
+                    `px-2 py-1 text-xs rounded-full flex items-center gap-1 ${isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
             }
         }
-            lucide.createIcons();
+        lucide.createIcons();
 
-function openAccessModal(userId, userName) {
-    console.log('Opening modal for user:', userId, userName); // Debug log
-    
-    const modal = document.getElementById('accessModal');
-    if (!modal) {
-        console.error('Modal element not found!');
-        return;
-    }
-    
-    modal.classList.remove('hidden');
-    document.getElementById('accessUserName').value = userName;
-    document.getElementById('accessUserId').value = userId;
-    
-    // Load current access permissions
-    fetch(`/superadmin/manage/user/${userId}/access`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        function openAccessModal(userId, userName) {
+            console.log('Opening modal for user:', userId, userName); // Debug log
+
+            const modal = document.getElementById('accessModal');
+            if (!modal) {
+                console.error('Modal element not found!');
+                return;
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                document.getElementById('readAccess').checked = data.permissions.read;
-                document.getElementById('writeAccess').checked = data.permissions.write;
-                document.getElementById('validateAccess').checked = data.permissions.validate;
+
+            modal.classList.remove('hidden');
+            document.getElementById('accessUserName').value = userName;
+            document.getElementById('accessUserId').value = userId;
+
+            // Load current access permissions
+            fetch(`/superadmin/manage/user/${userId}/access`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('readAccess').checked = data.permissions.read;
+                        document.getElementById('writeAccess').checked = data.permissions.write;
+                        document.getElementById('validateAccess').checked = data.permissions.validate;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching access data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal memuat data akses'
+                    });
+                });
+        }
+
+        function closeAccessModal() {
+            const modal = document.getElementById('accessModal');
+            if (modal) {
+                modal.classList.add('hidden');
             }
-        })
-        .catch(error => {
-            console.error('Error fetching access data:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Gagal memuat data akses'
-            });
-        });
-}
-
-function closeAccessModal() {
-    const modal = document.getElementById('accessModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
-}
-
-function updateUserAccess() {
-    const userId = document.getElementById('accessUserId').value;
-    const kriteriaId = document.getElementById('accessKriteria').value;
-    const permissions = {
-        read: document.getElementById('readAccess').checked,
-        write: document.getElementById('writeAccess').checked,
-        validate: document.getElementById('validateAccess').checked
-    };
-
-    fetch(`/superadmin/manage/user/${userId}/access`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            kriteria_id: kriteriaId,
-            permissions: permissions
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Hak akses berhasil diperbarui',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            closeAccessModal();
-        } else {
-            throw new Error(data.message || 'Gagal memperbarui hak akses');
+
+        function updateUserAccess() {
+            const userId = document.getElementById('accessUserId').value;
+            const kriteriaId = document.getElementById('accessKriteria').value;
+            const permissions = {
+                read: document.getElementById('readAccess').checked,
+                write: document.getElementById('writeAccess').checked,
+                validate: document.getElementById('validateAccess').checked
+            };
+
+            fetch(`/superadmin/manage/user/${userId}/access`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        kriteria_id: kriteriaId,
+                        permissions: permissions
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Hak akses berhasil diperbarui',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        closeAccessModal();
+                    } else {
+                        throw new Error(data.message || 'Gagal memperbarui hak akses');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: error.message || 'Terjadi kesalahan saat memperbarui hak akses',
+                        showConfirmButton: true
+                    });
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: error.message || 'Terjadi kesalahan saat memperbarui hak akses',
-            showConfirmButton: true
-        });
-    });
-}
-            </script>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

@@ -36,27 +36,29 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Profile
-        Route::prefix('profile')->group(function () {
-            Route::prefix('anggota')->group(function () {
-                Route::get('/', [ProfileAnggotaController::class, 'index'])->name('anggota'); // ← ini yang penting!
-                Route::get('/edit', [ProfileAnggotaController::class, 'edit'])->name('anggota.edit');
-                Route::put('/update', [ProfileAnggotaController::class, 'update'])->name('anggota.update');
-                Route::get('/profile/anggota', [ProfileValidatorController::class, 'index'])->name('profile.anggota.index');
-            });
-            Route::prefix('validator')->group(function () {
-                Route::get('/', [ProfileValidatorController::class, 'index'])->name('validator'); // ← ini yang penting!
-                Route::get('/edit', [ProfileValidatorController::class, 'edit'])->name('validator.edit');
-                Route::put('/update', [ProfileValidatorController::class, 'update'])->name('validator.update');
-                Route::get('/validator', [ProfileValidatorController::class, 'index'])->name('validator.index');
-                Route::get('/profile/validator', [ProfileValidatorController::class, 'index'])->name('profile.validator.index');
-            });
-            Route::prefix('admin')->group(function () {
-                Route::get('/', [ProfileAdminController::class, 'index'])->name('admin'); // ← ini yang penting!
-                Route::get('/edit', [ProfileAdminController::class, 'edit'])->name('admin.edit');
-                Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.update');
-                Route::get('/profile/admin', [ProfileValidatorController::class, 'index'])->name('profile.admin.index');
-            });
-});
+    Route::prefix('profile')->group(function () {
+        Route::prefix('anggota')->group(function () {
+            Route::get('/', [ProfileAnggotaController::class, 'index'])->name('anggota'); // ← ini yang penting!
+            Route::get('/edit', [ProfileAnggotaController::class, 'edit'])->name('anggota.edit');
+            Route::put('/update', [ProfileAnggotaController::class, 'update'])->name('anggota.update');
+            Route::get('/anggota', [ProfileAnggotaController::class, 'index'])->name('anggota.index');
+            Route::get('/profile/anggota', [ProfileAnggotaController::class, 'index'])->name('profile.anggota.index');
+        });
+        Route::prefix('validator')->group(function () {
+            Route::get('/', [ProfileValidatorController::class, 'index'])->name('validator'); // ← ini yang penting!
+            Route::get('/edit', [ProfileValidatorController::class, 'edit'])->name('validator.edit');
+            Route::put('/update', [ProfileValidatorController::class, 'update'])->name('validator.update');
+            Route::get('/validator', [ProfileValidatorController::class, 'index'])->name('validator.index');
+            Route::get('/profile/validator', [ProfileValidatorController::class, 'index'])->name('profile.validator.index');
+        });
+        Route::prefix('admin')->group(function () {
+            Route::get('/', [ProfileAdminController::class, 'index'])->name('admin'); // ← ini yang penting!
+            Route::get('/edit', [ProfileAdminController::class, 'edit'])->name('admin.edit');
+            Route::put('/update', [ProfileAdminController::class, 'update'])->name('admin.update');
+            Route::get('/admin', [ProfileAdminController::class, 'index'])->name('admin.index');
+            Route::get('/profile/admin', [ProfileAdminController::class, 'index'])->name('profile.admin.index');
+        });
+    });
     // Kriteria Routes
     Route::prefix('kriteria')->group(function () {
         Route::get('/manage', [KriteriaController::class, 'manage'])->name('criteria.manage');
@@ -66,13 +68,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [KriteriaController::class, 'edit'])->name('kriteria.edit');
         Route::put('/{id}/update', [KriteriaController::class, 'update'])->name('kriteria.update');
         Route::delete('/{id}/delete', [KriteriaController::class, 'destroy'])->name('criteria.destroy');
-        
+
         // Sub-Kriteria Routes
         Route::post('/subkriteria/store', [SubKriteriaController::class, 'store'])->name('subkriteria.store');
         Route::get('/subkriteria/{id}/edit', [SubKriteriaController::class, 'edit'])->name('subkriteria.edit');
         Route::put('/subkriteria/{id}/update', [SubKriteriaController::class, 'update'])->name('subkriteria.update');
         Route::delete('/subkriteria/{id}/delete', [SubKriteriaController::class, 'destroy'])->name('subcriteria.destroy');
-        
+
         Route::post('/{kriteria}/sub-kriteria/{subKriteria}/isian', [KriteriaController::class, 'simpanIsian'])
             ->name('kriteria.subkriteria.simpanIsian');
         Route::get('/{kriteria}/sub-kriteria/{subKriteria}', [KriteriaController::class, 'showSubKriteria'])
@@ -113,14 +115,13 @@ Route::middleware(['auth', 'role:SuperAdmin'])->prefix('superadmin')->group(func
 
     Route::prefix('superadmin/manage')->middleware(['auth', 'superadmin'])->group(function () {
         Route::get('/users', [SuperAdminController::class, 'index'])->name('superadmin.manage.users');
-        Route::post('/user/store', [SuperAdminController::class, 'store'])->name('superadmin.store.user');
+        Route::post('/user/store', [SuperAdminController::class, 'storeUser'])->name('superadmin.store.user');
         Route::get('/user/{id}/data', [SuperAdminController::class, 'getUserData'])->name('superadmin.user.data');
         Route::put('/user/{id}', [SuperAdminController::class, 'updateUser'])->name('superadmin.update.user');
         Route::get('/superadmin/manage/user/{id}/access', [SuperAdminController::class, 'getUserAccess'])->name('superadmin.user.access');
         Route::post('/superadmin/manage/user/{id}/access', [SuperAdminController::class, 'updateUserAccess'])->name('superadmin.user.access.update');
         Route::delete('superadmin/manage/user/{id}', [SuperAdminController::class, 'destroy'])->name('superadmin.delete.user');
-
-});
+    });
 
     // Untuk menampilkan list user
     Route::get('/manage/users', [SuperAdminController::class, 'manageUsers'])->name('superadmin.manage.users');
@@ -144,4 +145,4 @@ Route::middleware(['auth', 'role:anggota'])->group(function () {
 
 Route::get('/dashboardUtama', [DashboardUtamaController::class, 'index'])->name('dashboardUtama');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

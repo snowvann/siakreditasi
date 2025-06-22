@@ -37,17 +37,17 @@ class SuperAdminController extends Controller
         if ($search) {
             $userQuery->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%")
-                  ->orWhere('role', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%");
             });
 
             $kriteriaQuery->where(function ($q) use ($search) {
                 $q->where('nama_kriteria', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%")
-                  ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
-                      $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
-                               ->orWhere('deskripsi', 'like', "%{$search}%");
-                  });
+                    ->orWhere('deskripsi', 'like', "%{$search}%")
+                    ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
+                        $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
+                            ->orWhere('deskripsi', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -121,7 +121,7 @@ class SuperAdminController extends Controller
         ));
     }
 
-        public function riwayatIsian(Request $request)
+    public function riwayatIsian(Request $request)
     {
         $search = $request->input('search', '');
         $sortBy = $request->input('sort', 'newest');
@@ -137,15 +137,15 @@ class SuperAdminController extends Controller
             $isianQuery->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($userQuery) use ($search) {
                     $userQuery->where('name', 'like', "%{$search}%")
-                            ->orWhere('username', 'like', "%{$search}%");
+                        ->orWhere('username', 'like', "%{$search}%");
                 })
-                ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
-                    $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
+                    ->orWhereHas('subkriteria', function ($subQuery) use ($search) {
+                        $subQuery->where('nama_subkriteria', 'like', "%{$search}%")
                             ->orWhereHas('kriteria', function ($kriteriaQuery) use ($search) {
                                 $kriteriaQuery->where('nama_kriteria', 'like', "%{$search}%");
                             });
-                })
-                ->orWhere('nilai', 'like', "%{$search}%");
+                    })
+                    ->orWhere('nilai', 'like', "%{$search}%");
             });
         }
 
@@ -171,21 +171,21 @@ class SuperAdminController extends Controller
                 break;
             case 'user-asc':
                 $isianQuery->join('users', 't_isian.user_id', '=', 'users.id')
-                        ->orderBy('users.name', 'asc');
+                    ->orderBy('users.name', 'asc');
                 break;
             case 'user-desc':
                 $isianQuery->join('users', 't_isian.user_id', '=', 'users.id')
-                        ->orderBy('users.name', 'desc');
+                    ->orderBy('users.name', 'desc');
                 break;
             case 'kriteria-asc':
                 $isianQuery->join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
-                        ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
-                        ->orderBy('kriteria.nama_kriteria', 'asc');
+                    ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
+                    ->orderBy('kriteria.nama_kriteria', 'asc');
                 break;
             case 'kriteria-desc':
                 $isianQuery->join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
-                        ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
-                        ->orderBy('kriteria.nama_kriteria', 'desc');
+                    ->join('kriteria', 'subkriteria.kriteria_id', '=', 'kriteria.id')
+                    ->orderBy('kriteria.nama_kriteria', 'desc');
                 break;
         }
 
@@ -201,8 +201,8 @@ class SuperAdminController extends Controller
             'total_isian' => Isian::count(),
             'total_users_pengisi' => Isian::distinct('user_id')->count(),
             'total_kriteria_diisi' => Isian::join('subkriteria', 't_isian.subkriteria_id', '=', 'subkriteria.id')
-                                            ->distinct('subkriteria.kriteria_id')
-                                            ->count(),
+                ->distinct('subkriteria.kriteria_id')
+                ->count(),
             'total_subkriteria_diisi' => Isian::distinct('subkriteria_id')->count(),
         ];
 
@@ -226,8 +226,8 @@ class SuperAdminController extends Controller
         if ($search) {
             $usersQuery->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%")
-                  ->orWhere('role', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%");
             });
         }
 
@@ -259,49 +259,49 @@ class SuperAdminController extends Controller
     }
 
     public function storeUser(Request $request)
-{
-    try {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|unique:users,username|max:255',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:anggota,validator,superadmin',
-            'is_active' => 'required|boolean'
-        ]);
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|unique:users,username|max:255',
+                'password' => 'required|string|min:8|confirmed',
+                'role' => 'required|in:anggota,validator,superadmin',
+                'is_active' => 'required|boolean'
+            ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'is_active' => $request->is_active
-        ]);
+            $user = User::create([
+                'name' => $request->name,
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+                'is_active' => $request->is_active
+            ]);
 
-        Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'aksi' => 'Tambah User',
-            'deskripsi' => "Menambahkan user {$user->name} dengan role {$user->role}",
-            'ip' => $request->ip(),
-        ]);
+            Log::info("SuperAdmin " . Auth::user()->name . " added new user: {$user->name}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Tambah User',
+                'deskripsi' => "Menambahkan user {$user->name} dengan role {$user->role}",
+                'ip' => $request->ip(),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User berhasil ditambahkan'
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
-        ], 422);
-    } catch (\Exception $e) {
-        Log::error("Error adding user: " . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal menambahkan user: ' . $e->getMessage()
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil ditambahkan'
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error adding user: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan user: ' . $e->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function updateUser(Request $request, $id)
     {
@@ -359,95 +359,14 @@ class SuperAdminController extends Controller
         }
     }
 
-
-    public function getUserAccess($id)
+    public function destroy($id)
 {
     try {
         $user = User::findOrFail($id);
-        $kriteriaList = Kriteria::all();
-        
-        // Get current permissions for the user (adjust based on your permission structure)
-        $permissions = [
-            'read' => true, // Default values - replace with actual logic
-            'write' => false,
-            'validate' => false
-        ];
-
-        return response()->json([
-            'success' => true,
-            'user' => $user,
-            'kriteriaList' => $kriteriaList,
-            'permissions' => $permissions
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal memuat data akses: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-public function updateUserAccess(Request $request, $id)
-{
-    try {
-        $request->validate([
-            'kriteria_id' => 'required|exists:kriteria,id',
-            'permissions' => 'required|array',
-            'permissions.read' => 'required|boolean',
-            'permissions.write' => 'required|boolean',
-            'permissions.validate' => 'required|boolean'
-        ]);
-
-        $user = User::findOrFail($id);
-        $kriteriaId = $request->kriteria_id;
-        $permissions = $request->permissions;
-
-        // Here you would save the permissions to your database
-        // This is just a placeholder - implement your actual permission logic
-        // Example:
-        // $user->permissions()->updateOrCreate(
-        //     ['kriteria_id' => $kriteriaId],
-        //     $permissions
-        // );
-
-        Log::info("SuperAdmin " . Auth::user()->name . " updated access for user {$user->name} on kriteria {$kriteriaId}");
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'aksi' => 'Update Akses',
-            'deskripsi' => "Memperbarui hak akses untuk user {$user->name} pada kriteria ID {$kriteriaId}",
-            'ip' => $request->ip(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Hak akses berhasil diperbarui'
-        ]);
-    } catch (\Exception $e) {
-        Log::error("Error updating user access: " . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal memperbarui hak akses: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-    public function deleteUser($id)
-{
-    try {
-        $user = User::findOrFail($id);
-        $currentUser = Auth::user();
-
-        if ($user->id === $currentUser->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak dapat menghapus diri sendiri!'
-            ], 403);
-        }
-
         $userName = $user->name;
         $user->delete();
 
-        Log::warning("SuperAdmin {$currentUser->name} deleted user {$userName} (ID: {$id})");
+        Log::info("SuperAdmin " . Auth::user()->name . " deleted user: {$userName}");
         AuditLog::create([
             'user_id' => Auth::id(),
             'aksi' => 'Hapus User',
@@ -457,7 +376,7 @@ public function updateUserAccess(Request $request, $id)
 
         return response()->json([
             'success' => true,
-            'message' => "User {$userName} berhasil dihapus"
+            'message' => 'User berhasil dihapus'
         ]);
     } catch (\Exception $e) {
         Log::error("Error deleting user: " . $e->getMessage());
@@ -467,6 +386,80 @@ public function updateUserAccess(Request $request, $id)
         ], 500);
     }
 }
+
+
+    public function getUserAccess($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $kriteriaList = Kriteria::all();
+
+            // Get current permissions for the user (adjust based on your permission structure)
+            $permissions = [
+                'read' => true, // Default values - replace with actual logic
+                'write' => false,
+                'validate' => false
+            ];
+
+            return response()->json([
+                'success' => true,
+                'user' => $user,
+                'kriteriaList' => $kriteriaList,
+                'permissions' => $permissions
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat data akses: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateUserAccess(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'kriteria_id' => 'required|exists:kriteria,id',
+                'permissions' => 'required|array',
+                'permissions.read' => 'required|boolean',
+                'permissions.write' => 'required|boolean',
+                'permissions.validate' => 'required|boolean'
+            ]);
+
+            $user = User::findOrFail($id);
+            $kriteriaId = $request->kriteria_id;
+            $permissions = $request->permissions;
+
+            // Here you would save the permissions to your database
+            // This is just a placeholder - implement your actual permission logic
+            // Example:
+            // $user->permissions()->updateOrCreate(
+            //     ['kriteria_id' => $kriteriaId],
+            //     $permissions
+            // );
+
+            Log::info("SuperAdmin " . Auth::user()->name . " updated access for user {$user->name} on kriteria {$kriteriaId}");
+            AuditLog::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'Update Akses',
+                'deskripsi' => "Memperbarui hak akses untuk user {$user->name} pada kriteria ID {$kriteriaId}",
+                'ip' => $request->ip(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hak akses berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Error updating user access: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui hak akses: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 
     public function manageKriteria()
     {
@@ -484,11 +477,11 @@ public function updateUserAccess(Request $request, $id)
         $kriterias = Kriteria::with('subkriteria')
             ->when($search, function ($query, $search) {
                 $query->where('nama_kriteria', 'like', "%{$search}%")
-                      ->orWhere('deskripsi', 'like', "%{$search}%")
-                      ->orWhereHas('subkriteria', function ($q) use ($search) {
-                          $q->where('nama_subkriteria', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%")
+                    ->orWhereHas('subkriteria', function ($q) use ($search) {
+                        $q->where('nama_subkriteria', 'like', "%{$search}%")
                             ->orWhere('deskripsi', 'like', "%{$search}%");
-                      });
+                    });
             })
             ->get();
 
@@ -782,17 +775,4 @@ public function updateUserAccess(Request $request, $id)
 
         Log::info("Notifikasi {$action} sub-kriteria dikirim ke {$recipients->count()} recipients (Validators)");
     }
-
-    public function destroy($id)
-{
-    $user = User::findOrFail($id);
-    $user->delete();
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'User berhasil dihapus.'
-    ]);
-}
-
-    
 }
